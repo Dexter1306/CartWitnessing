@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cart Witnessing Schedule - Easy View & Coordinator</title>
-  <meta name="description" content="Accessible, high-contrast cart witnessing schedule for 5 locations and two shifts with Keyman scheduler editor.">
+  <meta name="description" content="Accessible, high-contrast cart witnessing schedule for 5 locations and two shifts with 3 volunteers per cart and printable summary.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -46,7 +46,7 @@
             <span style="font-size: 2.2rem;" aria-hidden="true">🛒</span>
             <span>Cart Witnessing Schedule</span>
           </h1>
-          <p>Locations L1 to L5 &bull; Morning &amp; Afternoon Shifts</p>
+          <p>Locations L1 to L5 &bull; Morning &amp; Afternoon Shifts &bull; <strong>3 Volunteers Per Cart</strong></p>
         </div>
 
         <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 10px;">
@@ -96,14 +96,14 @@
         <div class="shift-hour-card">
           <div class="shift-hour-icon" aria-hidden="true">🌅</div>
           <div>
-            <div class="shift-hour-label">Shift 1 &bull; Morning</div>
+            <div class="shift-hour-label">Shift 1 &bull; Morning (3 Volunteers)</div>
             <div class="shift-hour-time">06:30 AM &ndash; 08:00 AM</div>
           </div>
         </div>
         <div class="shift-hour-card">
           <div class="shift-hour-icon" aria-hidden="true">🌇</div>
           <div>
-            <div class="shift-hour-label">Shift 2 &bull; Afternoon</div>
+            <div class="shift-hour-label">Shift 2 &bull; Afternoon (3 Volunteers)</div>
             <div class="shift-hour-time">04:30 PM &ndash; 06:00 PM</div>
           </div>
         </div>
@@ -117,18 +117,18 @@
       </div>
     </div>
 
-    <!-- 3. SUMMARY STATS -->
+    <!-- 3. SUMMARY STATS (30 SLOTS TOTAL) -->
     <div class="schedule-stats-banner" aria-label="Today's Volunteer Summary">
       <div class="stat-box">
         <div id="statTotalLocations" class="stat-number">5</div>
         <div class="stat-text">Active Cart Locations</div>
       </div>
       <div class="stat-box">
-        <div id="statConfirmedSlots" class="stat-number" style="color: #059669;">16 / 20</div>
+        <div id="statConfirmedSlots" class="stat-number" style="color: #059669;">24 / 30</div>
         <div class="stat-text">Publishers Assigned</div>
       </div>
       <div class="stat-box">
-        <div id="statNeededSlots" class="stat-number" style="color: #d97706;">4</div>
+        <div id="statNeededSlots" class="stat-number" style="color: #d97706;">6</div>
         <div class="stat-text">Open Slots Needed</div>
       </div>
     </div>
@@ -146,6 +146,10 @@
       </div>
 
       <div class="action-tools">
+        <!-- New: Dedicated Print Summary & Vacancy Report -->
+        <button class="btn btn-primary" onclick="openSummaryReportModal()" aria-label="Open Print Summary of schedule, vacant shifts, and all volunteers">
+          📋 Print Summary Report
+        </button>
         <!-- Text to speech for elderly with eyesight challenges -->
         <button class="btn btn-outline" onclick="speakSchedule()" aria-label="Listen to schedule read aloud">
           🔊 Read Aloud
@@ -231,12 +235,12 @@
           <div style="font-size: 3.5rem; margin-bottom: 10px;">⭐</div>
           <h3 style="font-size: 1.8rem; font-weight: 900; margin-bottom: 10px;">Keyman Mode Active</h3>
           <p style="font-size: 1.25rem; color: var(--text-muted); margin-bottom: 24px;">
-            You have full authorization to edit publisher shifts, swap partners, or clear entries.
+            You have full authorization to edit publisher shifts (3 volunteers per cart), swap partners, or clear entries.
           </p>
 
           <div style="display: flex; flex-direction: column; gap: 14px;">
             <button class="btn btn-lg btn-primary" onclick="resetToSampleData()">
-              🔄 Reset to Demo Schedule Data
+              🔄 Reset to Demo Schedule Data (3 Volunteers)
             </button>
             <button class="btn btn-lg btn-danger" onclick="logoutKeyman()">
               🚪 Log Out (Return to Viewer Mode)
@@ -252,14 +256,14 @@
   </div>
 
   <!-- =============================================================
-       MODAL 2: SHIFT EDITOR (FOR KEYMAN EDITING ENTRIES)
+       MODAL 2: SHIFT EDITOR (FOR KEYMAN EDITING 3 VOLUNTEERS)
        ============================================================= -->
   <div id="shiftEditorModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="shiftEditorTitle">
     <div class="modal-box">
       <div class="modal-header">
         <h2 id="shiftEditorTitle" class="modal-title">
           <span>✏️</span>
-          <span>Edit Shift Assignment</span>
+          <span>Edit Shift Assignment (3 Volunteers)</span>
         </h2>
         <button class="modal-close-btn" onclick="closeShiftEditorModal()" aria-label="Close Shift Editor">✕</button>
       </div>
@@ -278,9 +282,9 @@
         <input type="hidden" id="editShiftIndex">
 
         <!-- Publisher 1 -->
-        <fieldset style="border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; margin-bottom: 20px;">
-          <legend style="font-size: 1.25rem; font-weight: 900; padding: 0 8px; color: var(--primary);">
-            👤 Publisher 1 (Keyholder / Driver)
+        <fieldset style="border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; margin-bottom: 18px;">
+          <legend style="font-size: 1.2rem; font-weight: 900; padding: 0 8px; color: var(--primary);">
+            👤 Publisher 1 (Keyholder / Driver / Lead)
           </legend>
 
           <div class="form-group">
@@ -295,8 +299,8 @@
         </fieldset>
 
         <!-- Publisher 2 -->
-        <fieldset style="border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; margin-bottom: 20px;">
-          <legend style="font-size: 1.25rem; font-weight: 900; padding: 0 8px; color: var(--primary);">
+        <fieldset style="border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; margin-bottom: 18px;">
+          <legend style="font-size: 1.2rem; font-weight: 900; padding: 0 8px; color: var(--primary);">
             👥 Publisher 2 (Cart Partner)
           </legend>
 
@@ -308,6 +312,23 @@
           <div class="form-group" style="margin-bottom: 0;">
             <label class="form-label" for="editPub2Phone">Phone / Contact:</label>
             <input type="tel" id="editPub2Phone" class="form-input" placeholder="e.g. 555-0188">
+          </div>
+        </fieldset>
+
+        <!-- Publisher 3 (New: 3rd Volunteer Slot) -->
+        <fieldset style="border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; margin-bottom: 18px;">
+          <legend style="font-size: 1.2rem; font-weight: 900; padding: 0 8px; color: var(--primary);">
+            👥 Publisher 3 (Cart Partner)
+          </legend>
+
+          <div class="form-group">
+            <label class="form-label" for="editPub3Name">Publisher 3 Full Name:</label>
+            <input type="text" id="editPub3Name" class="form-input" placeholder="e.g. Sister Martha Clark (Leave blank if open)" list="publisherSuggestions">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="editPub3Phone">Phone / Contact:</label>
+            <input type="tel" id="editPub3Phone" class="form-input" placeholder="e.g. 555-0219">
           </div>
         </fieldset>
 
@@ -331,6 +352,9 @@
           <option value="Brother Joseph Taylor"></option>
           <option value="Sister Jennifer Anderson"></option>
           <option value="Sister Linda Thomas"></option>
+          <option value="Brother Daniel Harris"></option>
+          <option value="Brother Kevin Martin"></option>
+          <option value="Sister Barbara White"></option>
         </datalist>
 
         <!-- Action Buttons -->
@@ -353,7 +377,7 @@
   </div>
 
   <!-- =============================================================
-       MODAL 3: VOLUNTEER REQUEST (FOR ELDERLY PUBLISHERS)
+       MODAL 3: VOLUNTEER REQUEST (FOR PUBLISHERS)
        ============================================================= -->
   <div id="volunteerModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="volunteerModalTitle">
     <div class="modal-box">
@@ -375,7 +399,7 @@
       </div>
 
       <p class="form-hint" style="font-size: 1.25rem; margin-bottom: 20px;">
-        Would you like to take this open cart shift? Enter your name below to notify the Keyman or sign up immediately.
+        Would you like to take this open cart slot (up to 3 volunteers per shift)? Enter your name below to sign up immediately.
       </p>
 
       <form onsubmit="submitVolunteerRequest(event)">
@@ -401,6 +425,39 @@
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- =============================================================
+       MODAL 4: PRINT SUMMARY REPORT (SCHEDULE, VACANCIES & VOLUNTEERS)
+       ============================================================= -->
+  <div id="summaryReportModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="summaryReportTitle">
+    <div class="modal-box report-modal">
+      <div class="modal-header">
+        <h2 id="summaryReportTitle" class="modal-title">
+          <span>📋</span>
+          <span>Daily Schedule &amp; Vacancy Report</span>
+        </h2>
+        <button class="modal-close-btn" onclick="closeSummaryReportModal()" aria-label="Close Report">✕</button>
+      </div>
+
+      <!-- Report Body Generated Dynamically -->
+      <div id="summaryReportContent">
+        <!-- Rendered by JavaScript: KPI stats, Vacancies list, All Volunteers directory, and Master Roster -->
+      </div>
+
+      <!-- Modal Actions (Hidden in Print View) -->
+      <div class="report-modal-actions" style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; padding-top: 18px; border-top: var(--border-width) solid var(--border-color);">
+        <button class="btn btn-lg btn-primary" onclick="printSummaryReport()" style="flex: 1 1 240px;">
+          🖨️ Print This Summary Report
+        </button>
+        <button class="btn btn-lg btn-outline" onclick="copyVacancyListWhatsApp()" style="flex: 1 1 240px;">
+          📲 Copy Vacancies for WhatsApp
+        </button>
+        <button class="btn btn-lg btn-outline" onclick="closeSummaryReportModal()" style="flex: 1 1 160px;">
+          ✕ Close
+        </button>
+      </div>
     </div>
   </div>
 
