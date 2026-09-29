@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart Witnessing Schedule - Easy View & Coordinator</title>
+  <meta name="description" content="Accessible, high-contrast cart witnessing schedule for 5 locations and two shifts with Keyman scheduler editor.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- 1. ELDERLY ACCESSIBILITY QUICK TOOLBAR -->
+    <header class="accessibility-bar" aria-label="Accessibility & Display Settings">
+      <div class="accessibility-label">
+        <span style="font-size: 1.6rem;" aria-hidden="true">👓</span>
+        <span>Elderly Comfort Settings:</span>
+      </div>
+      <div class="accessibility-controls">
+        <!-- Font Zooming -->
+        <button id="zoomNormalBtn" class="btn btn-sm btn-outline" onclick="setFontZoom('normal')" aria-label="Set Standard Text Size">
+          Aa Normal
+        </button>
+        <button id="zoomLargeBtn" class="btn btn-sm btn-outline" onclick="setFontZoom('large')" aria-label="Set Large Text Size">
+          Aa+ Large
+        </button>
+        <button id="zoomJumboBtn" class="btn btn-sm btn-outline" onclick="setFontZoom('jumbo')" aria-label="Set Extra Large Jumbo Text Size">
+          Aa++ Jumbo
+        </button>
+        <!-- High Contrast Mode Toggle -->
+        <button id="contrastToggleBtn" class="btn btn-sm btn-contrast-toggle" onclick="toggleHighContrast()" aria-label="Toggle High-Contrast Yellow on Black Theme">
+          👁️ High-Vis Contrast
+        </button>
+      </div>
+    </header>
+
+    <!-- 2. MAIN HEADER & KEYMAN LOGIN STATUS -->
+    <div class="app-header">
+      <div class="header-top">
+        <div class="title-area">
+          <h1>
+            <span style="font-size: 2.2rem;" aria-hidden="true">🛒</span>
+            <span>Cart Witnessing Schedule</span>
+          </h1>
+          <p>Locations L1 to L5 &bull; Morning &amp; Afternoon Shifts</p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 10px;">
+          <!-- Current Keyman Login State Indicator -->
+          <div id="keymanStatusDisplay" class="keyman-status-badge viewer" role="status" aria-live="polite">
+            <span aria-hidden="true">👀</span>
+            <span>Viewer Mode (Read-Only)</span>
+          </div>
+
+          <!-- Keyman Login / Logout Button -->
+          <button id="keymanActionBtn" class="btn btn-lg btn-keyman" onclick="openKeymanAuthModal()" aria-label="Log in as Keyman to edit cart schedule">
+            <span aria-hidden="true">🔑</span>
+            <span id="keymanBtnText">Keyman Login (Edit Mode)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Date Navigator with Huge Touch Buttons -->
+      <nav class="date-nav-card" aria-label="Schedule Date Selection">
+        <button class="btn btn-lg btn-outline" onclick="changeDateOffset(-1)" aria-label="Go to Previous Day">
+          <span aria-hidden="true">◀</span>
+          <span>Previous Day</span>
+        </button>
+
+        <div class="date-current">
+          <span id="currentDateTitle" class="date-title">Wednesday, Oct 1</span>
+          <span id="currentDateSubtitle" class="date-subtitle">Today's Schedule</span>
+        </div>
+
+        <button class="btn btn-lg btn-outline" onclick="changeDateOffset(1)" aria-label="Go to Next Day">
+          <span>Next Day</span>
+          <span aria-hidden="true">▶</span>
+        </button>
+
+        <div class="date-quick-actions">
+          <button class="btn btn-primary" onclick="goToToday()" aria-label="Jump to Today's Date">
+            📅 Jump to Today
+          </button>
+          <div class="date-input-wrapper">
+            <input type="date" id="directDatePicker" class="date-picker-input" onchange="onDirectDateSelected(this.value)" aria-label="Pick specific calendar date">
+          </div>
+        </div>
+      </nav>
+
+      <!-- Fixed Shift Times Reference -->
+      <div class="shift-hours-banner">
+        <div class="shift-hour-card">
+          <div class="shift-hour-icon" aria-hidden="true">🌅</div>
+          <div>
+            <div class="shift-hour-label">Shift 1 &bull; Morning</div>
+            <div class="shift-hour-time">06:30 AM &ndash; 08:00 AM</div>
+          </div>
+        </div>
+        <div class="shift-hour-card">
+          <div class="shift-hour-icon" aria-hidden="true">🌇</div>
+          <div>
+            <div class="shift-hour-label">Shift 2 &bull; Afternoon</div>
+            <div class="shift-hour-time">04:30 PM &ndash; 06:00 PM</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Speech Announcement Indicator -->
+      <div id="ttsNotice" class="tts-active-indicator" role="status">
+        <span style="font-size: 1.4rem;">🔊</span>
+        <span id="ttsNoticeText">Reading schedule aloud...</span>
+        <button class="btn btn-sm btn-outline" style="margin-left: auto;" onclick="stopSpeech()">Stop Audio</button>
+      </div>
+    </div>
+
+    <!-- 3. SUMMARY STATS -->
+    <div class="schedule-stats-banner" aria-label="Today's Volunteer Summary">
+      <div class="stat-box">
+        <div id="statTotalLocations" class="stat-number">5</div>
+        <div class="stat-text">Active Cart Locations</div>
+      </div>
+      <div class="stat-box">
+        <div id="statConfirmedSlots" class="stat-number" style="color: #059669;">16 / 20</div>
+        <div class="stat-text">Publishers Assigned</div>
+      </div>
+      <div class="stat-box">
+        <div id="statNeededSlots" class="stat-number" style="color: #d97706;">4</div>
+        <div class="stat-text">Open Slots Needed</div>
+      </div>
+    </div>
+
+    <!-- 4. LOCATION FILTER & ASSISTIVE ACTIONS -->
+    <div class="toolbar-section">
+      <div class="filter-group" role="radiogroup" aria-label="Filter by Location">
+        <span class="filter-label">Filter Location:</span>
+        <button class="pill-btn active" onclick="filterLocation('ALL')" id="filterBtnALL">All Locations (L1 - L5)</button>
+        <button class="pill-btn" onclick="filterLocation('L1')" id="filterBtnL1">L1</button>
+        <button class="pill-btn" onclick="filterLocation('L2')" id="filterBtnL2">L2</button>
+        <button class="pill-btn" onclick="filterLocation('L3')" id="filterBtnL3">L3</button>
+        <button class="pill-btn" onclick="filterLocation('L4')" id="filterBtnL4">L4</button>
+        <button class="pill-btn" onclick="filterLocation('L5')" id="filterBtnL5">L5</button>
+      </div>
+
+      <div class="action-tools">
+        <!-- Text to speech for elderly with eyesight challenges -->
+        <button class="btn btn-outline" onclick="speakSchedule()" aria-label="Listen to schedule read aloud">
+          🔊 Read Aloud
+        </button>
+        <!-- Copy friendly plain text for WhatsApp / text message -->
+        <button class="btn btn-outline" onclick="copyWhatsAppSummary()" aria-label="Copy Schedule text for WhatsApp or SMS">
+          📲 Copy WhatsApp Text
+        </button>
+        <!-- Print Sheet for congregation board -->
+        <button class="btn btn-outline" onclick="window.print()" aria-label="Print Schedule for noticeboard">
+          🖨️ Print Sheet
+        </button>
+      </div>
+    </div>
+
+    <!-- 5. SCHEDULE GRID (L1 to L5) -->
+    <main id="scheduleGrid" class="schedule-grid" aria-label="Cart Witnessing Roster">
+      <!-- Location cards rendered dynamically by JavaScript -->
+    </main>
+
+  </div>
+
+  <!-- =============================================================
+       MODAL 1: KEYMAN AUTHENTICATION (Elderly-Friendly Big Touch PIN)
+       ============================================================= -->
+  <div id="keymanModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="keymanModalTitle">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 id="keymanModalTitle" class="modal-title">
+          <span>🔑</span>
+          <span>Keyman Scheduler Access</span>
+        </h2>
+        <button class="modal-close-btn" onclick="closeKeymanModal()" aria-label="Close Keyman Login">✕</button>
+      </div>
+
+      <div id="loginView">
+        <p class="form-hint" style="font-size: 1.25rem; margin-bottom: 16px;">
+          Please enter your Keyman 4-digit PIN to edit publisher assignments, shift notes, and cart locations.
+        </p>
+
+        <!-- PIN Dots -->
+        <div class="pin-display" aria-label="Entered PIN status">
+          <div class="pin-dot" id="pDot1"></div>
+          <div class="pin-dot" id="pDot2"></div>
+          <div class="pin-dot" id="pDot3"></div>
+          <div class="pin-dot" id="pDot4"></div>
+        </div>
+
+        <!-- Huge Keypad -->
+        <div class="keypad-grid" role="group" aria-label="PIN numeric keypad">
+          <button class="keypad-btn" onclick="pressPinDigit('1')">1</button>
+          <button class="keypad-btn" onclick="pressPinDigit('2')">2</button>
+          <button class="keypad-btn" onclick="pressPinDigit('3')">3</button>
+          <button class="keypad-btn" onclick="pressPinDigit('4')">4</button>
+          <button class="keypad-btn" onclick="pressPinDigit('5')">5</button>
+          <button class="keypad-btn" onclick="pressPinDigit('6')">6</button>
+          <button class="keypad-btn" onclick="pressPinDigit('7')">7</button>
+          <button class="keypad-btn" onclick="pressPinDigit('8')">8</button>
+          <button class="keypad-btn" onclick="pressPinDigit('9')">9</button>
+          <button class="keypad-btn" onclick="clearPin()" style="font-size: 1.3rem;">Clear</button>
+          <button class="keypad-btn" onclick="pressPinDigit('0')">0</button>
+          <button class="keypad-btn" onclick="backspacePin()" style="font-size: 1.4rem;">⌫</button>
+        </div>
+
+        <div style="background-color: var(--bg-card-alt); border: 2px dashed var(--border-color); border-radius: var(--radius-md); padding: 14px; text-align: center; margin-bottom: 20px;">
+          <span style="font-weight: 800; font-size: 1.15rem;">Prototype Helper: Default Keyman PIN is </span>
+          <span style="font-weight: 900; font-size: 1.35rem; color: var(--primary);">1 2 3 4</span>
+        </div>
+
+        <div style="display: flex; gap: 12px;">
+          <button class="btn btn-lg btn-success" style="flex: 1;" onclick="submitPinLogin()">
+            🔓 Unlock Scheduler
+          </button>
+          <button class="btn btn-lg btn-outline" onclick="closeKeymanModal()">
+            Cancel
+          </button>
+        </div>
+      </div>
+
+      <!-- Logged-in Keyman control view -->
+      <div id="loggedInView" style="display: none;">
+        <div style="text-align: center; padding: 20px 0;">
+          <div style="font-size: 3.5rem; margin-bottom: 10px;">⭐</div>
+          <h3 style="font-size: 1.8rem; font-weight: 900; margin-bottom: 10px;">Keyman Mode Active</h3>
+          <p style="font-size: 1.25rem; color: var(--text-muted); margin-bottom: 24px;">
+            You have full authorization to edit publisher shifts, swap partners, or clear entries.
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <button class="btn btn-lg btn-primary" onclick="resetToSampleData()">
+              🔄 Reset to Demo Schedule Data
+            </button>
+            <button class="btn btn-lg btn-danger" onclick="logoutKeyman()">
+              🚪 Log Out (Return to Viewer Mode)
+            </button>
+            <button class="btn btn-lg btn-outline" onclick="closeKeymanModal()">
+              Close Window
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- =============================================================
+       MODAL 2: SHIFT EDITOR (FOR KEYMAN EDITING ENTRIES)
+       ============================================================= -->
+  <div id="shiftEditorModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="shiftEditorTitle">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 id="shiftEditorTitle" class="modal-title">
+          <span>✏️</span>
+          <span>Edit Shift Assignment</span>
+        </h2>
+        <button class="modal-close-btn" onclick="closeShiftEditorModal()" aria-label="Close Shift Editor">✕</button>
+      </div>
+
+      <div style="background-color: var(--bg-card-alt); border-radius: var(--radius-md); padding: 16px; margin-bottom: 20px; border: var(--border-width) solid var(--border-color);">
+        <div id="editorShiftHeader" style="font-size: 1.35rem; font-weight: 900; color: var(--text-main);">
+          Location L1 &bull; 06:30 AM - 08:00 AM
+        </div>
+        <div id="editorShiftDate" style="font-size: 1.15rem; font-weight: 700; color: var(--text-muted); margin-top: 4px;">
+          Wednesday, Oct 1
+        </div>
+      </div>
+
+      <form id="shiftEditForm" onsubmit="saveShiftEditor(event)">
+        <input type="hidden" id="editLocationId">
+        <input type="hidden" id="editShiftIndex">
+
+        <!-- Publisher 1 -->
+        <fieldset style="border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; margin-bottom: 20px;">
+          <legend style="font-size: 1.25rem; font-weight: 900; padding: 0 8px; color: var(--primary);">
+            👤 Publisher 1 (Keyholder / Driver)
+          </legend>
+
+          <div class="form-group">
+            <label class="form-label" for="editPub1Name">Publisher 1 Full Name:</label>
+            <input type="text" id="editPub1Name" class="form-input" placeholder="e.g. Brother Samuel David" list="publisherSuggestions">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="editPub1Phone">Phone / Contact:</label>
+            <input type="tel" id="editPub1Phone" class="form-input" placeholder="e.g. 555-0143">
+          </div>
+        </fieldset>
+
+        <!-- Publisher 2 -->
+        <fieldset style="border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; margin-bottom: 20px;">
+          <legend style="font-size: 1.25rem; font-weight: 900; padding: 0 8px; color: var(--primary);">
+            👥 Publisher 2 (Cart Partner)
+          </legend>
+
+          <div class="form-group">
+            <label class="form-label" for="editPub2Name">Publisher 2 Full Name:</label>
+            <input type="text" id="editPub2Name" class="form-input" placeholder="e.g. Brother Thomas Wayne (Leave blank if open)" list="publisherSuggestions">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="editPub2Phone">Phone / Contact:</label>
+            <input type="tel" id="editPub2Phone" class="form-input" placeholder="e.g. 555-0188">
+          </div>
+        </fieldset>
+
+        <!-- Cart Notes / Standby -->
+        <div class="form-group">
+          <label class="form-label" for="editShiftNotes">Cart Storage / Notes / Instructions:</label>
+          <input type="text" id="editShiftNotes" class="form-input" placeholder="e.g. Cart stored at Sister Mary's garage. Take literature box #2.">
+        </div>
+
+        <!-- Autocomplete Suggestions for Quick Elderly Selection -->
+        <datalist id="publisherSuggestions">
+          <option value="Brother Samuel David"></option>
+          <option value="Brother Thomas Wayne"></option>
+          <option value="Sister Martha Clark"></option>
+          <option value="Sister Sarah Johnson"></option>
+          <option value="Brother Robert Miller"></option>
+          <option value="Brother James Wilson"></option>
+          <option value="Sister Elizabeth Brown"></option>
+          <option value="Sister Patricia Davis"></option>
+          <option value="Brother Michael Moore"></option>
+          <option value="Brother Joseph Taylor"></option>
+          <option value="Sister Jennifer Anderson"></option>
+          <option value="Sister Linda Thomas"></option>
+        </datalist>
+
+        <!-- Action Buttons -->
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 24px;">
+          <button type="submit" class="btn btn-lg btn-success">
+            💾 Save Shift Assignment
+          </button>
+          <div style="display: flex; gap: 12px;">
+            <button type="button" class="btn btn-danger" style="flex: 1;" onclick="clearCurrentShift()">
+              🧹 Clear / Make Open
+            </button>
+            <button type="button" class="btn btn-outline" style="flex: 1;" onclick="closeShiftEditorModal()">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- =============================================================
+       MODAL 3: VOLUNTEER REQUEST (FOR ELDERLY PUBLISHERS)
+       ============================================================= -->
+  <div id="volunteerModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="volunteerModalTitle">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 id="volunteerModalTitle" class="modal-title">
+          <span>🙋</span>
+          <span>Volunteer for this Shift</span>
+        </h2>
+        <button class="modal-close-btn" onclick="closeVolunteerModal()" aria-label="Close Volunteer Request">✕</button>
+      </div>
+
+      <div style="background-color: var(--bg-card-alt); border-radius: var(--radius-md); padding: 16px; margin-bottom: 20px; border: var(--border-width) solid var(--border-color);">
+        <div id="volShiftInfo" style="font-size: 1.35rem; font-weight: 900; color: var(--text-main);">
+          Location L1 &bull; 06:30 AM - 08:00 AM
+        </div>
+        <div id="volDateInfo" style="font-size: 1.15rem; font-weight: 700; color: var(--text-muted); margin-top: 4px;">
+          Wednesday, Oct 1
+        </div>
+      </div>
+
+      <p class="form-hint" style="font-size: 1.25rem; margin-bottom: 20px;">
+        Would you like to take this open cart shift? Enter your name below to notify the Keyman or sign up immediately.
+      </p>
+
+      <form onsubmit="submitVolunteerRequest(event)">
+        <input type="hidden" id="volLocId">
+        <input type="hidden" id="volShiftIdx">
+
+        <div class="form-group">
+          <label class="form-label" for="volName">Your Name:</label>
+          <input type="text" id="volName" class="form-input" required placeholder="e.g. Sister Ruth Evans">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="volPhone">Your Phone Number:</label>
+          <input type="tel" id="volPhone" class="form-input" required placeholder="e.g. 555-0199">
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;">
+          <button type="submit" class="btn btn-lg btn-success">
+            ✅ Confirm Sign-Up for Shift
+          </button>
+          <button type="button" class="btn btn-outline" onclick="closeVolunteerModal()">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toastNotification" class="toast-notice" role="alert" aria-live="assertive">
+    <span id="toastMessage">Action completed successfully!</span>
+    <button class="btn btn-sm btn-outline" style="min-height: 40px; padding: 4px 12px;" onclick="hideToast()">OK</button>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script src="app.js"></script>
+</body>
+</html>
