@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------
-   BASE & ACCESSIBILITY DESIGN SYSTEM (WCAG AAA ORIENTED)
+   MOBILE-FIRST DESIGN SYSTEM (WCAG AAA ORIENTED & PHONE-OPTIMIZED)
    ------------------------------------------------------------- */
 :root {
   --font-scale: 1;
@@ -40,11 +40,11 @@
   --keyman-badge-bg: #4c1d95;
   --keyman-badge-text: #ffffff;
   --focus-ring: #2563eb;
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
-  --shadow-card: 0 4px 16px rgba(15, 23, 42, 0.08);
-  --shadow-btn: 0 4px 8px rgba(0, 0, 0, 0.12);
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --shadow-card: 0 3px 12px rgba(15, 23, 42, 0.07);
+  --shadow-btn: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* Ultra High-Contrast Mode (Yellow on Black / High-Vis) */
@@ -89,13 +89,14 @@ body.ultra-contrast {
 
 /* Font size multipliers for Elderly Friendly Accessibility */
 html {
-  font-size: calc(18px * var(--font-scale));
+  font-size: calc(16px * var(--font-scale));
+  -webkit-text-size-adjust: 100%;
 }
 html.zoom-large {
-  --font-scale: 1.25; /* Base ~22.5px */
+  --font-scale: 1.2; /* Base ~19.2px */
 }
 html.zoom-jumbo {
-  --font-scale: 1.5;  /* Base ~27px */
+  --font-scale: 1.4; /* Base ~22.4px */
 }
 
 * {
@@ -111,9 +112,11 @@ body {
   color: var(--text-main);
   line-height: 1.45;
   min-height: 100vh;
+  padding-bottom: env(safe-area-inset-bottom, 24px);
   display: flex;
   flex-direction: column;
   transition: background-color 0.2s ease, color 0.2s ease;
+  overflow-x: hidden;
 }
 
 /* Focus visible for accessibility */
@@ -122,83 +125,145 @@ input:focus-visible,
 select:focus-visible, 
 a:focus-visible {
   outline: 4px solid var(--focus-ring);
-  outline-offset: 3px;
+  outline-offset: 2px;
 }
 
-/* Container */
+/* Phone-first Container */
 .app-container {
   width: 100%;
-  max-width: 1300px;
+  max-width: 680px; /* Centered nicely on tablets/desktop, 100% on phones */
   margin: 0 auto;
-  padding: 16px 20px 48px;
+  padding: 12px 14px 48px;
 }
 
-/* Top Accessibility Banner */
-.accessibility-bar {
+@media (min-width: 769px) {
+  .app-container {
+    max-width: 1100px;
+    padding: 20px 24px 60px;
+  }
+}
+
+/* -------------------------------------------------------------
+   MOBILE APP BAR / TOP HEADER
+   ------------------------------------------------------------- */
+.app-topbar {
   background-color: var(--bg-card);
   border: var(--border-width) solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 14px 18px;
-  margin-bottom: 20px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   box-shadow: var(--shadow-card);
 }
 
-.accessibility-label {
-  font-weight: 800;
-  font-size: 1.05rem;
+.app-brand {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--text-main);
-}
-
-.accessibility-controls {
-  display: flex;
-  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
 }
 
-/* Massive accessible buttons */
+.brand-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.brand-title {
+  font-size: 1.35rem;
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+}
+
+.brand-subtitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Elderly Quick Accessibility Strip */
+.accessibility-strip {
+  background-color: var(--bg-card-alt);
+  border: var(--border-width) solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.accessibility-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.strip-label {
+  font-size: 0.95rem;
+  font-weight: 800;
+  white-space: nowrap;
+  color: var(--text-main);
+}
+
+.strip-btns {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* -------------------------------------------------------------
+   BUTTONS (TOUCH OPTIMIZED FOR FINGERS & ELDERLY)
+   ------------------------------------------------------------- */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   font-family: inherit;
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 800;
-  padding: 16px 24px;
-  min-height: 58px;
-  border-radius: var(--radius-md);
+  padding: 12px 18px;
+  min-height: 52px;
+  border-radius: var(--radius-sm);
   border: var(--border-width) solid transparent;
   cursor: pointer;
   text-decoration: none;
-  transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 0.12s ease, background-color 0.15s ease, box-shadow 0.12s ease;
   touch-action: manipulation;
   user-select: none;
   box-shadow: var(--shadow-btn);
+  -webkit-tap-highlight-color: transparent;
 }
 
 .btn:active {
-  transform: scale(0.97);
+  transform: scale(0.96);
 }
 
 .btn-sm {
-  min-height: 48px;
-  padding: 10px 18px;
-  font-size: 1.05rem;
+  min-height: 42px;
+  padding: 8px 14px;
+  font-size: 0.95rem;
+  border-radius: 8px;
 }
 
 .btn-lg {
-  min-height: 68px;
-  padding: 18px 30px;
-  font-size: 1.35rem;
+  min-height: 58px;
+  padding: 16px 22px;
+  font-size: 1.2rem;
+}
+
+.btn-block {
+  width: 100%;
 }
 
 .btn-primary {
@@ -222,7 +287,7 @@ a:focus-visible {
 .btn-contrast-toggle {
   background-color: #000000;
   color: #facc15;
-  border: 3px solid #facc15;
+  border: 2px solid #facc15;
 }
 body.ultra-contrast .btn-contrast-toggle {
   background-color: #ffffff;
@@ -260,52 +325,17 @@ body.ultra-contrast .btn-contrast-toggle {
   background-color: #6b21a8;
 }
 
-/* Header Section */
-.app-header {
-  background-color: var(--bg-card);
-  border: var(--border-width) solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  margin-bottom: 24px;
-  box-shadow: var(--shadow-card);
-}
-
-.header-top {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  border-bottom: var(--border-width) solid var(--border-color);
-  padding-bottom: 20px;
-}
-
-.title-area h1 {
-  font-size: 2.2rem;
-  font-weight: 900;
-  color: var(--text-main);
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  letter-spacing: -0.02em;
-}
-
-.title-area p {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  margin-top: 6px;
-}
-
+/* Keyman Pill Badge */
 .keyman-status-badge {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 20px;
-  border-radius: var(--radius-md);
-  font-size: 1.2rem;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 0.9rem;
   font-weight: 800;
   border: var(--border-width) solid var(--border-color);
+  white-space: nowrap;
 }
 
 .keyman-status-badge.logged-in {
@@ -330,205 +360,262 @@ body.ultra-contrast .keyman-status-badge.viewer {
   border-color: #93c5fd;
 }
 
-/* Date Navigation Area */
-.date-nav-card {
-  background-color: var(--bg-card-alt);
-  border-radius: var(--radius-md);
-  padding: 18px 20px;
-  margin-top: 20px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+/* -------------------------------------------------------------
+   STICKY MOBILE DATE BAR
+   ------------------------------------------------------------- */
+.date-mobile-card {
+  position: sticky;
+  top: 8px;
+  z-index: 100;
+  background-color: var(--bg-card);
   border: var(--border-width) solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(8px);
 }
 
-.date-current {
+.date-nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.nav-arrow-btn {
+  width: 50px;
+  height: 50px;
+  min-height: 50px;
+  padding: 0;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+}
+
+.date-center-info {
   text-align: center;
-  flex: 1 1 280px;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .date-title {
-  font-size: 1.8rem;
+  font-size: 1.35rem;
   font-weight: 900;
-  color: var(--text-main);
-  display: block;
   line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-main);
 }
 
 .date-subtitle {
-  font-size: 1.2rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: var(--text-muted);
 }
 
-.date-quick-actions {
+.date-sub-actions {
   display: flex;
-  gap: 10px;
   align-items: center;
-  flex-wrap: wrap;
-}
-
-.date-input-wrapper {
-  position: relative;
-  display: inline-flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-color);
 }
 
 .date-picker-input {
   font-family: inherit;
-  font-size: 1.15rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  padding: 14px 18px;
-  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
   border: var(--border-width) solid var(--border-color);
-  background-color: var(--bg-card);
+  background-color: var(--bg-card-alt);
   color: var(--text-main);
-  min-height: 58px;
+  min-height: 44px;
   cursor: pointer;
+  max-width: 150px;
 }
 
-/* Shift Hours Quick Banner */
+/* Shift Hours Mini Banner */
 .shift-hours-banner {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 14px;
-  margin-top: 20px;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
 }
 
 .shift-hour-card {
   background-color: var(--bg-card);
   border: var(--border-width) solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 16px 20px;
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 8px;
 }
 
 .shift-hour-icon {
-  font-size: 2.2rem;
+  font-size: 1.6rem;
   line-height: 1;
 }
 
 .shift-hour-label {
-  font-size: 1.05rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 .shift-hour-time {
-  font-size: 1.45rem;
+  font-size: 0.95rem;
   font-weight: 900;
   color: var(--text-main);
+  white-space: nowrap;
 }
 
-/* Filters and summary toolbar */
-.toolbar-section {
+/* -------------------------------------------------------------
+   QUICK ACTION MOBILE GRID (2x2 FOR THUMBS)
+   ------------------------------------------------------------- */
+.quick-action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.quick-action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 8px;
+  min-height: 60px;
+  border-radius: var(--radius-sm);
   background-color: var(--bg-card);
   border: var(--border-width) solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 20px;
-  margin-bottom: 24px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  box-shadow: var(--shadow-card);
-}
-
-.filter-group {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-}
-
-.filter-label {
-  font-size: 1.15rem;
-  font-weight: 800;
-  margin-right: 6px;
-  color: var(--text-main);
-}
-
-.pill-btn {
-  font-family: inherit;
-  font-size: 1.1rem;
-  font-weight: 800;
-  padding: 12px 20px;
-  min-height: 52px;
-  border-radius: 9999px;
-  border: var(--border-width) solid var(--border-color);
-  background-color: var(--bg-card-alt);
   color: var(--text-main);
   cursor: pointer;
-  transition: all 0.15s ease;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 800;
+  box-shadow: var(--shadow-btn);
+  touch-action: manipulation;
+  transition: transform 0.12s ease;
+}
+.quick-action-btn:active {
+  transform: scale(0.95);
+  background-color: var(--bg-card-alt);
 }
 
-.pill-btn.active {
+.quick-action-btn.featured {
   background-color: var(--primary);
   color: var(--primary-contrast);
   border-color: var(--primary);
 }
-body.ultra-contrast .pill-btn.active {
+body.ultra-contrast .quick-action-btn.featured {
   background-color: #facc15;
   color: #000000;
   border-color: #facc15;
 }
 
-.action-tools {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+.qa-icon {
+  font-size: 1.4rem;
+  line-height: 1;
 }
 
-/* Stats Overview */
+/* -------------------------------------------------------------
+   SUMMARY STATS BAR (MOBILE COMPACT)
+   ------------------------------------------------------------- */
 .schedule-stats-banner {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 14px;
-  margin-bottom: 24px;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
 }
 
 .stat-box {
   background-color: var(--bg-card);
   border: var(--border-width) solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 16px 20px;
+  border-radius: var(--radius-sm);
+  padding: 10px 8px;
   text-align: center;
-  box-shadow: var(--shadow-card);
 }
 
 .stat-number {
-  font-size: 2.2rem;
+  font-size: 1.5rem;
   font-weight: 900;
   line-height: 1.1;
 }
 
 .stat-text {
-  font-size: 1.1rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: var(--text-muted);
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
-/* =============================================================
-   SCHEDULE BOARD / LOCATIONS
-   ============================================================= */
+/* -------------------------------------------------------------
+   HORIZONTAL SCROLLING LOCATION CHIPS
+   ------------------------------------------------------------- */
+.location-chips-bar {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-bottom: 14px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+}
+.location-chips-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.location-chip {
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 800;
+  padding: 10px 16px;
+  min-height: 46px;
+  border-radius: 9999px;
+  border: var(--border-width) solid var(--border-color);
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.location-chip.active {
+  background-color: var(--primary);
+  color: var(--primary-contrast);
+  border-color: var(--primary);
+}
+body.ultra-contrast .location-chip.active {
+  background-color: #facc15;
+  color: #000000;
+  border-color: #facc15;
+}
+
+/* -------------------------------------------------------------
+   SCHEDULE BOARD & LOCATION CARDS (MOBILE FIRST)
+   ------------------------------------------------------------- */
 .schedule-grid {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
 }
 
-/* Location Card */
 .location-card {
   background-color: var(--bg-card);
   border: var(--border-width) solid var(--border-color);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   overflow: hidden;
   box-shadow: var(--shadow-card);
 }
@@ -536,28 +623,27 @@ body.ultra-contrast .pill-btn.active {
 .location-header {
   background-color: var(--bg-card-alt);
   border-bottom: var(--border-width) solid var(--border-color);
-  padding: 18px 24px;
+  padding: 14px 16px;
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .location-title-box {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
 }
 
 .location-tag {
   background-color: var(--text-main);
   color: var(--bg-card);
-  font-size: 1.4rem;
+  font-size: 1.15rem;
   font-weight: 900;
-  padding: 6px 16px;
+  padding: 4px 10px;
   border-radius: var(--radius-sm);
   letter-spacing: 0.05em;
+  flex-shrink: 0;
 }
 body.ultra-contrast .location-tag {
   background-color: #facc15;
@@ -565,81 +651,105 @@ body.ultra-contrast .location-tag {
 }
 
 .location-name {
-  font-size: 1.6rem;
+  font-size: 1.3rem;
   font-weight: 900;
   color: var(--text-main);
+  line-height: 1.2;
 }
 
 .location-landmark {
-  font-size: 1.15rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--text-muted);
 }
 
-/* Shifts Container within Location */
+.location-storage-pill {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 4px 8px;
+  margin-top: 4px;
+}
+
+/* Shifts Container */
 .shifts-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-  gap: 20px;
-  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px;
+}
+
+@media (min-width: 769px) {
+  .shifts-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 18px;
+  }
 }
 
 /* Individual Shift Block */
 .shift-block {
   background-color: var(--bg-card);
   border: var(--border-width) solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 20px;
+  border-radius: var(--radius-sm);
+  padding: 14px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 16px;
-  transition: transform 0.15s ease, border-color 0.15s ease;
+  gap: 12px;
 }
 
 .shift-block.morning {
-  border-left: 10px solid #d97706; /* Morning Amber */
+  border-left: 8px solid #d97706; /* Morning Amber */
 }
 .shift-block.afternoon {
-  border-left: 10px solid #2563eb; /* Afternoon Royal Blue */
+  border-left: 8px solid #2563eb; /* Afternoon Royal Blue */
 }
 body.ultra-contrast .shift-block.morning {
-  border-left: 12px solid #facc15;
+  border-left: 10px solid #facc15;
 }
 body.ultra-contrast .shift-block.afternoon {
-  border-left: 12px solid #38bdf8;
+  border-left: 10px solid #38bdf8;
 }
 
 .shift-header-info {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 10px;
-}
-
-.shift-time-badge {
-  font-size: 1.3rem;
-  font-weight: 900;
-  color: var(--text-main);
-  display: flex;
-  align-items: center;
   gap: 8px;
 }
 
 .shift-name-tag {
-  font-size: 1.05rem;
-  font-weight: 700;
+  font-size: 0.85rem;
+  font-weight: 800;
   color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.shift-time-badge {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 /* Status Badges */
 .status-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 1.05rem;
+  gap: 4px;
+  font-size: 0.85rem;
   font-weight: 800;
-  padding: 8px 14px;
+  padding: 6px 10px;
   border-radius: 9999px;
   border: var(--border-width) solid;
   white-space: nowrap;
@@ -674,42 +784,50 @@ body.ultra-contrast .status-badge.need-two {
   color: var(--danger-text);
 }
 
-/* Publisher Slots (3 Slots per shift) */
+/* Publisher Slots on Mobile */
 .publishers-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin: 8px 0;
+  gap: 8px;
+  margin: 4px 0;
 }
 
 .publisher-slot {
   background-color: var(--bg-card-alt);
   border: var(--border-width) solid var(--border-color);
   border-radius: var(--radius-sm);
-  padding: 12px 16px;
+  padding: 10px 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 8px;
+}
+
+.slot-lead-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
 .slot-role {
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--text-muted);
-  margin-bottom: 2px;
 }
 
 .slot-name {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 800;
   color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .slot-empty-text {
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: #b91c1c;
   font-style: italic;
@@ -718,56 +836,53 @@ body.ultra-contrast .slot-empty-text {
   color: #f87171;
 }
 
-.slot-phone {
+/* 1-Tap Mobile Phone Call Button */
+.slot-phone-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 1.1rem;
-  font-weight: 700;
+  gap: 4px;
+  font-size: 0.95rem;
+  font-weight: 800;
   color: var(--primary);
   text-decoration: none;
-  padding: 6px 12px;
+  padding: 8px 12px;
+  min-height: 42px;
   background: var(--bg-card);
-  border: 1px solid var(--border-color);
+  border: 1.5px solid var(--border-color);
   border-radius: var(--radius-sm);
+  flex-shrink: 0;
+  touch-action: manipulation;
 }
-.slot-phone:hover {
-  text-decoration: underline;
+.slot-phone-btn:active {
+  background-color: var(--primary);
+  color: var(--primary-contrast);
 }
 
 .shift-notes {
   background-color: var(--bg-card-alt);
-  border-left: 4px solid var(--border-color);
-  padding: 10px 14px;
-  font-size: 1.05rem;
+  border-left: 3px solid var(--border-color);
+  padding: 8px 10px;
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-muted);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 
-/* Shift Card Actions */
+/* Shift Action Button */
 .shift-action-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 10px;
+  margin-top: 6px;
 }
 
-.shift-action-row .btn {
-  flex: 1 1 auto;
-}
-
-/* =============================================================
-   MODALS (KEYMAN LOGIN, SHIFT EDITOR, VOLUNTEER & SUMMARY REPORT)
-   ============================================================= */
+/* -------------------------------------------------------------
+   MOBILE BOTTOM SHEET MODALS
+   ------------------------------------------------------------- */
 .modal-overlay {
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.75);
   display: none;
-  align-items: center;
+  align-items: flex-end; /* Native bottom sheet on mobile */
   justify-content: center;
-  padding: 16px;
   z-index: 1000;
   backdrop-filter: blur(4px);
 }
@@ -778,19 +893,44 @@ body.ultra-contrast .slot-empty-text {
 
 .modal-box {
   background-color: var(--bg-card);
-  border: 4px solid var(--border-color);
-  border-radius: var(--radius-lg);
+  border-top: 4px solid var(--border-color);
+  border-radius: 24px 24px 0 0;
   width: 100%;
-  max-width: 650px;
-  max-height: 90vh;
+  max-width: 680px;
+  max-height: 92vh;
   overflow-y: auto;
-  padding: 30px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  padding: 16px 18px env(safe-area-inset-bottom, 24px);
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.4);
+  animation: slideUpBottom 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.modal-box.report-modal {
-  max-width: 1050px;
-  width: 96%;
+@keyframes slideUpBottom {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@media (min-width: 769px) {
+  .modal-overlay {
+    align-items: center;
+    padding: 20px;
+  }
+  .modal-box {
+    border: 4px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    max-height: 88vh;
+    animation: popIn 0.2s ease-out;
+  }
+  .modal-box.report-modal {
+    max-width: 950px;
+  }
+}
+
+.sheet-drag-handle {
+  width: 44px;
+  height: 5px;
+  background-color: var(--border-color);
+  border-radius: 9999px;
+  margin: 0 auto 12px;
 }
 
 .modal-header {
@@ -798,27 +938,27 @@ body.ultra-contrast .slot-empty-text {
   justify-content: space-between;
   align-items: center;
   border-bottom: var(--border-width) solid var(--border-color);
-  padding-bottom: 16px;
-  margin-bottom: 24px;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .modal-title {
-  font-size: 1.85rem;
+  font-size: 1.4rem;
   font-weight: 900;
   color: var(--text-main);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .modal-close-btn {
   background: none;
   border: var(--border-width) solid var(--border-color);
-  border-radius: var(--radius-md);
-  font-size: 1.6rem;
+  border-radius: 12px;
+  font-size: 1.4rem;
   font-weight: 800;
-  width: 52px;
-  height: 52px;
+  width: 44px;
+  height: 44px;
   cursor: pointer;
   color: var(--text-main);
   display: flex;
@@ -826,21 +966,21 @@ body.ultra-contrast .slot-empty-text {
   justify-content: center;
 }
 
-/* Forms inside Modals */
+/* Forms inside Mobile Modals */
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .form-label {
   display: block;
-  font-size: 1.25rem;
+  font-size: 1.05rem;
   font-weight: 800;
   color: var(--text-main);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .form-hint {
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--text-muted);
   margin-bottom: 8px;
@@ -849,27 +989,27 @@ body.ultra-contrast .slot-empty-text {
 .form-input {
   width: 100%;
   font-family: inherit;
-  font-size: 1.3rem;
+  font-size: 1.15rem;
   font-weight: 700;
-  padding: 16px 20px;
+  padding: 14px 16px;
   border: var(--border-width) solid var(--border-color);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   background-color: var(--bg-card);
   color: var(--text-main);
-  min-height: 60px;
+  min-height: 54px;
 }
 
-/* PIN Keypad for Elderly Keyman */
+/* PIN Keypad for Phone Screen */
 .pin-display {
   display: flex;
   justify-content: center;
-  gap: 16px;
-  margin: 20px 0;
+  gap: 14px;
+  margin: 16px 0;
 }
 
 .pin-dot {
-  width: 26px;
-  height: 26px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   border: 3px solid var(--border-color);
   background-color: transparent;
@@ -886,17 +1026,17 @@ body.ultra-contrast .pin-dot.filled {
 .keypad-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  max-width: 360px;
-  margin: 0 auto 20px;
+  gap: 10px;
+  max-width: 320px;
+  margin: 0 auto 16px;
 }
 
 .keypad-btn {
   font-family: inherit;
-  font-size: 2rem;
+  font-size: 1.7rem;
   font-weight: 900;
-  min-height: 70px;
-  border-radius: var(--radius-md);
+  min-height: 62px;
+  border-radius: var(--radius-sm);
   border: var(--border-width) solid var(--border-color);
   background-color: var(--bg-card-alt);
   color: var(--text-main);
@@ -905,161 +1045,90 @@ body.ultra-contrast .pin-dot.filled {
   align-items: center;
   justify-content: center;
   transition: transform 0.1s ease, background-color 0.15s ease;
+  touch-action: manipulation;
 }
 .keypad-btn:active {
-  transform: scale(0.94);
+  transform: scale(0.92);
   background-color: var(--primary);
   color: var(--primary-contrast);
 }
 
-/* Notification / Toast */
-.toast-notice {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  left: 24px;
-  max-width: 500px;
-  margin: 0 auto;
-  background-color: #0f172a;
-  color: #ffffff;
-  padding: 18px 24px;
-  border-radius: var(--radius-md);
-  font-size: 1.25rem;
-  font-weight: 800;
-  border: 3px solid #facc15;
-  display: none;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-  z-index: 2000;
-}
-
-.toast-notice.show {
-  display: flex;
-  animation: popIn 0.25s ease-out;
-}
-
-@keyframes popIn {
-  from { transform: translateY(30px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-/* Read Aloud Audio Bar */
-.tts-active-indicator {
-  display: none;
-  background-color: #ecfdf5;
-  border: 2px solid #059669;
-  color: #064e3b;
-  padding: 12px 18px;
-  border-radius: var(--radius-md);
-  font-size: 1.15rem;
-  font-weight: 800;
-  align-items: center;
-  gap: 10px;
-  margin-top: 14px;
-}
-.tts-active-indicator.active {
-  display: flex;
-}
-
-/* =============================================================
-   SUMMARY REPORT STYLES (VACANCIES & VOLUNTEERS)
-   ============================================================= */
+/* -------------------------------------------------------------
+   MOBILE SUMMARY REPORT (CARD-BASED NO OVERFLOW)
+   ------------------------------------------------------------- */
 .report-kpi-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 14px;
-  margin-bottom: 24px;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
 .report-kpi-card {
   background-color: var(--bg-card-alt);
   border: var(--border-width) solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 16px;
+  border-radius: var(--radius-sm);
+  padding: 10px;
   text-align: center;
 }
 
 .report-kpi-val {
-  font-size: 2rem;
+  font-size: 1.4rem;
   font-weight: 900;
   line-height: 1.1;
 }
 
 .report-kpi-lbl {
-  font-size: 1rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: var(--text-muted);
-  margin-top: 4px;
 }
 
-.report-section {
-  margin-bottom: 28px;
+.report-card-section {
   background-color: var(--bg-card);
   border: var(--border-width) solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 20px;
-}
-
-.report-section-header {
-  font-size: 1.45rem;
-  font-weight: 900;
-  color: var(--text-main);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  border-bottom: 2px solid var(--border-color);
-  padding-bottom: 12px;
+  border-radius: var(--radius-sm);
+  padding: 14px;
   margin-bottom: 16px;
 }
 
-.report-table-wrapper {
-  overflow-x: auto;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-}
-
-.report-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-}
-
-.report-table th,
-.report-table td {
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--border-color);
-  border-right: 1px solid var(--border-color);
-  font-size: 1.1rem;
-}
-
-.report-table th {
-  background-color: var(--bg-card-alt);
+.report-card-title {
+  font-size: 1.15rem;
   font-weight: 900;
   color: var(--text-main);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1.5px solid var(--border-color);
+  padding-bottom: 8px;
 }
 
-.report-table tr:last-child td {
-  border-bottom: none;
+.report-item-card {
+  background-color: var(--bg-card-alt);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
-.report-table td:last-child,
-.report-table th:last-child {
-  border-right: none;
+.report-item-card:last-child {
+  margin-bottom: 0;
 }
 
 .vacancy-badge {
   display: inline-block;
-  padding: 4px 10px;
+  padding: 3px 8px;
   border-radius: 6px;
   font-weight: 800;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   background-color: #fee2e2;
   color: #991b1b;
   border: 1px solid #f87171;
+  white-space: nowrap;
 }
 body.ultra-contrast .vacancy-badge {
   background-color: #7f1d1d;
@@ -1067,126 +1136,97 @@ body.ultra-contrast .vacancy-badge {
   border-color: #f87171;
 }
 
-.role-lead-badge {
-  display: inline-block;
-  padding: 3px 8px;
-  border-radius: 4px;
+/* Notification / Toast */
+.toast-notice {
+  position: fixed;
+  bottom: 20px;
+  right: 14px;
+  left: 14px;
+  max-width: 480px;
+  margin: 0 auto;
+  background-color: #0f172a;
+  color: #ffffff;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  font-size: 1.05rem;
   font-weight: 800;
-  font-size: 0.85rem;
-  background-color: #e0e7ff;
-  color: #3730a3;
-  margin-left: 6px;
-}
-body.ultra-contrast .role-lead-badge {
-  background-color: #1e1b4b;
-  color: #facc15;
-  border: 1px solid #facc15;
+  border: 2px solid #facc15;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  z-index: 2000;
 }
 
-/* =============================================================
-   PRINT STYLES FOR NOTICEBOARD & SUMMARY
-   ============================================================= */
+.toast-notice.show {
+  display: flex;
+  animation: popIn 0.2s ease-out;
+}
+
+@keyframes popIn {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Audio indicator */
+.tts-active-indicator {
+  display: none;
+  background-color: #ecfdf5;
+  border: 1.5px solid #059669;
+  color: #064e3b;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  font-weight: 800;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+.tts-active-indicator.active {
+  display: flex;
+}
+
+/* -------------------------------------------------------------
+   PRINT STYLES FOR NOTICEBOARDS
+   ------------------------------------------------------------- */
 @media print {
   body {
     background-color: #ffffff !important;
     color: #000000 !important;
     font-size: 11pt !important;
+    padding: 0 !important;
   }
-  
-  .accessibility-bar,
-  .action-tools,
-  .date-quick-actions,
+  .app-topbar,
+  .accessibility-strip,
+  .quick-action-grid,
+  .location-chips-bar,
+  .date-sub-actions,
+  .nav-arrow-btn,
   .shift-action-row,
-  .keyman-btn,
+  .slot-phone-btn,
   .btn,
   .toast-notice,
   .modal-close-btn,
+  .sheet-drag-handle,
   #keymanModal,
   #shiftEditorModal,
   #volunteerModal {
     display: none !important;
   }
-
-  /* When printing the Summary Report */
-  body.printing-report .app-header,
-  body.printing-report .schedule-stats-banner,
-  body.printing-report .toolbar-section,
-  body.printing-report .schedule-grid {
-    display: none !important;
-  }
-
-  body.printing-report #summaryReportModal {
-    display: block !important;
+  .date-mobile-card {
     position: static !important;
-    background: none !important;
-    padding: 0 !important;
-  }
-
-  body.printing-report #summaryReportModal .modal-box {
-    max-width: 100% !important;
     border: none !important;
     box-shadow: none !important;
-    padding: 0 !important;
-    max-height: none !important;
-    overflow: visible !important;
+    padding: 0 0 14px !important;
   }
-
-  body.printing-report .report-modal-actions {
-    display: none !important;
-  }
-
-  .report-section {
-    border: 1px solid #000000 !important;
-    page-break-inside: avoid;
-    margin-bottom: 16px !important;
-  }
-
-  .report-table th,
-  .report-table td {
-    border: 1px solid #000000 !important;
-    color: #000000 !important;
-    padding: 8px 10px !important;
-  }
-
-  .app-header {
-    border: 2px solid #000000 !important;
-    box-shadow: none !important;
-  }
-
   .location-card {
-    border: 2px solid #000000 !important;
+    border: 1.5px solid #000000 !important;
     page-break-inside: avoid;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     box-shadow: none !important;
   }
-
   .shift-block {
     border: 1px solid #000000 !important;
-  }
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .app-container {
-    padding: 10px 12px 36px;
-  }
-  .shifts-container {
-    grid-template-columns: 1fr;
-    padding: 16px;
-  }
-  .title-area h1 {
-    font-size: 1.8rem;
-  }
-  .btn {
-    width: 100%;
-  }
-  .accessibility-controls {
-    width: 100%;
-  }
-  .accessibility-controls .btn {
-    flex: 1 1 45%;
-  }
-  .modal-box.report-modal {
-    padding: 18px 14px;
   }
 }

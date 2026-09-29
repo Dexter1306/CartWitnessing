@@ -1,0 +1,10 @@
+{
+  "name": "Cart Witnessing Schedule",
+  "short_name": "Cart Roster",
+  "description": "Mobile Cart Witnessing Schedule Coordinator (3 Volunteers per Cart)",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4f6fb",
+  "theme_color": "#1e40af",
+  "orientation": "portrait"
+}

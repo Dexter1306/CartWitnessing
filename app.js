@@ -147,7 +147,6 @@ function getScheduleForDate(dateKey) {
   if (saved) {
     try {
       const parsed = JSON.parse(saved);
-      // Ensure all 5 locations and 2 shifts have 3 slots
       LOCATIONS.forEach(loc => {
         if (!parsed[loc.id]) {
           parsed[loc.id] = [normalizeShiftData(null), normalizeShiftData(null)];
@@ -194,7 +193,7 @@ function setFontZoom(level) {
   }
 
   localStorage.setItem('cart_app_zoom', level);
-  showToast(`Text size set to: ${level.toUpperCase()}`);
+  showToast(`Text size: ${level.toUpperCase()}`);
 }
 
 function toggleHighContrast() {
@@ -205,11 +204,11 @@ function toggleHighContrast() {
 
   const btn = document.getElementById('contrastToggleBtn');
   if (isUltra) {
-    btn.textContent = '☀️ Standard Contrast';
-    showToast('Ultra High-Contrast (Black & Yellow) Enabled');
+    btn.textContent = '☀️ Standard';
+    showToast('Ultra High-Contrast Enabled');
   } else {
-    btn.textContent = '👁️ High-Vis Contrast';
-    showToast('Standard High Clarity Theme Enabled');
+    btn.textContent = '👁️ High-Vis';
+    showToast('Standard High-Clarity Theme');
   }
 }
 
@@ -220,7 +219,7 @@ function initUserPreferences() {
   const savedContrast = localStorage.getItem('cart_app_contrast');
   if (savedContrast === 'ultra') {
     document.body.classList.add('ultra-contrast');
-    document.getElementById('contrastToggleBtn').textContent = '☀️ Standard Contrast';
+    document.getElementById('contrastToggleBtn').textContent = '☀️ Standard';
   }
 
   const savedKeyman = localStorage.getItem('cart_app_keyman_auth');
@@ -234,7 +233,7 @@ function initUserPreferences() {
 // 3. DATE NAVIGATION & UI RENDERING
 // -----------------------------------------------------------
 function updateDateDisplay() {
-  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   
   const dayName = days[currentDate.getDay()];
@@ -272,7 +271,7 @@ function goToToday() {
   currentDate.setHours(0, 0, 0, 0);
   updateDateDisplay();
   renderScheduleGrid();
-  showToast("Jumped to Today's Schedule");
+  showToast("Jumped to Today");
 }
 
 function onDirectDateSelected(dateVal) {
@@ -300,7 +299,7 @@ function filterLocation(locId) {
 }
 
 // -----------------------------------------------------------
-// 4. SCHEDULE GRID BUILDER (3 VOLUNTEERS PER SHIFT)
+// 4. SCHEDULE GRID BUILDER (PHONE OPTIMIZED 3-VOLUNTEER SLOTS)
 // -----------------------------------------------------------
 function renderScheduleGrid() {
   const container = document.getElementById('scheduleGrid');
@@ -328,7 +327,7 @@ function renderScheduleGrid() {
     card.className = 'location-card';
     card.setAttribute('aria-labelledby', `heading-${loc.id}`);
 
-    // Location Header
+    // Location Header with Storage Pill
     const header = document.createElement('div');
     header.className = 'location-header';
     header.innerHTML = `
@@ -339,7 +338,7 @@ function renderScheduleGrid() {
           <div class="location-landmark">📍 ${loc.landmark}</div>
         </div>
       </div>
-      <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
+      <div class="location-storage-pill">
         <span aria-hidden="true">📦</span>
         <span>${loc.cartStorage}</span>
       </div>
@@ -366,16 +365,16 @@ function renderScheduleGrid() {
       filledSlots += countFilled;
       openSlots += (3 - countFilled);
 
-      // Status Badge details (for 3-volunteer system)
+      // Status Badge details (Phone friendly)
       let statusBadgeHtml = '';
       if (countFilled === 3) {
-        statusBadgeHtml = `<span class="status-badge full">✔️ Fully Staffed (3/3)</span>`;
+        statusBadgeHtml = `<span class="status-badge full">✔️ Full (3/3)</span>`;
       } else if (countFilled === 2) {
-        statusBadgeHtml = `<span class="status-badge need-one">⚠️ 1 Partner Needed (2/3)</span>`;
+        statusBadgeHtml = `<span class="status-badge need-one">⚠️ 1 Needed</span>`;
       } else if (countFilled === 1) {
-        statusBadgeHtml = `<span class="status-badge need-two">⚠️ 2 Partners Needed (1/3)</span>`;
+        statusBadgeHtml = `<span class="status-badge need-two">⚠️ 2 Needed</span>`;
       } else {
-        statusBadgeHtml = `<span class="status-badge empty">⭕ Open Shift (3 Needed)</span>`;
+        statusBadgeHtml = `<span class="status-badge empty">⭕ Open (3 Needed)</span>`;
       }
 
       // Build Shift Block
@@ -386,7 +385,7 @@ function renderScheduleGrid() {
         <div>
           <div class="shift-header-info">
             <div>
-              <div class="shift-name-tag">${shiftDef.name} (3 Volunteers)</div>
+              <div class="shift-name-tag">${shiftDef.name}</div>
               <div class="shift-time-badge">
                 <span aria-hidden="true">${shiftDef.icon}</span>
                 <span>${shiftDef.timeString}</span>
@@ -395,43 +394,43 @@ function renderScheduleGrid() {
             ${statusBadgeHtml}
           </div>
 
-          <!-- 3 Publisher Slots -->
-          <div class="publishers-list" role="list" aria-label="Assigned volunteers">
+          <!-- 3 Publisher Slots with 1-Tap Mobile Call Buttons -->
+          <div class="publishers-list" role="list" aria-label="Volunteers">
             <!-- Slot 1 -->
             <div class="publisher-slot" role="listitem">
-              <div>
-                <div class="slot-role">Publisher 1 (Driver / Lead)</div>
-                ${p1Filled ? `<div class="slot-name">${escapeHtml(shiftData.p1.name)}</div>` : `<div class="slot-empty-text">⚠️ Slot 1 Open</div>`}
+              <div class="slot-lead-info">
+                <div class="slot-role">Slot 1 &bull; Driver / Lead</div>
+                ${p1Filled ? `<div class="slot-name">${escapeHtml(shiftData.p1.name)}</div>` : `<div class="slot-empty-text">⚠️ Slot Open</div>`}
               </div>
               ${p1Filled && shiftData.p1.phone ? `
-                <a href="tel:${escapeHtml(shiftData.p1.phone)}" class="slot-phone" aria-label="Call ${escapeHtml(shiftData.p1.name)}">
-                  📞 ${escapeHtml(shiftData.p1.phone)}
+                <a href="tel:${escapeHtml(shiftData.p1.phone)}" class="slot-phone-btn" aria-label="Call ${escapeHtml(shiftData.p1.name)}">
+                  📞 Call
                 </a>
               ` : ''}
             </div>
 
             <!-- Slot 2 -->
             <div class="publisher-slot" role="listitem">
-              <div>
-                <div class="slot-role">Publisher 2 (Cart Partner)</div>
-                ${p2Filled ? `<div class="slot-name">${escapeHtml(shiftData.p2.name)}</div>` : `<div class="slot-empty-text">⚠️ Slot 2 Open</div>`}
+              <div class="slot-lead-info">
+                <div class="slot-role">Slot 2 &bull; Cart Partner</div>
+                ${p2Filled ? `<div class="slot-name">${escapeHtml(shiftData.p2.name)}</div>` : `<div class="slot-empty-text">⚠️ Slot Open</div>`}
               </div>
               ${p2Filled && shiftData.p2.phone ? `
-                <a href="tel:${escapeHtml(shiftData.p2.phone)}" class="slot-phone" aria-label="Call ${escapeHtml(shiftData.p2.name)}">
-                  📞 ${escapeHtml(shiftData.p2.phone)}
+                <a href="tel:${escapeHtml(shiftData.p2.phone)}" class="slot-phone-btn" aria-label="Call ${escapeHtml(shiftData.p2.name)}">
+                  📞 Call
                 </a>
               ` : ''}
             </div>
 
             <!-- Slot 3 -->
             <div class="publisher-slot" role="listitem">
-              <div>
-                <div class="slot-role">Publisher 3 (Cart Partner)</div>
-                ${p3Filled ? `<div class="slot-name">${escapeHtml(shiftData.p3.name)}</div>` : `<div class="slot-empty-text">⚠️ Slot 3 Open</div>`}
+              <div class="slot-lead-info">
+                <div class="slot-role">Slot 3 &bull; Cart Partner</div>
+                ${p3Filled ? `<div class="slot-name">${escapeHtml(shiftData.p3.name)}</div>` : `<div class="slot-empty-text">⚠️ Slot Open</div>`}
               </div>
               ${p3Filled && shiftData.p3.phone ? `
-                <a href="tel:${escapeHtml(shiftData.p3.phone)}" class="slot-phone" aria-label="Call ${escapeHtml(shiftData.p3.name)}">
-                  📞 ${escapeHtml(shiftData.p3.phone)}
+                <a href="tel:${escapeHtml(shiftData.p3.phone)}" class="slot-phone-btn" aria-label="Call ${escapeHtml(shiftData.p3.name)}">
+                  📞 Call
                 </a>
               ` : ''}
             </div>
@@ -444,20 +443,20 @@ function renderScheduleGrid() {
           ` : ''}
         </div>
 
-        <!-- Shift Actions -->
+        <!-- Shift Action (Full-Width Thumb-Friendly) -->
         <div class="shift-action-row">
           ${isKeymanLoggedIn ? `
-            <button class="btn btn-warning" onclick="openShiftEditor('${loc.id}', ${shiftDef.id})" aria-label="Keyman: Edit ${loc.id} ${shiftDef.name}">
-              ✏️ Edit Shift
+            <button class="btn btn-warning btn-block" onclick="openShiftEditor('${loc.id}', ${shiftDef.id})" aria-label="Keyman Edit ${loc.id} ${shiftDef.name}">
+              ✏️ Edit Shift (3 Slots)
             </button>
           ` : `
             ${countFilled < 3 ? `
-              <button class="btn btn-success" onclick="openVolunteerModal('${loc.id}', ${shiftDef.id})" aria-label="Volunteer for ${loc.id} ${shiftDef.name}">
+              <button class="btn btn-success btn-block" onclick="openVolunteerModal('${loc.id}', ${shiftDef.id})" aria-label="Volunteer for ${loc.id} ${shiftDef.name}">
                 🙋 I Can Volunteer!
               </button>
             ` : `
-              <button class="btn btn-outline" onclick="viewShiftDetails('${loc.id}', ${shiftDef.id})" aria-label="View Shift Details">
-                📋 View Details
+              <button class="btn btn-outline btn-block" onclick="viewShiftDetails('${loc.id}', ${shiftDef.id})" aria-label="View Shift Details">
+                📋 Shift Details
               </button>
             `}
           `}
@@ -471,7 +470,7 @@ function renderScheduleGrid() {
     container.appendChild(card);
   });
 
-  // Update Summary Counter (Total slots is 30 for 5 locations x 2 shifts x 3 publishers)
+  // Update Summary Counter
   document.getElementById('statTotalLocations').textContent = LOCATIONS.length;
   document.getElementById('statConfirmedSlots').textContent = `${filledSlots} / ${totalSlots}`;
   document.getElementById('statNeededSlots').textContent = openSlots;
@@ -488,7 +487,7 @@ function escapeHtml(str) {
 }
 
 // -----------------------------------------------------------
-// 5. KEYMAN AUTHENTICATION (Elderly-Friendly PIN Pad)
+// 5. KEYMAN AUTHENTICATION (MOBILE PIN PAD)
 // -----------------------------------------------------------
 function openKeymanAuthModal() {
   const modal = document.getElementById('keymanModal');
@@ -551,10 +550,10 @@ function submitPinLogin() {
     updateKeymanUI();
     closeKeymanModal();
     renderScheduleGrid();
-    showToast('🔓 Welcome, Keyman! 3-Volunteer Edit Mode is Active.');
+    showToast('🔓 Keyman Edit Mode Active');
   } else {
     clearPin();
-    showToast('❌ Incorrect PIN. Please try again (Hint: 1234).');
+    showToast('❌ Incorrect PIN. Hint: 1234');
   }
 }
 
@@ -564,31 +563,26 @@ function logoutKeyman() {
   updateKeymanUI();
   closeKeymanModal();
   renderScheduleGrid();
-  showToast('🔒 Logged Out. Returned to Viewer Mode.');
+  showToast('🔒 Returned to Viewer Mode');
 }
 
 function updateKeymanUI() {
-  const statusBadge = document.getElementById('keymanStatusDisplay');
   const btnText = document.getElementById('keymanBtnText');
   const btn = document.getElementById('keymanActionBtn');
 
   if (isKeymanLoggedIn) {
-    statusBadge.className = 'keyman-status-badge logged-in';
-    statusBadge.innerHTML = '<span>⭐</span><span>Keyman Edit Mode Active</span>';
-    btnText.textContent = 'Keyman Settings / Logout';
+    btnText.textContent = 'Keyman ⭐';
     btn.classList.add('btn-warning');
     btn.classList.remove('btn-keyman');
   } else {
-    statusBadge.className = 'keyman-status-badge viewer';
-    statusBadge.innerHTML = '<span>👀</span><span>Viewer Mode (Read-Only)</span>';
-    btnText.textContent = 'Keyman Login (Edit Mode)';
+    btnText.textContent = 'Keyman';
     btn.classList.add('btn-keyman');
     btn.classList.remove('btn-warning');
   }
 }
 
 // -----------------------------------------------------------
-// 6. SHIFT EDITOR (FOR KEYMAN EDITING 3 VOLUNTEERS)
+// 6. SHIFT EDITOR (3 VOLUNTEERS)
 // -----------------------------------------------------------
 function openShiftEditor(locId, shiftIdx) {
   const dateKey = formatDateKey(currentDate);
@@ -647,11 +641,11 @@ function saveShiftEditor(e) {
   saveScheduleForDate(dateKey, scheduleData);
   closeShiftEditorModal();
   renderScheduleGrid();
-  showToast(`✅ Updated ${locId} shift assignment (3 Volunteers)!`);
+  showToast(`✅ Saved ${locId} (3 Volunteers)!`);
 }
 
 function clearCurrentShift() {
-  if (confirm('Are you sure you want to clear all 3 volunteers and mark this shift as Open?')) {
+  if (confirm('Clear all 3 volunteers and mark this shift as Open?')) {
     document.getElementById('editPub1Name').value = '';
     document.getElementById('editPub1Phone').value = '';
     document.getElementById('editPub2Name').value = '';
@@ -663,7 +657,7 @@ function clearCurrentShift() {
 }
 
 // -----------------------------------------------------------
-// 7. VOLUNTEER REGISTRATION MODAL (ACCOMMODATES 3 SLOTS)
+// 7. VOLUNTEER REGISTRATION (MOBILE 1-TAP)
 // -----------------------------------------------------------
 function openVolunteerModal(locId, shiftIdx) {
   const loc = LOCATIONS.find(l => l.id === locId);
@@ -695,7 +689,7 @@ function submitVolunteerRequest(e) {
 
   const shift = normalizeShiftData(scheduleData[locId][shiftIdx]);
   
-  // Assign to the first open slot among 3 volunteers
+  // Assign to first open slot among 3 volunteers
   if (!shift.p1 || !shift.p1.name) {
     shift.p1 = { name, phone };
   } else if (!shift.p2 || !shift.p2.name) {
@@ -713,7 +707,7 @@ function submitVolunteerRequest(e) {
   saveScheduleForDate(dateKey, scheduleData);
   closeVolunteerModal();
   renderScheduleGrid();
-  showToast(`🎉 Thank you, ${name}! You are scheduled for ${locId}.`);
+  showToast(`🎉 Scheduled ${name} for ${locId}!`);
 }
 
 function viewShiftDetails(locId, shiftIdx) {
@@ -727,11 +721,11 @@ function viewShiftDetails(locId, shiftIdx) {
   const p2Text = shift.p2 && shift.p2.name ? `${shift.p2.name} (${shift.p2.phone || 'No phone'})` : 'Vacant';
   const p3Text = shift.p3 && shift.p3.name ? `${shift.p3.name} (${shift.p3.phone || 'No phone'})` : 'Vacant';
 
-  alert(`📋 SHIFT DETAILS (3 VOLUNTEERS):\n\n${loc.name}\n${shiftDef.name} (${shiftDef.timeString})\nLocation: ${loc.landmark}\n\nPublisher 1 (Lead/Driver): ${p1Text}\nPublisher 2 (Partner): ${p2Text}\nPublisher 3 (Partner): ${p3Text}\n\nStorage: ${loc.cartStorage}\nNotes: ${shift.notes || 'None'}`);
+  alert(`📋 SHIFT DETAILS (3 VOLUNTEERS):\n\n${loc.name}\n${shiftDef.name} (${shiftDef.timeString})\nLocation: ${loc.landmark}\n\n1. Driver/Lead: ${p1Text}\n2. Partner: ${p2Text}\n3. Partner: ${p3Text}\n\nStorage: ${loc.cartStorage}\nNotes: ${shift.notes || 'None'}`);
 }
 
 // -----------------------------------------------------------
-// 8. PRINT SUMMARY REPORT MODAL (SCHEDULE, VACANCIES & VOLUNTEERS)
+// 8. MOBILE-FRIENDLY SUMMARY & VACANCY REPORT (CARD-BASED)
 // -----------------------------------------------------------
 function openSummaryReportModal() {
   const dateTitle = document.getElementById('currentDateTitle').textContent;
@@ -764,7 +758,7 @@ function openSummaryReportModal() {
           locName: loc.name,
           shiftName: shiftDef.name,
           shiftTime: shiftDef.timeString,
-          role: 'Publisher 1 (Driver / Lead)'
+          role: 'Slot 1 &bull; Driver / Lead'
         });
       }
       if (p2Filled) {
@@ -776,7 +770,7 @@ function openSummaryReportModal() {
           locName: loc.name,
           shiftName: shiftDef.name,
           shiftTime: shiftDef.timeString,
-          role: 'Publisher 2 (Partner)'
+          role: 'Slot 2 &bull; Cart Partner'
         });
       }
       if (p3Filled) {
@@ -788,7 +782,7 @@ function openSummaryReportModal() {
           locName: loc.name,
           shiftName: shiftDef.name,
           shiftTime: shiftDef.timeString,
-          role: 'Publisher 3 (Partner)'
+          role: 'Slot 3 &bull; Cart Partner'
         });
       }
 
@@ -809,166 +803,87 @@ function openSummaryReportModal() {
     });
   });
 
-  // Build the Report HTML
+  // Mobile card-based report HTML (No horizontal overflow!)
   let html = `
-    <!-- KPI Overview -->
+    <!-- Mobile KPI 2x2 Grid -->
     <div class="report-kpi-grid">
       <div class="report-kpi-card">
-        <div class="report-kpi-val" style="font-size: 1.5rem;">📅 ${escapeHtml(dateTitle)}</div>
+        <div class="report-kpi-val" style="font-size: 1.15rem;">📅 ${escapeHtml(dateTitle)}</div>
         <div class="report-kpi-lbl">Roster Date</div>
       </div>
       <div class="report-kpi-card">
         <div class="report-kpi-val" style="color: #1e40af;">5 Carts</div>
-        <div class="report-kpi-lbl">Locations (L1 - L5)</div>
+        <div class="report-kpi-lbl">Locations</div>
       </div>
       <div class="report-kpi-card">
         <div class="report-kpi-val" style="color: #059669;">${totalAssigned} / ${totalSlots}</div>
-        <div class="report-kpi-lbl">Publishers Confirmed</div>
+        <div class="report-kpi-lbl">Confirmed</div>
       </div>
       <div class="report-kpi-card">
         <div class="report-kpi-val" style="color: ${totalVacancies > 0 ? '#dc2626' : '#059669'};">${totalVacancies}</div>
-        <div class="report-kpi-lbl">Open Slots Needed</div>
+        <div class="report-kpi-lbl">Open Slots</div>
       </div>
     </div>
 
-    <!-- 1. VACANT POSITIONS SUMMARY -->
-    <div class="report-section">
-      <div class="report-section-header">
-        <div>
-          <span>⚠️ All Vacant Positions (${totalVacancies} Needed)</span>
-          <span style="font-size: 1rem; font-weight: 600; color: var(--text-muted); display: block;">Shifts that urgently require volunteer publishers</span>
-        </div>
-        ${totalVacancies > 0 ? `
-          <button class="btn btn-sm btn-warning" onclick="copyVacancyListWhatsApp()">
-            📲 Copy Vacancy List for WhatsApp
-          </button>
-        ` : ''}
+    <!-- 1. VACANCIES CARD SECTION -->
+    <div class="report-card-section">
+      <div class="report-card-title">
+        <span>⚠️ All Vacant Positions (${totalVacancies} Needed)</span>
       </div>
 
       ${totalVacancies === 0 ? `
-        <div style="padding: 16px; background-color: var(--success-bg); border: 2px solid var(--success-border); border-radius: var(--radius-sm); color: var(--success-text); font-weight: 800; font-size: 1.2rem; text-align: center;">
-          🎉 Praise Jehovah! All 30 volunteer positions are 100% fully staffed for this day.
+        <div style="padding: 12px; background-color: var(--success-bg); border-radius: var(--radius-sm); color: var(--success-text); font-weight: 800; font-size: 1rem; text-align: center;">
+          🎉 All 30 volunteer positions are fully staffed for this day!
         </div>
       ` : `
-        <div class="report-table-wrapper">
-          <table class="report-table">
-            <thead>
-              <tr>
-                <th style="width: 15%;">Location</th>
-                <th style="width: 30%;">Landmark</th>
-                <th style="width: 25%;">Shift &amp; Time</th>
-                <th style="width: 15%;">Vacancies</th>
-                <th style="width: 15%;">Notes</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${vacantList.map(v => `
-                <tr>
-                  <td><strong>${escapeHtml(v.locName)}</strong></td>
-                  <td>${escapeHtml(v.landmark)}</td>
-                  <td><strong>${escapeHtml(v.shiftName)}</strong><br><small>${escapeHtml(v.shiftTime)}</small></td>
-                  <td><span class="vacancy-badge">⚠️ ${v.needed} ${v.needed === 1 ? 'Slot Open' : 'Slots Open'}</span></td>
-                  <td>${escapeHtml(v.notes) || '<em>None</em>'}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
+        <div>
+          ${vacantList.map(v => `
+            <div class="report-item-card">
+              <div style="min-width: 0;">
+                <div style="font-weight: 900; font-size: 1.05rem;">${escapeHtml(v.locName)}</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">${escapeHtml(v.landmark)}</div>
+                <div style="font-size: 0.9rem; font-weight: 800; margin-top: 2px;">
+                  ${escapeHtml(v.shiftName)} (${escapeHtml(v.shiftTime)})
+                </div>
+                ${v.notes ? `<div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;"><em>${escapeHtml(v.notes)}</em></div>` : ''}
+              </div>
+              <div style="flex-shrink: 0; text-align: right;">
+                <span class="vacancy-badge">⚠️ ${v.needed} ${v.needed === 1 ? 'Slot Open' : 'Slots Open'}</span>
+              </div>
+            </div>
+          `).join('')}
         </div>
       `}
     </div>
 
-    <!-- 2. ALL CONFIRMED VOLUNTEERS DIRECTORY -->
-    <div class="report-section">
-      <div class="report-section-header">
-        <div>
-          <span>👥 All Volunteers Directory (${volunteersList.length} Scheduled)</span>
-          <span style="font-size: 1rem; font-weight: 600; color: var(--text-muted); display: block;">Alphabetical contact directory for today's cart workers</span>
-        </div>
+    <!-- 2. ALL VOLUNTEERS DIRECTORY CARDS -->
+    <div class="report-card-section">
+      <div class="report-card-title">
+        <span>👥 Volunteers Directory (${volunteersList.length})</span>
       </div>
 
       ${volunteersList.length === 0 ? `
-        <div style="padding: 14px; text-align: center; color: var(--text-muted); font-size: 1.15rem;">
-          No volunteers currently scheduled for this date.
+        <div style="padding: 12px; text-align: center; color: var(--text-muted); font-size: 1rem;">
+          No volunteers scheduled yet for this date.
         </div>
       ` : `
-        <div class="report-table-wrapper">
-          <table class="report-table">
-            <thead>
-              <tr>
-                <th>Publisher Name</th>
-                <th>Contact Phone</th>
-                <th>Assigned Location</th>
-                <th>Shift Time</th>
-                <th>Role</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${volunteersList.sort((a, b) => a.name.localeCompare(b.name)).map(pub => `
-                <tr>
-                  <td><strong>${escapeHtml(pub.name)}</strong></td>
-                  <td>
-                    ${pub.phone ? `<a href="tel:${escapeHtml(pub.phone)}" style="font-weight: 700; color: var(--primary);">📞 ${escapeHtml(pub.phone)}</a>` : '<span style="color: var(--text-muted);">None listed</span>'}
-                  </td>
-                  <td>${escapeHtml(pub.locName)}</td>
-                  <td>${escapeHtml(pub.shiftName)} (${escapeHtml(pub.shiftTime)})</td>
-                  <td>
-                    <span>${escapeHtml(pub.role)}</span>
-                  </td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
+        <div>
+          ${volunteersList.sort((a, b) => a.name.localeCompare(b.name)).map(pub => `
+            <div class="report-item-card">
+              <div style="min-width: 0;">
+                <div style="font-weight: 900; font-size: 1.1rem;">${escapeHtml(pub.name)}</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">${pub.role}</div>
+                <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-top: 2px;">
+                  ${escapeHtml(pub.locName)} &bull; ${escapeHtml(pub.shiftName)}
+                </div>
+              </div>
+              <div style="flex-shrink: 0;">
+                ${pub.phone ? `<a href="tel:${escapeHtml(pub.phone)}" class="slot-phone-btn">📞 Call</a>` : ''}
+              </div>
+            </div>
+          `).join('')}
         </div>
       `}
-    </div>
-
-    <!-- 3. FULL MASTER SCHEDULE TABLE -->
-    <div class="report-section">
-      <div class="report-section-header">
-        <div>
-          <span>🛒 Complete Master Schedule Roster (3 Volunteers per Cart)</span>
-          <span style="font-size: 1rem; font-weight: 600; color: var(--text-muted); display: block;">Full overview across all 5 locations and morning/afternoon shifts</span>
-        </div>
-      </div>
-
-      <div class="report-table-wrapper">
-        <table class="report-table">
-          <thead>
-            <tr>
-              <th style="width: 20%;">Cart Location</th>
-              <th style="width: 35%;">Morning Shift (06:30 - 08:00 AM)</th>
-              <th style="width: 35%;">Afternoon Shift (04:30 - 06:00 PM)</th>
-              <th style="width: 10%;">Cart Key/Storage</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${LOCATIONS.map(loc => {
-              const shifts = scheduleData[loc.id] || [normalizeShiftData(null), normalizeShiftData(null)];
-              const mShift = normalizeShiftData(shifts[0]);
-              const aShift = normalizeShiftData(shifts[1]);
-
-              const formatShiftPublishers = (s) => {
-                const p1 = s.p1 && s.p1.name ? `1. ${s.p1.name} (Lead)` : '<span style="color:#dc2626;">1. [Slot Open]</span>';
-                const p2 = s.p2 && s.p2.name ? `2. ${s.p2.name}` : '<span style="color:#dc2626;">2. [Slot Open]</span>';
-                const p3 = s.p3 && s.p3.name ? `3. ${s.p3.name}` : '<span style="color:#dc2626;">3. [Slot Open]</span>';
-                return `<div style="font-size: 1.05rem; line-height: 1.5;">${p1}<br>${p2}<br>${p3}</div>${s.notes ? `<div style="font-size: 0.95rem; color: var(--text-muted); margin-top: 4px;"><em>Note: ${escapeHtml(s.notes)}</em></div>` : ''}`;
-              };
-
-              return `
-                <tr>
-                  <td>
-                    <strong>${loc.name}</strong><br>
-                    <small style="color: var(--text-muted);">${loc.landmark}</small>
-                  </td>
-                  <td>${formatShiftPublishers(mShift)}</td>
-                  <td>${formatShiftPublishers(aShift)}</td>
-                  <td style="font-size: 0.95rem;">${loc.cartStorage}</td>
-                </tr>
-              `;
-            }).join('')}
-          </tbody>
-        </table>
-      </div>
     </div>
   `;
 
@@ -981,12 +896,7 @@ function closeSummaryReportModal() {
 }
 
 function printSummaryReport() {
-  document.body.classList.add('printing-report');
   window.print();
-  // Remove printing class after dialog closes
-  setTimeout(() => {
-    document.body.classList.remove('printing-report');
-  }, 1000);
 }
 
 function copyVacancyListWhatsApp() {
@@ -994,7 +904,7 @@ function copyVacancyListWhatsApp() {
   const dateKey = formatDateKey(currentDate);
   const scheduleData = getScheduleForDate(dateKey);
 
-  let msg = `📢 *URGENT CART WITNESSING VACANCIES*\n📅 *${dateTitle}*\n_Up to 3 volunteers per cart_\n\n`;
+  let msg = `📢 *URGENT CART WITNESSING VACANCIES*\n📅 *${dateTitle}*\n_3 Volunteers per cart_\n\n`;
 
   let totalNeeded = 0;
 
@@ -1024,11 +934,11 @@ function copyVacancyListWhatsApp() {
   if (totalNeeded === 0) {
     msg += `🎉 All shifts are fully staffed today! Thank you, everyone!`;
   } else {
-    msg += `Total Open Slots: *${totalNeeded}*\n📞 If you are able to fill any of these open slots, please sign up or reply to the Keyman immediately!`;
+    msg += `Total Open Slots: *${totalNeeded}*\n📞 If you can volunteer for any of these open slots, please sign up or reply to the Keyman!`;
   }
 
   navigator.clipboard.writeText(msg).then(() => {
-    showToast('📋 Vacancy list copied! Ready to paste into WhatsApp.');
+    showToast('📋 Vacancies copied for WhatsApp!');
   }).catch(() => {
     const textarea = document.createElement('textarea');
     textarea.value = msg;
@@ -1036,7 +946,7 @@ function copyVacancyListWhatsApp() {
     textarea.select();
     document.execCommand('copy');
     document.body.removeChild(textarea);
-    showToast('📋 Vacancy list copied! Ready to paste into WhatsApp.');
+    showToast('📋 Vacancies copied for WhatsApp!');
   });
 }
 
@@ -1045,7 +955,7 @@ function copyVacancyListWhatsApp() {
 // -----------------------------------------------------------
 function speakSchedule() {
   if (!('speechSynthesis' in window)) {
-    alert('Speech Synthesis is not supported in this browser.');
+    alert('Speech Synthesis is not supported in this mobile browser.');
     return;
   }
 
@@ -1066,14 +976,14 @@ function speakSchedule() {
     const mP1 = (mShift.p1 && mShift.p1.name) ? mShift.p1.name : 'Open slot';
     const mP2 = (mShift.p2 && mShift.p2.name) ? mShift.p2.name : 'Open slot';
     const mP3 = (mShift.p3 && mShift.p3.name) ? mShift.p3.name : 'Open slot';
-    text += `Morning shift, six thirty to eight AM: Publisher one: ${mP1}. Publisher two: ${mP2}. Publisher three: ${mP3}. `;
+    text += `Morning shift: Slot one: ${mP1}. Slot two: ${mP2}. Slot three: ${mP3}. `;
 
     // Afternoon
     const aShift = normalizeShiftData(locShifts[1]);
     const aP1 = (aShift.p1 && aShift.p1.name) ? aShift.p1.name : 'Open slot';
     const aP2 = (aShift.p2 && aShift.p2.name) ? aShift.p2.name : 'Open slot';
     const aP3 = (aShift.p3 && aShift.p3.name) ? aShift.p3.name : 'Open slot';
-    text += `Afternoon shift, four thirty to six PM: Publisher one: ${aP1}. Publisher two: ${aP2}. Publisher three: ${aP3}. `;
+    text += `Afternoon shift: Slot one: ${aP1}. Slot two: ${aP2}. Slot three: ${aP3}. `;
   });
 
   speechSynthUtterance = new SpeechSynthesisUtterance(text);
@@ -1113,23 +1023,23 @@ function copyWhatsAppSummary() {
 
     // Shift 1 (Morning)
     const s1 = normalizeShiftData(shifts[0]);
-    const s1P1 = (s1.p1 && s1.p1.name) ? s1.p1.name : '⚠️ NEED VOLUNTEER';
-    const s1P2 = (s1.p2 && s1.p2.name) ? s1.p2.name : '⚠️ NEED VOLUNTEER';
-    const s1P3 = (s1.p3 && s1.p3.name) ? s1.p3.name : '⚠️ NEED VOLUNTEER';
-    msg += `  🌅 06:30 AM - 08:00 AM:\n    1. ${s1P1}\n    2. ${s1P2}\n    3. ${s1P3}\n`;
+    const s1P1 = (s1.p1 && s1.p1.name) ? s1.p1.name : '⚠️ OPEN';
+    const s1P2 = (s1.p2 && s1.p2.name) ? s1.p2.name : '⚠️ OPEN';
+    const s1P3 = (s1.p3 && s1.p3.name) ? s1.p3.name : '⚠️ OPEN';
+    msg += `  🌅 06:30 - 08:00 AM:\n    1. ${s1P1}\n    2. ${s1P2}\n    3. ${s1P3}\n`;
 
     // Shift 2 (Afternoon)
     const s2 = normalizeShiftData(shifts[1]);
-    const s2P1 = (s2.p1 && s2.p1.name) ? s2.p1.name : '⚠️ NEED VOLUNTEER';
-    const s2P2 = (s2.p2 && s2.p2.name) ? s2.p2.name : '⚠️ NEED VOLUNTEER';
-    const s2P3 = (s2.p3 && s2.p3.name) ? s2.p3.name : '⚠️ NEED VOLUNTEER';
-    msg += `  🌇 04:30 PM - 06:00 PM:\n    1. ${s2P1}\n    2. ${s2P2}\n    3. ${s2P3}\n\n`;
+    const s2P1 = (s2.p1 && s2.p1.name) ? s2.p1.name : '⚠️ OPEN';
+    const s2P2 = (s2.p2 && s2.p2.name) ? s2.p2.name : '⚠️ OPEN';
+    const s2P3 = (s2.p3 && s2.p3.name) ? s2.p3.name : '⚠️ OPEN';
+    msg += `  🌇 04:30 - 06:00 PM:\n    1. ${s2P1}\n    2. ${s2P2}\n    3. ${s2P3}\n\n`;
   });
 
   msg += `📞 To volunteer or swap, contact the Keyman.`;
 
   navigator.clipboard.writeText(msg).then(() => {
-    showToast('📋 Complete schedule copied! Ready to paste into WhatsApp.');
+    showToast('📋 Schedule copied for WhatsApp!');
   }).catch(() => {
     const textarea = document.createElement('textarea');
     textarea.value = msg;
@@ -1137,18 +1047,18 @@ function copyWhatsAppSummary() {
     textarea.select();
     document.execCommand('copy');
     document.body.removeChild(textarea);
-    showToast('📋 Complete schedule copied! Ready to paste into WhatsApp.');
+    showToast('📋 Schedule copied for WhatsApp!');
   });
 }
 
 function resetToSampleData() {
-  if (confirm('Reset today\'s schedule back to the demo sample roster (3 volunteers per cart)?')) {
+  if (confirm('Reset today\'s schedule back to demo sample roster (3 volunteers per cart)?')) {
     const dateKey = formatDateKey(currentDate);
     const sample = generateSampleScheduleForDate(dateKey);
     saveScheduleForDate(dateKey, sample);
     closeKeymanModal();
     renderScheduleGrid();
-    showToast('🔄 Restored default 3-volunteer sample schedule.');
+    showToast('🔄 Restored 3-volunteer demo schedule');
   }
 }
 
@@ -1165,7 +1075,7 @@ function showToast(msg) {
   if (toastTimeout) clearTimeout(toastTimeout);
   toastTimeout = setTimeout(() => {
     hideToast();
-  }, 4000);
+  }, 3500);
 }
 
 function hideToast() {
