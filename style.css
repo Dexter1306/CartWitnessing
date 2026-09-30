@@ -1491,18 +1491,23 @@ body.dark-mode .vacancy-badge {
 }
 
 /* Location zebra stripes */
+.summary-report-table tbody tr.srt-loc-bg-light td,
 .summary-report-table tbody tr:nth-child(4n+1),
 .summary-report-table tbody tr:nth-child(4n+2) {
   background-color: #ffffff;
 }
+.summary-report-table tbody tr.srt-loc-bg-alt td,
 .summary-report-table tbody tr:nth-child(4n+3),
 .summary-report-table tbody tr:nth-child(4n) {
   background-color: #f8fafc;
 }
 
-/* Cell 1: Location & Landmark */
+/* Cell 1: Location & Landmark (Merged Rowspan = 2) */
 .srt-loc-cell {
   vertical-align: middle !important;
+  text-align: left;
+  border-bottom: 2.5px solid #64748b !important;
+  padding: 12px 14px !important;
 }
 .srt-loc-name {
   font-weight: 800;

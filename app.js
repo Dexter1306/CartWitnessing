@@ -437,11 +437,13 @@ function openSummaryReportModal() {
 
   let totalFilled = 0;
   let totalVacant = 0;
-  const tableRows = [];
+  let tbodyHTML = '';
 
-  LOCATIONS.forEach(loc => {
+  LOCATIONS.forEach((loc, locIdx) => {
     const shifts = scheduleData[loc.id] || [normalizeShiftData(null), normalizeShiftData(null)];
-    SHIFT_TIMES.forEach(shiftDef => {
+    const bgClass = locIdx % 2 === 0 ? 'srt-loc-bg-light' : 'srt-loc-bg-alt';
+
+    SHIFT_TIMES.forEach((shiftDef, shiftIdx) => {
       const shift = normalizeShiftData(shifts[shiftDef.id]);
       const p1 = (shift.p1 && shift.p1.name) ? shift.p1.name.trim() : '';
       const p2 = (shift.p2 && shift.p2.name) ? shift.p2.name.trim() : '';
@@ -452,21 +454,57 @@ function openSummaryReportModal() {
       totalFilled += filledCount;
       totalVacant += vacantCount;
 
-      tableRows.push({
-        locId: loc.id,
-        locName: loc.name,
-        locLandmark: loc.landmark,
-        dayName: dayName,
-        dateFormatted: dateFormatted,
-        shiftName: shiftDef.name,
-        shiftIcon: shiftDef.icon,
-        shiftTime: shiftDef.timeString.replace(/–/g, '-'),
-        shiftClass: shiftDef.className,
-        p1: p1,
-        p2: p2,
-        p3: p3,
-        vacantCount: vacantCount
-      });
+      let statusHtml = '';
+      if (vacantCount === 0) {
+        statusHtml = '<span class="srt-status-pill srt-status-filled">✅ Staffed</span>';
+      } else if (vacantCount === 1) {
+        statusHtml = '<span class="srt-status-pill srt-status-vacant-1">⚠️ 1 Needed</span>';
+      } else if (vacantCount === 2) {
+        statusHtml = '<span class="srt-status-pill srt-status-vacant-2">⚠️ 2 Needed</span>';
+      } else {
+        statusHtml = '<span class="srt-status-pill srt-status-vacant-3">🚨 3 Needed</span>';
+      }
+
+      const isMorning = shiftIdx === 0;
+      const isAfternoon = shiftIdx === 1;
+      const rowClass = `srt-row srt-shift-${shiftDef.className} ${bgClass} ${isAfternoon ? 'srt-row-location-end' : ''}`;
+
+      let locationCellHTML = '';
+      if (isMorning) {
+        locationCellHTML = `
+          <td class="srt-loc-cell" rowspan="2">
+            <div class="srt-loc-name">📍 ${escapeHtml(loc.name)}</div>
+            ${loc.landmark && loc.landmark !== loc.name && !loc.name.includes(`(${loc.landmark})`) ? `<div class="srt-loc-landmark">${escapeHtml(loc.landmark)}</div>` : ''}
+          </td>`;
+      }
+
+      tbodyHTML += `
+        <tr class="${rowClass}">
+          ${locationCellHTML}
+          <td class="srt-time-cell">
+            <div class="srt-shift-badge srt-shift-${shiftDef.className}">${shiftDef.icon} ${escapeHtml(shiftDef.name)}</div>
+            <div class="srt-shift-hours"><span class="srt-time-icon">⏰</span><span class="srt-time-text">${escapeHtml(shiftDef.timeString.replace(/–/g, '-'))}</span></div>
+          </td>
+          <td class="srt-vol-cell">
+            <div class="srt-vol-list">
+              <div class="srt-slot-row ${p1 ? 'is-filled' : 'is-vacant'}">
+                <span class="srt-slot-num">1</span>
+                <span class="srt-slot-name">${p1 ? escapeHtml(p1) : '<em>— Vacant Slot —</em>'}</span>
+              </div>
+              <div class="srt-slot-row ${p2 ? 'is-filled' : 'is-vacant'}">
+                <span class="srt-slot-num">2</span>
+                <span class="srt-slot-name">${p2 ? escapeHtml(p2) : '<em>— Vacant Slot —</em>'}</span>
+              </div>
+              <div class="srt-slot-row ${p3 ? 'is-filled' : 'is-vacant'}">
+                <span class="srt-slot-num">3</span>
+                <span class="srt-slot-name">${p3 ? escapeHtml(p3) : '<em>— Vacant Slot —</em>'}</span>
+              </div>
+            </div>
+          </td>
+          <td class="srt-status-cell">
+            ${statusHtml}
+          </td>
+        </tr>`;
     });
   });
 
@@ -507,52 +545,7 @@ function openSummaryReportModal() {
           </tr>
         </thead>
         <tbody>
-          ${tableRows.map((r) => {
-            let statusHtml = '';
-            if (r.vacantCount === 0) {
-              statusHtml = '<span class="srt-status-pill srt-status-filled">✅ Staffed</span>';
-            } else if (r.vacantCount === 1) {
-              statusHtml = '<span class="srt-status-pill srt-status-vacant-1">⚠️ 1 Needed</span>';
-            } else if (r.vacantCount === 2) {
-              statusHtml = '<span class="srt-status-pill srt-status-vacant-2">⚠️ 2 Needed</span>';
-            } else {
-              statusHtml = '<span class="srt-status-pill srt-status-vacant-3">🚨 3 Needed</span>';
-            }
-
-            const isShift2 = r.shiftClass === 'afternoon';
-            const rowClass = `srt-row srt-shift-${r.shiftClass} ${isShift2 ? 'srt-row-location-end' : ''}`;
-
-            return `
-            <tr class="${rowClass}">
-              <td class="srt-loc-cell">
-                <div class="srt-loc-name">📍 ${escapeHtml(r.locName)}</div>
-                ${r.locLandmark && r.locLandmark !== r.locName && !r.locName.includes(`(${r.locLandmark})`) ? `<div class="srt-loc-landmark">${escapeHtml(r.locLandmark)}</div>` : ''}
-              </td>
-              <td class="srt-time-cell">
-                <div class="srt-shift-badge srt-shift-${r.shiftClass}">${r.shiftIcon} ${escapeHtml(r.shiftName)}</div>
-                <div class="srt-shift-hours"><span class="srt-time-icon">⏰</span><span class="srt-time-text">${escapeHtml(r.shiftTime)}</span></div>
-              </td>
-              <td class="srt-vol-cell">
-                <div class="srt-vol-list">
-                  <div class="srt-slot-row ${r.p1 ? 'is-filled' : 'is-vacant'}">
-                    <span class="srt-slot-num">1</span>
-                    <span class="srt-slot-name">${r.p1 ? escapeHtml(r.p1) : '<em>— Vacant Slot —</em>'}</span>
-                  </div>
-                  <div class="srt-slot-row ${r.p2 ? 'is-filled' : 'is-vacant'}">
-                    <span class="srt-slot-num">2</span>
-                    <span class="srt-slot-name">${r.p2 ? escapeHtml(r.p2) : '<em>— Vacant Slot —</em>'}</span>
-                  </div>
-                  <div class="srt-slot-row ${r.p3 ? 'is-filled' : 'is-vacant'}">
-                    <span class="srt-slot-num">3</span>
-                    <span class="srt-slot-name">${r.p3 ? escapeHtml(r.p3) : '<em>— Vacant Slot —</em>'}</span>
-                  </div>
-                </div>
-              </td>
-              <td class="srt-status-cell">
-                ${statusHtml}
-              </td>
-            </tr>`;
-          }).join('')}
+          ${tbodyHTML}
         </tbody>
       </table>
 
