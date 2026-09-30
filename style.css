@@ -1257,23 +1257,7 @@ body.dark-mode .vacancy-badge {
   to { transform: translateY(0); opacity: 1; }
 }
 
-/* Audio indicator */
-.tts-active-indicator {
-  display: none;
-  background-color: #ecfdf5;
-  border: 1.5px solid #059669;
-  color: #064e3b;
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
-  font-size: 0.95rem;
-  font-weight: 800;
-  align-items: center;
-  gap: 8px;
-  margin-top: 8px;
-}
-.tts-active-indicator.active {
-  display: flex;
-}
+
 
 /* -------------------------------------------------------------
    PRINT STYLES FOR NOTICEBOARDS

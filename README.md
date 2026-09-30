@@ -29,6 +29,5 @@ An accessible, elderly-friendly, high-contrast digital schedule coordinator for 
 - **Volunteer Self-Sign-Up**:
   - Open shifts feature a 1-tap "I Can Volunteer!" modal that automatically assigns to the next available slot.
 - **Assistive Utilities**:
-  - 🔊 **Read Aloud**: Uses Web Speech API to read the day's 3-volunteer schedule.
   - 📲 **Copy WhatsApp Text**: Formats and copies a clean, markdown-formatted broadcast message.
-  - 🖨️ **Print Sheet**: Dedicated print stylesheet tailored for congregation noticeboards.
+  - 📋 **Summary & Vacancies Report**: Full schedule and vacancy table with 1-tap download and mobile gallery saving.

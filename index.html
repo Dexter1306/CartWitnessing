@@ -90,14 +90,7 @@
       </div>
     </div>
 
-    <!-- Speech Announcement Indicator -->
-    <div id="ttsNotice" class="tts-active-indicator" role="status">
-      <span>🔊</span>
-      <span id="ttsNoticeText">Reading schedule aloud...</span>
-      <button class="btn btn-sm btn-outline" style="margin-left: auto; min-height: 34px; padding: 2px 8px;" onclick="stopSpeech()">Stop</button>
-    </div>
-
-    <!-- 5. 2x2 QUICK ACTION MOBILE GRID -->
+    <!-- 5. QUICK ACTION GRID -->
     <section class="quick-action-grid" aria-label="Quick Actions">
       <button class="quick-action-btn featured" onclick="openSummaryReportModal()">
         <span class="qa-icon" aria-hidden="true">📋</span>
@@ -106,14 +99,6 @@
       <button class="quick-action-btn" onclick="copyWhatsAppSummary()">
         <span class="qa-icon" aria-hidden="true">📲</span>
         <span>WhatsApp Text</span>
-      </button>
-      <button class="quick-action-btn" onclick="speakSchedule()">
-        <span class="qa-icon" aria-hidden="true">🔊</span>
-        <span>Read Aloud</span>
-      </button>
-      <button class="quick-action-btn" onclick="window.print()">
-        <span class="qa-icon" aria-hidden="true">🖨️</span>
-        <span>Print Sheet</span>
       </button>
     </section>
 

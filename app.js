@@ -27,7 +27,6 @@ currentDate.setHours(0, 0, 0, 0);
 let isKeymanLoggedIn = false;
 let currentFilter = 'ALL';
 let enteredPin = '';
-let speechSynthUtterance = null;
 
 // -----------------------------------------------------------
 // 2. HELPER UTILITIES
@@ -774,45 +773,7 @@ function copyWhatsAppSummary() {
 }
 
 // -----------------------------------------------------------
-// 12. TEXT-TO-SPEECH
-// -----------------------------------------------------------
-function speakSchedule() {
-  if (!('speechSynthesis' in window)) { showToast('🔇 Speech not supported on this device.'); return; }
-  window.speechSynthesis.cancel();
-  const dateTitle = document.getElementById('currentDateTitle').textContent;
-  const dateKey = formatDateKey(currentDate);
-  const data = getScheduleForDate(dateKey);
-  let text = `Cart witnessing schedule for ${dateTitle}. `;
-
-  LOCATIONS.forEach(loc => {
-    text += `${loc.name}. `;
-    const shifts = data[loc.id] || [normalizeShiftData(null), normalizeShiftData(null)];
-    SHIFT_TIMES.forEach(shiftDef => {
-      const shift = normalizeShiftData(shifts[shiftDef.id]);
-      text += `${shiftDef.name}. `;
-      const names = [];
-      if (shift.p1 && shift.p1.name && shift.p1.name.trim()) names.push(shift.p1.name);
-      if (shift.p2 && shift.p2.name && shift.p2.name.trim()) names.push(shift.p2.name);
-      if (shift.p3 && shift.p3.name && shift.p3.name.trim()) names.push(shift.p3.name);
-      if (names.length > 0) text += names.join(', ') + '. ';
-      else text += 'No volunteers assigned. ';
-    });
-  });
-
-  speechSynthUtterance = new SpeechSynthesisUtterance(text);
-  speechSynthUtterance.rate = 0.9;
-  document.getElementById('ttsNotice').classList.add('active');
-  speechSynthUtterance.onend = () => document.getElementById('ttsNotice').classList.remove('active');
-  window.speechSynthesis.speak(speechSynthUtterance);
-}
-
-function stopSpeech() {
-  window.speechSynthesis.cancel();
-  document.getElementById('ttsNotice').classList.remove('active');
-}
-
-// -----------------------------------------------------------
-// 13. DARK MODE
+// 12. DARK MODE
 // -----------------------------------------------------------
 function toggleDarkMode() {
   document.body.classList.toggle('dark-mode');
