@@ -508,7 +508,6 @@ function openSummaryReportModal() {
         <thead>
           <tr>
             <th>Location &amp; Landmark</th>
-            <th>Date</th>
             <th>Shift &amp; Time</th>
             <th>Volunteers (3 per Cart)</th>
             <th>Vacancy Status</th>
@@ -535,10 +534,6 @@ function openSummaryReportModal() {
               <td class="srt-loc-cell">
                 <div class="srt-loc-name">📍 ${escapeHtml(r.locName)}</div>
                 <div class="srt-loc-landmark">${escapeHtml(r.locLandmark)}</div>
-              </td>
-              <td class="srt-date-cell">
-                <div class="srt-date-day">${escapeHtml(r.dayName)}</div>
-                <div class="srt-date-num">${escapeHtml(r.dateFormatted)}</div>
               </td>
               <td class="srt-time-cell">
                 <div class="srt-shift-badge srt-shift-${r.shiftClass}">${r.shiftIcon} ${escapeHtml(r.shiftName)}</div>
