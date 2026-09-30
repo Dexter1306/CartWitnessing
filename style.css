@@ -1344,60 +1344,54 @@ body.dark-mode .vacancy-badge {
   color: #000000;
 }
 
-/* 1. Clean High-Contrast Print Header Banner */
+/* 1. Blue Title Banner */
 .srt-form-header {
-  background: #ffffff;
-  color: #000000;
-  padding: 22px 24px 16px;
-  border-bottom: 2px solid #000000;
-}
-.srt-form-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.srt-form-branding {
-  width: 100%;
+  background: #1e40af; /* Blue background for the title */
+  color: #ffffff;
+  padding: 16px 20px 14px;
+  text-align: left;
 }
 .srt-form-title {
-  font-size: 1.75rem;
+  font-size: 1.65rem;
   font-weight: 900;
   letter-spacing: 0.02em;
-  line-height: 1.2;
-  color: #000000;
+  line-height: 1.22;
+  color: #ffffff;
   text-transform: uppercase;
   margin: 0;
 }
 .srt-form-subtitle {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #4b5563;
-  margin-top: 5px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  margin-top: 4px;
 }
 
+/* 2. Date & Meta Bar (Clean White Background) */
 .srt-form-meta-bar {
+  background: #ffffff;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 14px;
-  padding-top: 12px;
-  border-top: 1px solid #d1d5db;
+  padding: 11px 20px;
+  border-bottom: 2px solid #000000;
   flex-wrap: wrap;
   gap: 12px;
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: #111827;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #000000;
 }
 .srt-meta-date {
-  font-size: 1.18rem;
+  font-size: 1.15rem;
   font-weight: 900;
-  color: #111827;
+  color: #000000;
 }
 .srt-meta-stats {
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 1.1rem;
+  color: #000000;
 }
 .srt-meta-sep {
   color: #9ca3af;
@@ -1507,7 +1501,7 @@ body.dark-mode .vacancy-badge {
   border-top: 1px solid #d1d5db; /* Simple thin gray gridline */
 }
 
-/* Cell 2: Shift (Morning Amber/Brown, Afternoon Blue) & Time (Dark Slate) */
+/* Cell 2: Shift (Morning Warm Amber, Afternoon Royal Blue) & Time (Dark Blue) */
 .srt-time-compound .srt-sub-row {
   align-items: center;
   text-align: center;
@@ -1522,15 +1516,15 @@ body.dark-mode .vacancy-badge {
   line-height: 1.2;
 }
 .srt-shift-title-morning {
-  color: #92400e !important; /* Morning Warm Amber / Brown */
+  color: #b45309 !important; /* Morning Warm Sunrise Amber */
 }
 .srt-shift-title-afternoon {
-  color: #1e40af !important; /* Afternoon Royal Blue */
+  color: #4338ca !important; /* Afternoon Deep Twilight Indigo */
 }
 .srt-shift-time {
   font-size: 1.1rem;
   font-weight: 900;
-  color: #0f172a !important; /* Dark Slate for Times */
+  color: #1e3a8a !important; /* Dark Blue Times matching mockup */
   white-space: nowrap;
   line-height: 1.2;
   font-variant-numeric: tabular-nums;
@@ -1571,7 +1565,7 @@ body.dark-mode .vacancy-badge {
   line-height: 1.25;
 }
 
-/* Cell 4: Vacancy Status (Colors based on their specific usage) */
+/* Cell 4: Vacancy Status (Green for Staffed, Red for Vacancies) */
 .srt-status-compound .srt-sub-row {
   align-items: center;
   justify-content: center;
@@ -1584,22 +1578,10 @@ body.dark-mode .vacancy-badge {
   color: #15803d !important; /* Staffed = Green */
   line-height: 1.2;
 }
-.srt-status-needed-1 {
-  font-size: 1.22rem;
-  font-weight: 900;
-  color: #b45309 !important; /* 1 Needed = Warning Amber */
-  line-height: 1.2;
-}
-.srt-status-needed-2 {
-  font-size: 1.22rem;
-  font-weight: 900;
-  color: #c2410c !important; /* 2 Needed = Orange */
-  line-height: 1.2;
-}
-.srt-status-needed-3 {
+.srt-status-vacant {
   font-size: 1.25rem;
   font-weight: 900;
-  color: #dc2626 !important; /* 3 Needed = Danger Red */
+  color: #dc2626 !important; /* Vacancies = Red */
   line-height: 1.2;
 }
 

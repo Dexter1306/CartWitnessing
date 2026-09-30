@@ -456,13 +456,9 @@ function openSummaryReportModal() {
 
     function getStatusBadgeHtml(vacantCount) {
       if (vacantCount === 0) {
-        return '<div class="srt-status-staffed">✅ Staffed</div>';
-      } else if (vacantCount === 1) {
-        return '<div class="srt-status-needed-1">⚠️ 1 Needed</div>';
-      } else if (vacantCount === 2) {
-        return '<div class="srt-status-needed-2">⚠️ 2 Needed</div>';
+        return '<div class="srt-status-staffed">Staffed</div>';
       } else {
-        return '<div class="srt-status-needed-3">🚨 3 Needed</div>';
+        return `<div class="srt-status-vacant">${vacantCount} Needed</div>`;
       }
     }
 
@@ -484,17 +480,17 @@ function openSummaryReportModal() {
     tbodyHTML += `
       <tr class="srt-row srt-location-row">
         <td class="srt-loc-cell">
-          <div class="srt-loc-name">📍 ${escapeHtml(loc.name)}</div>
+          <div class="srt-loc-name">${escapeHtml(loc.name)}</div>
           ${loc.landmark && loc.landmark !== loc.name && !loc.name.includes(`(${loc.landmark})`) ? `<div class="srt-loc-landmark">${escapeHtml(loc.landmark)}</div>` : ''}
         </td>
         <td class="srt-compound-cell srt-time-compound">
           <div class="srt-sub-row srt-sub-morning">
-            <div class="srt-shift-title srt-shift-title-morning">🌅 ${escapeHtml(mDef.name.toUpperCase())}</div>
-            <div class="srt-shift-time">⏰ ${escapeHtml(mDef.timeString.replace(/–/g, '-'))}</div>
+            <div class="srt-shift-title srt-shift-title-morning">${escapeHtml(mDef.name.toUpperCase())}</div>
+            <div class="srt-shift-time">${escapeHtml(mDef.timeString.replace(/–/g, '-'))}</div>
           </div>
           <div class="srt-sub-row srt-sub-afternoon">
-            <div class="srt-shift-title srt-shift-title-afternoon">🌇 ${escapeHtml(aDef.name.toUpperCase())}</div>
-            <div class="srt-shift-time">⏰ ${escapeHtml(aDef.timeString.replace(/–/g, '-'))}</div>
+            <div class="srt-shift-title srt-shift-title-afternoon">${escapeHtml(aDef.name.toUpperCase())}</div>
+            <div class="srt-shift-time">${escapeHtml(aDef.timeString.replace(/–/g, '-'))}</div>
           </div>
         </td>
         <td class="srt-compound-cell srt-vol-compound">
@@ -545,29 +541,27 @@ function openSummaryReportModal() {
   let html = `
     <div class="srt-scroll-hint">👈 Swipe left/right to view full table form 👉</div>
     <div id="reportCaptureZone" class="srt-capture-zone">
-      <!-- 1. Clean Print Header -->
+      <!-- 1. Blue Title Banner -->
       <div class="srt-form-header">
-        <div class="srt-form-top">
-          <div class="srt-form-branding">
-            <h1 class="srt-form-title">CART WITNESSING ROSTER &amp; VACANCY REPORT</h1>
-            <div class="srt-form-subtitle">Official Congregation Schedule Form &bull; 3 Volunteers / Cart &bull; 5 Locations</div>
-          </div>
-        </div>
-        <div class="srt-form-meta-bar">
-          <div class="srt-meta-date">${escapeHtml(fullDateHeader)}</div>
-          <div class="srt-meta-stats">
-            <span>Slots: <strong>30</strong></span>
-            <span class="srt-meta-sep">&bull;</span>
-            <span>Filled: <strong>${totalFilled}</strong></span>
-            <span class="srt-meta-sep">&bull;</span>
-            <span class="${totalVacant > 0 ? 'srt-meta-vacant' : 'srt-meta-staffed'}">
-              ${totalVacant > 0 ? `<strong>${totalVacant} Vacanc${totalVacant > 1 ? 'ies' : 'y'}</strong>` : '<strong>100% Staffed</strong>'}
-            </span>
-          </div>
+        <h1 class="srt-form-title">CART WITNESSING ROSTER &amp; VACANCY REPORT</h1>
+        <div class="srt-form-subtitle">Official Congregation Schedule Form &bull; 3 Volunteers / Cart &bull; 5 Locations</div>
+      </div>
+
+      <!-- 2. Date & Stats Bar (Clean White Background) -->
+      <div class="srt-form-meta-bar">
+        <div class="srt-meta-date">${escapeHtml(fullDateHeader)}</div>
+        <div class="srt-meta-stats">
+          <span>Slots: <strong>30</strong></span>
+          <span class="srt-meta-sep">&bull;</span>
+          <span>Filled: <strong>${totalFilled}</strong></span>
+          <span class="srt-meta-sep">&bull;</span>
+          <span class="${totalVacant > 0 ? 'srt-meta-vacant' : 'srt-meta-staffed'}">
+            ${totalVacant > 0 ? `<strong>${totalVacant} Vacanc${totalVacant > 1 ? 'ies' : 'y'}</strong>` : '<strong>100% Staffed</strong>'}
+          </span>
         </div>
       </div>
 
-      <!-- 2. Form Table -->
+      <!-- 3. Form Table -->
       <table class="summary-report-table">
         <thead>
           <tr>
@@ -582,7 +576,7 @@ function openSummaryReportModal() {
         </tbody>
       </table>
 
-      <!-- 3. Form Footer -->
+      <!-- 4. Form Footer -->
       <div class="srt-form-footer">
         <div>Cart Witnessing Management System &bull; Official Dispatch Form</div>
         <div>Generated: ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} &bull; Report adjustments to Keyman</div>
