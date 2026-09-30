@@ -732,158 +732,57 @@ function openSummaryReportModal() {
   const dateKey = formatDateKey(currentDate);
   const scheduleData = getScheduleForDate(dateKey);
 
-  let totalSlots = 30; // 5 locations x 2 shifts x 3 volunteers
-  let totalAssigned = 0;
-  let totalVacancies = 0;
-
-  const vacantList = [];
-  const volunteersList = [];
+  // Build simple table rows: one row per volunteer assigned to a shift
+  const tableRows = [];
 
   LOCATIONS.forEach(loc => {
     const shifts = scheduleData[loc.id] || [normalizeShiftData(null), normalizeShiftData(null)];
 
     SHIFT_TIMES.forEach(shiftDef => {
       const shift = normalizeShiftData(shifts[shiftDef.id]);
-      const p1Filled = shift.p1 && shift.p1.name && shift.p1.name.trim().length > 0;
-      const p2Filled = shift.p2 && shift.p2.name && shift.p2.name.trim().length > 0;
-      const p3Filled = shift.p3 && shift.p3.name && shift.p3.name.trim().length > 0;
+      const volunteers = [];
+      if (shift.p1 && shift.p1.name && shift.p1.name.trim()) volunteers.push(shift.p1.name.trim());
+      if (shift.p2 && shift.p2.name && shift.p2.name.trim()) volunteers.push(shift.p2.name.trim());
+      if (shift.p3 && shift.p3.name && shift.p3.name.trim()) volunteers.push(shift.p3.name.trim());
 
-      let shiftFilledCount = 0;
-      if (p1Filled) {
-        shiftFilledCount++;
-        volunteersList.push({
-          name: shift.p1.name,
-          phone: shift.p1.phone,
-          locId: loc.id,
-          locName: loc.name,
-          shiftName: shiftDef.name,
-          shiftTime: shiftDef.timeString,
-          role: 'Slot 1 &bull; Driver / Lead'
-        });
-      }
-      if (p2Filled) {
-        shiftFilledCount++;
-        volunteersList.push({
-          name: shift.p2.name,
-          phone: shift.p2.phone,
-          locId: loc.id,
-          locName: loc.name,
-          shiftName: shiftDef.name,
-          shiftTime: shiftDef.timeString,
-          role: 'Slot 2 &bull; Cart Partner'
-        });
-      }
-      if (p3Filled) {
-        shiftFilledCount++;
-        volunteersList.push({
-          name: shift.p3.name,
-          phone: shift.p3.phone,
-          locId: loc.id,
-          locName: loc.name,
-          shiftName: shiftDef.name,
-          shiftTime: shiftDef.timeString,
-          role: 'Slot 3 &bull; Cart Partner'
-        });
+      // Add vacancy placeholders for open slots
+      const openSlots = 3 - volunteers.length;
+      for (let i = 0; i < openSlots; i++) {
+        volunteers.push('<span style="color:#dc2626; font-style:italic;">— Vacant —</span>');
       }
 
-      totalAssigned += shiftFilledCount;
-      const neededInShift = 3 - shiftFilledCount;
-      if (neededInShift > 0) {
-        totalVacancies += neededInShift;
-        vacantList.push({
-          locId: loc.id,
-          locName: loc.name,
-          landmark: loc.landmark,
-          shiftName: shiftDef.name,
-          shiftTime: shiftDef.timeString,
-          needed: neededInShift,
-          notes: shift.notes
-        });
-      }
+      tableRows.push({
+        location: loc.name,
+        volunteers: volunteers.join('<br>'),
+        date: dateTitle,
+        time: shiftDef.timeString
+      });
     });
   });
 
-  // Mobile card-based report HTML (No horizontal overflow!)
+  // Clean simple table
   let html = `
-    <!-- Mobile KPI 2x2 Grid -->
-    <div class="report-kpi-grid">
-      <div class="report-kpi-card">
-        <div class="report-kpi-val" style="font-size: 1.15rem;">📅 ${escapeHtml(dateTitle)}</div>
-        <div class="report-kpi-lbl">Roster Date</div>
-      </div>
-      <div class="report-kpi-card">
-        <div class="report-kpi-val" style="color: #1e40af;">5 Carts</div>
-        <div class="report-kpi-lbl">Locations</div>
-      </div>
-      <div class="report-kpi-card">
-        <div class="report-kpi-val" style="color: #059669;">${totalAssigned} / ${totalSlots}</div>
-        <div class="report-kpi-lbl">Confirmed</div>
-      </div>
-      <div class="report-kpi-card">
-        <div class="report-kpi-val" style="color: ${totalVacancies > 0 ? '#dc2626' : '#059669'};">${totalVacancies}</div>
-        <div class="report-kpi-lbl">Open Slots</div>
-      </div>
-    </div>
-
-    <!-- 1. VACANCIES CARD SECTION -->
-    <div class="report-card-section">
-      <div class="report-card-title">
-        <span>⚠️ All Vacant Positions (${totalVacancies} Needed)</span>
-      </div>
-
-      ${totalVacancies === 0 ? `
-        <div style="padding: 12px; background-color: var(--success-bg); border-radius: var(--radius-sm); color: var(--success-text); font-weight: 800; font-size: 1rem; text-align: center;">
-          🎉 All 30 volunteer positions are fully staffed for this day!
-        </div>
-      ` : `
-        <div>
-          ${vacantList.map(v => `
-            <div class="report-item-card">
-              <div style="min-width: 0;">
-                <div style="font-weight: 900; font-size: 1.05rem;">${escapeHtml(v.locName)}</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">${escapeHtml(v.landmark)}</div>
-                <div style="font-size: 0.9rem; font-weight: 800; margin-top: 2px;">
-                  ${escapeHtml(v.shiftName)} (${escapeHtml(v.shiftTime)})
-                </div>
-                ${v.notes ? `<div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;"><em>${escapeHtml(v.notes)}</em></div>` : ''}
-              </div>
-              <div style="flex-shrink: 0; text-align: right;">
-                <span class="vacancy-badge">⚠️ ${v.needed} ${v.needed === 1 ? 'Slot Open' : 'Slots Open'}</span>
-              </div>
-            </div>
+    <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
+      <table class="summary-report-table">
+        <thead>
+          <tr>
+            <th>Location</th>
+            <th>Volunteers</th>
+            <th>Date</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tableRows.map(row => `
+            <tr>
+              <td>${escapeHtml(row.location)}</td>
+              <td>${row.volunteers}</td>
+              <td>${escapeHtml(row.date)}</td>
+              <td>${escapeHtml(row.time)}</td>
+            </tr>
           `).join('')}
-        </div>
-      `}
-    </div>
-
-    <!-- 2. ALL VOLUNTEERS DIRECTORY CARDS -->
-    <div class="report-card-section">
-      <div class="report-card-title">
-        <span>👥 Volunteers Directory (${volunteersList.length})</span>
-      </div>
-
-      ${volunteersList.length === 0 ? `
-        <div style="padding: 12px; text-align: center; color: var(--text-muted); font-size: 1rem;">
-          No volunteers scheduled yet for this date.
-        </div>
-      ` : `
-        <div>
-          ${volunteersList.sort((a, b) => a.name.localeCompare(b.name)).map(pub => `
-            <div class="report-item-card">
-              <div style="min-width: 0;">
-                <div style="font-weight: 900; font-size: 1.1rem;">${escapeHtml(pub.name)}</div>
-                <div style="font-size: 0.8rem; color: var(--text-muted);">${pub.role}</div>
-                <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-top: 2px;">
-                  ${escapeHtml(pub.locName)} &bull; ${escapeHtml(pub.shiftName)}
-                </div>
-              </div>
-              <div style="flex-shrink: 0;">
-                ${pub.phone ? `<a href="tel:${escapeHtml(pub.phone)}" class="slot-phone-btn">📞 Call</a>` : ''}
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      `}
+        </tbody>
+      </table>
     </div>
   `;
 
