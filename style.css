@@ -1442,7 +1442,7 @@ body.dark-mode .vacancy-badge {
   font-size: 1.05rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  padding: 16px 12px;
+  padding: 12px 14px;
   border-bottom: 2px solid #000000;
   border-right: 1px solid #d1d5db;
   vertical-align: middle;
@@ -1467,24 +1467,24 @@ body.dark-mode .vacancy-badge {
 .srt-loc-cell {
   vertical-align: middle !important;
   text-align: left !important;
-  padding: 18px 20px !important;
+  padding: 12px 16px !important;
   background: #ffffff !important;
   border-right: 1px solid #d1d5db !important;
 }
 .srt-loc-name {
   font-weight: 900 !important;
-  font-size: 1.35rem !important;
+  font-size: 1.25rem !important;
   color: #1d4ed8 !important; /* Blue text for locations */
-  margin-bottom: 6px;
-  line-height: 1.32;
+  margin-bottom: 4px;
+  line-height: 1.3;
   word-break: normal;
   overflow-wrap: break-word;
 }
 .srt-loc-landmark {
-  font-size: 1.0rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: #4b5563;
-  line-height: 1.32;
+  line-height: 1.3;
   word-break: normal;
   overflow-wrap: break-word;
 }
@@ -1495,9 +1495,9 @@ body.dark-mode .vacancy-badge {
   vertical-align: top !important;
 }
 .srt-sub-row {
-  height: 122px;
+  height: 96px;
   box-sizing: border-box;
-  padding: 10px 14px;
+  padding: 8px 12px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1511,15 +1511,15 @@ body.dark-mode .vacancy-badge {
 .srt-time-compound .srt-sub-row {
   align-items: center;
   text-align: center;
-  padding: 10px 10px;
+  padding: 8px 10px;
 }
 .srt-shift-title {
-  font-size: 1.18rem;
+  font-size: 1.12rem;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.02em;
-  margin-bottom: 6px;
-  line-height: 1.25;
+  margin-bottom: 4px;
+  line-height: 1.2;
 }
 .srt-shift-title-morning {
   color: #92400e !important; /* Morning Warm Amber / Brown */
@@ -1528,44 +1528,44 @@ body.dark-mode .vacancy-badge {
   color: #1e40af !important; /* Afternoon Royal Blue */
 }
 .srt-shift-time {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 900;
   color: #0f172a !important; /* Dark Slate for Times */
   white-space: nowrap;
-  line-height: 1.25;
+  line-height: 1.2;
   font-variant-numeric: tabular-nums;
 }
 
 /* Cell 3: Volunteers (Black text for filled names, Red text for vacancies) */
 .srt-vol-compound .srt-sub-row {
-  padding: 10px 14px;
+  padding: 8px 14px;
   justify-content: center;
 }
 .srt-vol-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
 }
 .srt-slot-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 .srt-slot-num {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 900;
   color: #4b5563;
-  width: 24px;
+  width: 22px;
   flex-shrink: 0;
 }
 .is-filled .srt-slot-name {
-  font-size: 1.25rem !important;
+  font-size: 1.2rem !important;
   font-weight: 900 !important;
   color: #000000 !important; /* Solid black text for filled volunteer names */
   line-height: 1.25;
 }
 .is-vacant .srt-slot-name {
-  font-size: 1.22rem !important;
+  font-size: 1.16rem !important;
   font-weight: 900 !important;
   color: #dc2626 !important; /* Red text for vacancies */
   line-height: 1.25;
@@ -1576,38 +1576,38 @@ body.dark-mode .vacancy-badge {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 10px 8px;
+  padding: 8px 8px;
 }
 .srt-status-staffed {
-  font-size: 1.22rem;
+  font-size: 1.2rem;
   font-weight: 900;
   color: #15803d !important; /* Staffed = Green */
-  line-height: 1.25;
+  line-height: 1.2;
 }
 .srt-status-needed-1 {
-  font-size: 1.25rem;
+  font-size: 1.22rem;
   font-weight: 900;
   color: #b45309 !important; /* 1 Needed = Warning Amber */
-  line-height: 1.25;
+  line-height: 1.2;
 }
 .srt-status-needed-2 {
-  font-size: 1.25rem;
+  font-size: 1.22rem;
   font-weight: 900;
   color: #c2410c !important; /* 2 Needed = Orange */
-  line-height: 1.25;
+  line-height: 1.2;
 }
 .srt-status-needed-3 {
-  font-size: 1.28rem;
+  font-size: 1.25rem;
   font-weight: 900;
   color: #dc2626 !important; /* 3 Needed = Danger Red */
-  line-height: 1.25;
+  line-height: 1.2;
 }
 
 /* 3. Form Footer */
 .srt-form-footer {
-  padding: 14px 24px;
+  padding: 10px 20px;
   text-align: left;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: #4b5563;
   background: #ffffff;
