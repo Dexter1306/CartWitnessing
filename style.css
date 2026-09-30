@@ -1333,8 +1333,8 @@ body.dark-mode .vacancy-badge {
 
 /* Capture container: landscape-oriented Cart Witnessing Table Form */
 .srt-capture-zone {
-  width: 840px;
-  min-width: 840px;
+  width: 880px;
+  min-width: 880px;
   margin: 0 auto;
   background: #ffffff;
   border-radius: 12px;
@@ -1348,7 +1348,7 @@ body.dark-mode .vacancy-badge {
 .srt-form-header {
   background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 60%, #2563eb 100%);
   color: #ffffff;
-  padding: 16px 20px;
+  padding: 18px 22px;
 }
 .srt-form-top {
   display: flex;
@@ -1358,30 +1358,30 @@ body.dark-mode .vacancy-badge {
 .srt-form-branding {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 .srt-form-icon {
-  font-size: 2.2rem;
+  font-size: 2.4rem;
   flex-shrink: 0;
 }
 .srt-form-title {
-  font-size: 1.35rem;
+  font-size: 1.55rem;
   font-weight: 900;
   letter-spacing: 0.03em;
   line-height: 1.25;
 }
 .srt-form-subtitle {
-  font-size: 0.92rem;
+  font-size: 1.05rem;
   font-weight: 600;
   opacity: 0.95;
-  margin-top: 3px;
+  margin-top: 4px;
 }
 .srt-form-badge {
   background: rgba(255, 255, 255, 0.25);
   border: 1.5px solid rgba(255, 255, 255, 0.45);
   border-radius: 8px;
-  padding: 6px 14px;
-  font-size: 0.88rem;
+  padding: 8px 16px;
+  font-size: 0.95rem;
   font-weight: 900;
   letter-spacing: 0.05em;
   white-space: nowrap;
@@ -1391,26 +1391,26 @@ body.dark-mode .vacancy-badge {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 12px;
-  padding-top: 12px;
+  margin-top: 14px;
+  padding-top: 14px;
   border-top: 1px solid rgba(255, 255, 255, 0.25);
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
 }
 .srt-meta-date {
-  font-size: 1.05rem;
-  font-weight: 800;
+  font-size: 1.2rem;
+  font-weight: 900;
 }
 .srt-meta-chips {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 .srt-chip {
-  font-size: 0.86rem;
+  font-size: 0.98rem;
   font-weight: 800;
-  padding: 5px 12px;
-  border-radius: 14px;
+  padding: 6px 14px;
+  border-radius: 16px;
   white-space: nowrap;
 }
 .srt-chip-total {
@@ -1435,34 +1435,34 @@ body.dark-mode .vacancy-badge {
 
 /* 2. Table Form Base */
 .summary-report-table {
-  width: 840px;
-  min-width: 840px;
+  width: 880px;
+  min-width: 880px;
   border-collapse: collapse;
   font-family: var(--font-family);
-  font-size: 0.9rem;
+  font-size: 1rem;
   table-layout: fixed;
   background: #ffffff;
 }
 
-/* Fixed Column Widths for 4-Column Form (Sum = 840px) */
+/* Fixed Column Widths for 4-Column Form (Sum = 880px) */
 .summary-report-table thead th:nth-child(1),
-.summary-report-table tbody td:nth-child(1) { width: 250px; text-align: left; }
+.summary-report-table tbody td:nth-child(1) { width: 255px; text-align: left; }
 .summary-report-table thead th:nth-child(2),
-.summary-report-table tbody td:nth-child(2) { width: 185px; text-align: center; }
+.summary-report-table tbody td:nth-child(2) { width: 200px; text-align: center; }
 .summary-report-table thead th:nth-child(3),
-.summary-report-table tbody td:nth-child(3) { width: 275px; text-align: left; }
+.summary-report-table tbody td:nth-child(3) { width: 285px; text-align: left; }
 .summary-report-table thead th:nth-child(4),
-.summary-report-table tbody td:nth-child(4) { width: 130px; text-align: center; }
+.summary-report-table tbody td:nth-child(4) { width: 140px; text-align: center; }
 
 /* Table Header */
 .summary-report-table thead th {
   background-color: #0f2440;
   color: #ffffff;
   font-weight: 900;
-  font-size: 0.88rem;
+  font-size: 0.98rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  padding: 14px 12px;
+  padding: 16px 12px;
   border-bottom: 2.5px solid #000000;
   border-right: 1.5px solid rgba(255, 255, 255, 0.3);
   vertical-align: middle;
@@ -1498,20 +1498,20 @@ body.dark-mode .vacancy-badge {
 .srt-loc-cell {
   vertical-align: middle !important;
   text-align: left !important;
-  padding: 16px 18px !important;
+  padding: 18px 20px !important;
   border-right: 1.5px solid #cbd5e1 !important;
 }
 .srt-loc-name {
-  font-weight: 900;
-  font-size: 1.06rem;
-  color: #1e40af;
-  margin-bottom: 5px;
-  line-height: 1.35;
+  font-weight: 900 !important;
+  font-size: 1.25rem !important;
+  color: #1d4ed8;
+  margin-bottom: 6px;
+  line-height: 1.32;
   word-break: normal;
   overflow-wrap: break-word;
 }
 .srt-loc-landmark {
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: #475569;
   line-height: 1.35;
@@ -1525,9 +1525,9 @@ body.dark-mode .vacancy-badge {
   vertical-align: top !important;
 }
 .srt-sub-row {
-  height: 104px;
+  height: 118px;
   box-sizing: border-box;
-  padding: 10px 10px;
+  padding: 10px 12px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1556,13 +1556,13 @@ body.dark-mode .vacancy-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 0.84rem;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 7px;
+  font-size: 0.95rem;
   font-weight: 900;
   text-transform: uppercase;
-  margin-bottom: 6px;
+  margin-bottom: 7px;
   white-space: nowrap;
 }
 .srt-shift-morning {
@@ -1579,15 +1579,15 @@ body.dark-mode .vacancy-badge {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  font-size: 0.86rem;
+  gap: 6px;
+  font-size: 1.02rem;
   font-weight: 800;
   color: #0f172a;
   white-space: nowrap;
   line-height: 1.2;
 }
 .srt-time-icon {
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   line-height: 1;
   flex-shrink: 0;
 }
@@ -1598,23 +1598,23 @@ body.dark-mode .vacancy-badge {
 
 /* Cell 3: Volunteers */
 .srt-vol-cell {
-  font-size: 0.95rem !important;
+  font-size: 1.12rem !important;
 }
 .srt-vol-list {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 9px;
 }
 .srt-slot-row {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 10px;
 }
 .srt-slot-num {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  font-size: 0.78rem;
+  font-size: 0.88rem;
   font-weight: 900;
   display: inline-flex;
   align-items: center;
@@ -1623,20 +1623,20 @@ body.dark-mode .vacancy-badge {
 }
 .is-filled .srt-slot-num {
   background: #e2e8f0;
-  color: #334155;
+  color: #1e293b;
 }
 .is-vacant .srt-slot-num {
   background: #fee2e2;
   color: #b91c1c;
 }
 .is-filled .srt-slot-name {
-  font-size: 0.98rem;
+  font-size: 1.12rem;
   font-weight: 800;
   color: #0f172a;
   line-height: 1.25;
 }
 .is-vacant .srt-slot-name {
-  font-size: 0.94rem;
+  font-size: 1.08rem;
   font-weight: 800;
   color: #dc2626;
   font-style: italic;
@@ -1649,9 +1649,9 @@ body.dark-mode .vacancy-badge {
 }
 .srt-status-pill {
   display: inline-block;
-  padding: 7px 13px;
+  padding: 8px 14px;
   border-radius: 10px;
-  font-size: 0.88rem;
+  font-size: 1.02rem;
   font-weight: 900;
   white-space: nowrap;
 }
@@ -1678,9 +1678,9 @@ body.dark-mode .vacancy-badge {
 
 /* 3. Form Footer */
 .srt-form-footer {
-  padding: 12px 20px;
+  padding: 14px 22px;
   text-align: left;
-  font-size: 0.82rem;
+  font-size: 0.92rem;
   font-weight: 700;
   color: #475569;
   background: #f8fafc;
@@ -1695,7 +1695,7 @@ body.dark-mode .vacancy-badge {
 .srt-scroll-hint {
   display: none;
   text-align: center;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: var(--text-muted);
   padding: 8px 0 4px;
@@ -1705,7 +1705,7 @@ body.dark-mode .vacancy-badge {
   0%, 100% { opacity: 0.5; }
   50% { opacity: 1; }
 }
-@media (max-width: 840px) {
+@media (max-width: 880px) {
   .srt-scroll-hint {
     display: block;
   }
