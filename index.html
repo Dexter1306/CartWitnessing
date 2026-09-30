@@ -411,7 +411,7 @@
   </div>
 
   <!-- =============================================================
-       MODAL 4: SUMMARY & VACANCIES REPORT (PHONE CARD-BASED)
+       MODAL 4: SUMMARY & VACANCY REPORT (SIMPLE TABLE)
        ============================================================= -->
   <div id="summaryReportModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="summaryReportTitle">
     <div class="modal-box report-modal">
@@ -424,17 +424,17 @@
         <button class="modal-close-btn" onclick="closeSummaryReportModal()" aria-label="Close Report">✕</button>
       </div>
 
-      <!-- Report Body Generated Dynamically (Mobile Cards) -->
+      <!-- Report Table rendered dynamically inside a 360px capture container -->
       <div id="summaryReportContent">
-        <!-- Rendered by JavaScript: KPI stats, Vacancies cards, Volunteers list -->
+        <!-- Rendered by JavaScript: clean 4-column table -->
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 16px; padding-top: 14px; border-top: var(--border-width) solid var(--border-color);">
+        <button class="btn btn-lg btn-success" onclick="downloadReportAsImage()">
+          📸 Save as Image (.png)
+        </button>
         <button class="btn btn-lg btn-primary" onclick="copyVacancyListWhatsApp()">
           📲 Copy Vacancies for WhatsApp
-        </button>
-        <button class="btn btn-outline" onclick="printSummaryReport()">
-          🖨️ Print Full Report
         </button>
         <button class="btn btn-outline" onclick="closeSummaryReportModal()">
           ✕ Close
@@ -448,6 +448,9 @@
     <span id="toastMessage">Action completed!</span>
     <button class="btn btn-sm btn-outline" style="min-height: 36px; padding: 2px 10px;" onclick="hideToast()">OK</button>
   </div>
+
+  <!-- html2canvas for PNG export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <!-- JAVASCRIPT LOGIC -->
   <script src="app.js"></script>
