@@ -497,15 +497,15 @@ function openSummaryReportModal() {
             <div class="srt-vol-list">
               <div class="srt-slot-row ${mp1 ? 'is-filled' : 'is-vacant'}">
                 <span class="srt-slot-num">1.</span>
-                <span class="srt-slot-name">${mp1 ? escapeHtml(mp1) : '— Vacant Slot —'}</span>
+                <span class="srt-slot-name">${mp1 ? escapeHtml(mp1) : '— Available Slot —'}</span>
               </div>
               <div class="srt-slot-row ${mp2 ? 'is-filled' : 'is-vacant'}">
                 <span class="srt-slot-num">2.</span>
-                <span class="srt-slot-name">${mp2 ? escapeHtml(mp2) : '— Vacant Slot —'}</span>
+                <span class="srt-slot-name">${mp2 ? escapeHtml(mp2) : '— Available Slot —'}</span>
               </div>
               <div class="srt-slot-row ${mp3 ? 'is-filled' : 'is-vacant'}">
                 <span class="srt-slot-num">3.</span>
-                <span class="srt-slot-name">${mp3 ? escapeHtml(mp3) : '— Vacant Slot —'}</span>
+                <span class="srt-slot-name">${mp3 ? escapeHtml(mp3) : '— Available Slot —'}</span>
               </div>
             </div>
           </div>
@@ -513,15 +513,15 @@ function openSummaryReportModal() {
             <div class="srt-vol-list">
               <div class="srt-slot-row ${ap1 ? 'is-filled' : 'is-vacant'}">
                 <span class="srt-slot-num">1.</span>
-                <span class="srt-slot-name">${ap1 ? escapeHtml(ap1) : '— Vacant Slot —'}</span>
+                <span class="srt-slot-name">${ap1 ? escapeHtml(ap1) : '— Available Slot —'}</span>
               </div>
               <div class="srt-slot-row ${ap2 ? 'is-filled' : 'is-vacant'}">
                 <span class="srt-slot-num">2.</span>
-                <span class="srt-slot-name">${ap2 ? escapeHtml(ap2) : '— Vacant Slot —'}</span>
+                <span class="srt-slot-name">${ap2 ? escapeHtml(ap2) : '— Available Slot —'}</span>
               </div>
               <div class="srt-slot-row ${ap3 ? 'is-filled' : 'is-vacant'}">
                 <span class="srt-slot-num">3.</span>
-                <span class="srt-slot-name">${ap3 ? escapeHtml(ap3) : '— Vacant Slot —'}</span>
+                <span class="srt-slot-name">${ap3 ? escapeHtml(ap3) : '— Available Slot —'}</span>
               </div>
             </div>
           </div>
@@ -542,7 +542,7 @@ function openSummaryReportModal() {
     <div id="reportCaptureZone" class="srt-capture-zone">
       <!-- 1. Blue Title Banner -->
       <div class="srt-form-header">
-        <h1 class="srt-form-title">CART WITNESSING ROSTER &amp; VACANCY REPORT</h1>
+        <h1 class="srt-form-title">CART WITNESSING ROSTER &amp; AVAILABLE REPORT</h1>
         <div class="srt-form-subtitle">Official Congregation Schedule Form &bull; 3 Volunteers / Cart &bull; 5 Locations</div>
       </div>
 
@@ -555,7 +555,7 @@ function openSummaryReportModal() {
           <span>Filled: <strong>${totalFilled}</strong></span>
           <span class="srt-meta-sep">&bull;</span>
           <span class="${totalVacant > 0 ? 'srt-meta-vacant' : 'srt-meta-staffed'}">
-            ${totalVacant > 0 ? `<strong>${totalVacant} Vacanc${totalVacant > 1 ? 'ies' : 'y'}</strong>` : '<strong>100% Staffed</strong>'}
+            ${totalVacant > 0 ? `<strong>${totalVacant} Available</strong>` : '<strong>100% Staffed</strong>'}
           </span>
         </div>
       </div>
@@ -567,7 +567,7 @@ function openSummaryReportModal() {
             <th>Location &amp; Landmark</th>
             <th>Shift &amp; Time</th>
             <th>Volunteers (3 per Cart)</th>
-            <th>Vacancy Status</th>
+            <th>Available Status</th>
           </tr>
         </thead>
         <tbody>
@@ -720,7 +720,7 @@ function copyVacancyListWhatsApp() {
   const dateTitle = document.getElementById('currentDateTitle').textContent;
   const dateKey = formatDateKey(currentDate);
   const data = getScheduleForDate(dateKey);
-  let msg = `📢 *CART WITNESSING VACANCIES*\n📅 *${dateTitle}*\n\n`;
+  let msg = `📢 *CART WITNESSING AVAILABLE SLOTS*\n📅 *${dateTitle}*\n\n`;
   let totalNeeded = 0;
 
   LOCATIONS.forEach(loc => {
@@ -743,7 +743,7 @@ function copyVacancyListWhatsApp() {
   else msg += `---\n*Total needed: ${totalNeeded} volunteers*\n`;
   msg += '\n_Please reply if you can help! 🙏_';
 
-  navigator.clipboard.writeText(msg).then(() => showToast('📲 Vacancy list copied! Paste in WhatsApp.')).catch(() => showToast('❌ Could not copy to clipboard.'));
+  navigator.clipboard.writeText(msg).then(() => showToast('📲 Available slots list copied! Paste in WhatsApp.')).catch(() => showToast('❌ Could not copy to clipboard.'));
 }
 
 function copyWhatsAppSummary() {

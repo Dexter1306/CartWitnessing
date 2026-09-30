@@ -12,12 +12,12 @@ An accessible, elderly-friendly, high-contrast digital schedule coordinator for 
     - `⚠️ 1 Volunteer Needed (2/3)`
     - `⚠️ 2 Volunteers Needed (1/3)`
     - `⭕ Open Shift (3 Needed)`
-- **📋 Daily Print Summary & Vacancy Report**:
-  - **KPI Dashboard**: Date, active carts, confirmed volunteers (X/30), open vacancies.
-  - **⚠️ Vacant Positions Action List**: Quick identification of every open shift needing volunteers.
+- **📋 Daily Summary & Available Report**:
+  - **KPI Dashboard**: Date, active carts, confirmed volunteers (X/30), open available slots.
+  - **⚠️ Available Positions Action List**: Quick identification of every open shift needing volunteers.
   - **👥 Volunteers Directory**: Alphabetical contact directory of all assigned publishers with phone numbers and locations.
   - **🛒 Master Schedule Table**: Clean, high-density print-ready schedule matrix.
-  - One-tap WhatsApp vacancy announcement generator for congregation coordinator broadcasts.
+  - One-tap WhatsApp available slots announcement generator for congregation coordinator broadcasts.
 - **Elderly Comfort Settings**:
   - 1-click text scaling (`Aa Normal`, `Aa+ Large`, `Aa++ Jumbo`).
   - Ultra High-Visibility Contrast mode (Yellow on Black / WCAG AAA compliant).
@@ -30,4 +30,4 @@ An accessible, elderly-friendly, high-contrast digital schedule coordinator for 
   - Open shifts feature a 1-tap "I Can Volunteer!" modal that automatically assigns to the next available slot.
 - **Assistive Utilities**:
   - 📲 **Copy WhatsApp Text**: Formats and copies a clean, markdown-formatted broadcast message.
-  - 📋 **Summary & Vacancies Report**: Full schedule and vacancy table with 1-tap download and mobile gallery saving.
+  - 📋 **Summary & Available Report**: Full schedule and available slots table with 1-tap download and mobile gallery saving.
