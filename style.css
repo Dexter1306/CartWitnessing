@@ -1666,3 +1666,92 @@ body.dark-mode .vacancy-badge {
   flex-shrink: 0;
 }
 
+/* -------------------------------------------------------------
+   GOOGLE SHEETS CLOUD SYNC STYLES
+   ------------------------------------------------------------- */
+.google-sync-card {
+  background-color: var(--bg-card-alt);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  margin-top: 16px;
+  text-align: left;
+}
+
+.google-sync-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sync-status-badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  margin-top: 2px;
+}
+.sync-status-badge.connected {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #86efac;
+}
+.sync-status-badge.not-connected {
+  background-color: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fcd34d;
+}
+.sync-status-badge.syncing {
+  background-color: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #7dd3fc;
+}
+
+.sync-instructions-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.sync-bar-notice {
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-align: center;
+  padding: 4px 8px;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+.sync-bar-notice.syncing {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+.sync-bar-notice.synced {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+.sync-bar-notice.error {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.sync-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 800;
+}
+
+.sync-icon.is-spinning {
+  display: inline-block;
+  animation: syncSpin 0.8s linear infinite;
+}
+
+@keyframes syncSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+

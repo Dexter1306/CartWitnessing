@@ -31,3 +31,8 @@ An accessible, elderly-friendly, high-contrast digital schedule coordinator for 
 - **Assistive Utilities**:
   - 📋 **Copy Text Report**: Formats and copies a clean, text-formatted schedule report to the clipboard.
   - 📋 **Summary & Available Report**: Full schedule and available slots table with 1-tap download and mobile gallery saving.
+- **📊 Google Sheets Cloud Sync (Multi-Device Synchronization)**:
+  - Real-time synchronization between mobile phones, tablets, and PC.
+  - Automatically updates Google Sheets with a clean, formatted live roster tab per date.
+  - Quick 2-minute setup via Google Apps Script (see `google-apps-script.js`).
+

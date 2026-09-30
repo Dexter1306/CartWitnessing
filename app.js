@@ -99,6 +99,7 @@ function getScheduleForDate(dateKey) {
 
 function saveScheduleForDate(dateKey, data) {
   localStorage.setItem(`cart_schedule_v3_${dateKey}`, JSON.stringify(data));
+  syncSaveToGoogleSheets(dateKey, data, false);
 }
 
 // -----------------------------------------------------------
@@ -142,7 +143,7 @@ function onDirectDateSelected(val) {
 // -----------------------------------------------------------
 // 5. MAIN SCHEDULE RENDERER
 // -----------------------------------------------------------
-function renderSchedule() {
+function renderSchedule(triggerSync = true) {
   const dateKey = formatDateKey(currentDate);
   const data = getScheduleForDate(dateKey);
   const grid = document.getElementById('scheduleGrid');
@@ -231,6 +232,10 @@ function renderSchedule() {
   // Update stats
   document.getElementById('statConfirmedSlots').textContent = `${totalAssigned} / ${totalSlots}`;
   document.getElementById('statNeededSlots').textContent = totalSlots - totalAssigned;
+
+  if (triggerSync) {
+    syncLoadFromGoogleSheets(dateKey, false);
+  }
 }
 
 // -----------------------------------------------------------
@@ -251,6 +256,7 @@ function openKeymanAuthModal() {
   if (isKeymanLoggedIn) {
     document.getElementById('loginView').style.display = 'none';
     document.getElementById('loggedInView').style.display = 'block';
+    updateSyncUIStatus();
   } else {
     document.getElementById('loginView').style.display = 'block';
     document.getElementById('loggedInView').style.display = 'none';
@@ -784,6 +790,236 @@ function toggleDarkMode() {
 }
 
 // -----------------------------------------------------------
+// 13. GOOGLE SHEETS CLOUD SYNC ENGINE
+// -----------------------------------------------------------
+let isSyncInProgress = false;
+
+function getGoogleSheetsUrl() {
+  const localUrl = localStorage.getItem('cart_google_sheets_url');
+  if (localUrl && localUrl.trim()) return localUrl.trim();
+  if (typeof GOOGLE_SHEETS_SYNC_URL !== 'undefined' && GOOGLE_SHEETS_SYNC_URL && GOOGLE_SHEETS_SYNC_URL.trim()) {
+    return GOOGLE_SHEETS_SYNC_URL.trim();
+  }
+  return '';
+}
+
+function setGoogleSheetsUrl(url) {
+  if (url && url.trim()) {
+    localStorage.setItem('cart_google_sheets_url', url.trim());
+  } else {
+    localStorage.removeItem('cart_google_sheets_url');
+  }
+  updateSyncUIStatus();
+}
+
+function updateSyncUIStatus(state = null, message = '') {
+  const url = getGoogleSheetsUrl();
+  const badge = document.getElementById('syncStatusBadge');
+  const notice = document.getElementById('syncStatusNotice');
+  const spinner = document.getElementById('syncSpinner');
+  const urlInput = document.getElementById('googleSheetsUrlInput');
+
+  if (urlInput && document.activeElement !== urlInput) {
+    urlInput.value = url || '';
+  }
+
+  if (!url) {
+    if (badge) {
+      badge.className = 'sync-status-badge not-connected';
+      badge.textContent = '⚠️ Not connected (Local only)';
+    }
+    if (notice) notice.style.display = 'none';
+    if (spinner) spinner.classList.remove('is-spinning');
+    return;
+  }
+
+  if (state === 'syncing') {
+    if (badge) {
+      badge.className = 'sync-status-badge syncing';
+      badge.textContent = '🔄 Syncing with Google Sheets…';
+    }
+    if (notice) {
+      notice.className = 'sync-bar-notice syncing';
+      notice.textContent = '🔄 Syncing with Google Sheets…';
+      notice.style.display = 'block';
+    }
+    if (spinner) spinner.classList.add('is-spinning');
+  } else if (state === 'synced') {
+    if (badge) {
+      badge.className = 'sync-status-badge connected';
+      badge.textContent = '✅ Connected & Synced';
+    }
+    if (notice) {
+      notice.className = 'sync-bar-notice synced';
+      notice.textContent = message || '☁️ Synced with Google Sheets';
+      notice.style.display = 'block';
+      setTimeout(() => { if (notice && notice.classList.contains('synced')) notice.style.display = 'none'; }, 3500);
+    }
+    if (spinner) spinner.classList.remove('is-spinning');
+  } else if (state === 'error') {
+    if (badge) {
+      badge.className = 'sync-status-badge not-connected';
+      badge.textContent = '❌ Sync Error';
+    }
+    if (notice) {
+      notice.className = 'sync-bar-notice error';
+      notice.textContent = message || '⚠️ Could not reach Google Sheets. Local data active.';
+      notice.style.display = 'block';
+    }
+    if (spinner) spinner.classList.remove('is-spinning');
+  } else {
+    if (badge) {
+      badge.className = 'sync-status-badge connected';
+      badge.textContent = '✅ Connected to Google Sheets';
+    }
+    if (spinner) spinner.classList.remove('is-spinning');
+  }
+}
+
+async function syncLoadFromGoogleSheets(dateKey, isManual = false) {
+  const url = getGoogleSheetsUrl();
+  if (!url) {
+    if (isManual) showToast('ℹ️ Google Sheets not connected. Open Keyman mode to connect.');
+    updateSyncUIStatus();
+    return false;
+  }
+
+  if (isSyncInProgress) return false;
+  isSyncInProgress = true;
+  updateSyncUIStatus('syncing');
+
+  try {
+    const fetchUrl = `${url}${url.includes('?') ? '&' : '?'}date=${encodeURIComponent(dateKey)}&t=${Date.now()}`;
+    const resp = await fetch(fetchUrl, {
+      method: 'GET',
+      redirect: 'follow',
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const result = await resp.json();
+
+    if (result && result.status === 'success' && result.data) {
+      const localDataStr = localStorage.getItem(`cart_schedule_v3_${dateKey}`);
+      const remoteDataStr = JSON.stringify(result.data);
+
+      if (localDataStr !== remoteDataStr) {
+        localStorage.setItem(`cart_schedule_v3_${dateKey}`, remoteDataStr);
+        if (formatDateKey(currentDate) === dateKey) {
+          renderSchedule(false);
+        }
+      }
+      updateSyncUIStatus('synced', `☁️ Synced with Google Sheets (${result.lastUpdated || 'Just now'})`);
+      if (isManual) showToast('✅ Pulled latest schedule from Google Sheets!');
+      return true;
+    } else if (result && result.status === 'not_found') {
+      const local = getScheduleForDate(dateKey);
+      syncSaveToGoogleSheets(dateKey, local, false);
+      updateSyncUIStatus('synced');
+      return true;
+    } else {
+      updateSyncUIStatus('synced');
+      return true;
+    }
+  } catch (err) {
+    console.warn('Google Sheets sync load failed:', err);
+    updateSyncUIStatus('error', '⚠️ Could not sync with Google Sheets (Local active)');
+    if (isManual) showToast('⚠️ Could not connect to Google Sheets. Check Web App URL.');
+    return false;
+  } finally {
+    isSyncInProgress = false;
+  }
+}
+
+async function syncSaveToGoogleSheets(dateKey, scheduleData, notifyUser = false) {
+  const url = getGoogleSheetsUrl();
+  if (!url) return false;
+
+  updateSyncUIStatus('syncing');
+
+  try {
+    const payload = {
+      dateKey: dateKey,
+      data: scheduleData,
+      timestamp: new Date().toISOString()
+    };
+
+    await fetch(url, {
+      method: 'POST',
+      redirect: 'follow',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    updateSyncUIStatus('synced', '☁️ Changes saved to Google Sheets');
+    if (notifyUser) showToast('☁️ Saved & Synced with Google Sheets!');
+    return true;
+  } catch (err) {
+    console.warn('Google Sheets sync save failed:', err);
+    updateSyncUIStatus('error', '⚠️ Saved locally. Sync will retry when online.');
+    return false;
+  }
+}
+
+function syncWithGoogleSheets(isManual = false) {
+  const dateKey = formatDateKey(currentDate);
+  syncLoadFromGoogleSheets(dateKey, isManual);
+}
+
+function saveAndTestGoogleSheetsUrl() {
+  const input = document.getElementById('googleSheetsUrlInput');
+  const url = input ? input.value.trim() : '';
+
+  if (!url) {
+    showToast('⚠️ Please paste your Google Apps Script Web App URL.');
+    return;
+  }
+
+  if (!url.startsWith('https://script.google.com/macros/s/')) {
+    showToast('⚠️ URL must start with https://script.google.com/macros/s/...');
+    return;
+  }
+
+  setGoogleSheetsUrl(url);
+  showToast('🔄 Testing Google Sheets connection…');
+  updateSyncUIStatus('syncing');
+
+  fetch(`${url}${url.includes('?') ? '&' : '?'}t=${Date.now()}`, {
+    method: 'GET',
+    redirect: 'follow'
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data && data.status === 'success') {
+        showToast('✅ Connected successfully to Google Sheets!');
+        updateSyncUIStatus('synced');
+        syncWithGoogleSheets(false);
+      } else {
+        showToast('⚠️ Connected, but unexpected response format.');
+        updateSyncUIStatus('synced');
+      }
+    })
+    .catch(err => {
+      showToast('⚠️ Saved, but could not test. Check Apps Script permissions.');
+      updateSyncUIStatus('error');
+    });
+}
+
+function disconnectGoogleSheets() {
+  setGoogleSheetsUrl('');
+  showToast('🔌 Google Sheets disconnected. Using local storage.');
+}
+
+function toggleSyncInstructions() {
+  const box = document.getElementById('syncInstructions');
+  if (box) {
+    box.style.display = box.style.display === 'none' ? 'block' : 'none';
+  }
+}
+
+// -----------------------------------------------------------
 // 14. TOAST NOTIFICATION
 // -----------------------------------------------------------
 function showToast(message) {
@@ -811,4 +1047,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   updateDateDisplay();
+  updateSyncUIStatus();
+  syncWithGoogleSheets(false);
 });
