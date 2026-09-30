@@ -199,12 +199,12 @@
           <div style="font-size: 3rem; margin-bottom: 8px;">⭐</div>
           <h3 style="font-size: 1.5rem; font-weight: 900; margin-bottom: 8px;">Keyman Mode Active</h3>
           <p style="font-size: 1.05rem; color: var(--text-muted); margin-bottom: 20px;">
-            You can edit all 3 volunteer slots, reassign partners, and clear open shifts.
+            You can edit all 3 volunteer slots and clear open shifts.
           </p>
 
           <div style="display: flex; flex-direction: column; gap: 10px;">
-            <button class="btn btn-lg btn-primary" onclick="resetToSampleData()">
-              🔄 Reset Demo Schedule (3 Volunteers)
+            <button class="btn btn-lg btn-primary" onclick="clearAllShiftsForDate()">
+              🧹 Clear All Shifts for Today
             </button>
             <button class="btn btn-lg btn-danger" onclick="logoutKeyman()">
               🚪 Log Out (Viewer Mode)
@@ -249,59 +249,43 @@
         <!-- Slot 1 -->
         <fieldset style="border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 12px;">
           <legend style="font-size: 1.05rem; font-weight: 900; padding: 0 6px; color: var(--primary);">
-            👤 Slot 1: Keyholder / Driver / Lead
+            👤 Slot 1: Volunteer
           </legend>
           <div class="form-group" style="margin-bottom: 0;">
             <label class="form-label" for="editPub1Name">Full Name:</label>
-            <input type="text" id="editPub1Name" class="form-input" placeholder="e.g. Bro. Samuel David" list="publisherSuggestions">
+            <input type="text" id="editPub1Name" class="form-input" placeholder="Volunteer Full Name" list="publisherSuggestions">
           </div>
         </fieldset>
 
         <!-- Slot 2 -->
         <fieldset style="border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 12px;">
           <legend style="font-size: 1.05rem; font-weight: 900; padding: 0 6px; color: var(--primary);">
-            👥 Slot 2: Cart Partner
+            👤 Slot 2: Volunteer
           </legend>
           <div class="form-group" style="margin-bottom: 0;">
             <label class="form-label" for="editPub2Name">Full Name:</label>
-            <input type="text" id="editPub2Name" class="form-input" placeholder="e.g. Bro. Thomas Wayne" list="publisherSuggestions">
+            <input type="text" id="editPub2Name" class="form-input" placeholder="Volunteer Full Name" list="publisherSuggestions">
           </div>
         </fieldset>
 
         <!-- Slot 3 -->
         <fieldset style="border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 14px;">
           <legend style="font-size: 1.05rem; font-weight: 900; padding: 0 6px; color: var(--primary);">
-            👥 Slot 3: Cart Partner
+            👤 Slot 3: Volunteer
           </legend>
           <div class="form-group" style="margin-bottom: 0;">
             <label class="form-label" for="editPub3Name">Full Name:</label>
-            <input type="text" id="editPub3Name" class="form-input" placeholder="e.g. Sis. Martha Clark" list="publisherSuggestions">
+            <input type="text" id="editPub3Name" class="form-input" placeholder="Volunteer Full Name" list="publisherSuggestions">
           </div>
         </fieldset>
 
         <!-- Cart Notes -->
         <div class="form-group">
           <label class="form-label" for="editShiftNotes">Notes / Literature Instructions:</label>
-          <input type="text" id="editShiftNotes" class="form-input" placeholder="e.g. Take literature box #1.">
+          <input type="text" id="editShiftNotes" class="form-input" placeholder="Notes / instructions (optional)">
         </div>
 
         <datalist id="publisherSuggestions">
-          <option value="Brother Samuel David"></option>
-          <option value="Brother Thomas Wayne"></option>
-          <option value="Sister Martha Clark"></option>
-          <option value="Sister Sarah Johnson"></option>
-          <option value="Brother Robert Miller"></option>
-          <option value="Brother James Wilson"></option>
-          <option value="Sister Elizabeth Brown"></option>
-          <option value="Sister Patricia Davis"></option>
-          <option value="Brother Michael Moore"></option>
-          <option value="Brother Joseph Taylor"></option>
-          <option value="Sister Jennifer Anderson"></option>
-          <option value="Sister Linda Thomas"></option>
-          <option value="Brother Daniel Harris"></option>
-          <option value="Brother Kevin Martin"></option>
-          <option value="Sister Barbara White"></option>
-          <option value="Sister Ruth Evans"></option>
         </datalist>
 
         <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 16px;">
@@ -355,7 +339,7 @@
 
         <div class="form-group">
           <label class="form-label" for="volName">Your Name:</label>
-          <input type="text" id="volName" class="form-input" required placeholder="e.g. Sister Ruth Evans">
+          <input type="text" id="volName" class="form-input" required placeholder="Enter your full name">
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 16px;">

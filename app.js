@@ -56,36 +56,31 @@ function normalizeShiftData(raw) {
   };
 }
 
+// Clean up legacy mock data with pre-filled sample names
+try {
+  Object.keys(localStorage).forEach(key => {
+    if (key.startsWith('cart_schedule_v1_') || key.startsWith('cart_schedule_v2_')) {
+      localStorage.removeItem(key);
+    }
+  });
+} catch(e) {}
+
 // -----------------------------------------------------------
 // 3. SCHEDULE STORAGE (localStorage)
 // -----------------------------------------------------------
-function generateSampleScheduleForDate(dateKey) {
-  return {
-    'L1': [
-      { p1:{name:'Bro. Samuel David',phone:''}, p2:{name:'Bro. Thomas Wayne',phone:''}, p3:{name:'Sis. Martha Clark',phone:''}, notes:'Take literature box #1.' },
-      { p1:{name:'Sis. Sarah Johnson',phone:''}, p2:{name:'Sis. Elizabeth Brown',phone:''}, p3:{name:'',phone:''}, notes:'Need 1 afternoon partner.' }
-    ],
-    'L2': [
-      { p1:{name:'Bro. Robert Miller',phone:''}, p2:{name:'Bro. James Wilson',phone:''}, p3:{name:'Bro. Daniel Harris',phone:''}, notes:'Market busy around 7:15 AM.' },
-      { p1:{name:'Sis. Patricia Davis',phone:''}, p2:{name:'',phone:''}, p3:{name:'',phone:''}, notes:'Need 2 afternoon partners.' }
-    ],
-    'L3': [
-      { p1:{name:'Bro. Joseph Taylor',phone:''}, p2:{name:'Bro. Michael Moore',phone:''}, p3:{name:'Bro. Kevin Martin',phone:''}, notes:'Morning exercise route.' },
-      { p1:{name:'Sis. Jennifer Anderson',phone:''}, p2:{name:'Sis. Linda Thomas',phone:''}, p3:{name:'Sis. Barbara White',phone:''}, notes:'Cart at park ranger desk.' }
-    ],
-    'L4': [
-      { p1:{name:'Bro. Paul Jackson',phone:''}, p2:{name:'Bro. David Martinez',phone:''}, p3:{name:'',phone:''}, notes:'Peak ferry at 7:30 AM.' },
-      { p1:{name:'',phone:''}, p2:{name:'',phone:''}, p3:{name:'',phone:''}, notes:'Full afternoon shift open.' }
-    ],
-    'L5': [
-      { p1:{name:'Sis. Ruth Evans',phone:''}, p2:{name:'Sis. Mary Jenkins',phone:''}, p3:{name:'Sis. Deborah Adams',phone:''}, notes:'Library opens at 6:30 AM.' },
-      { p1:{name:'Bro. Anthony Scott',phone:''}, p2:{name:'Bro. Charles Perez',phone:''}, p3:{name:'Bro. George Hall',phone:''}, notes:'Plaza evening crowd.' }
-    ]
-  };
+function generateEmptySchedule() {
+  const empty = {};
+  LOCATIONS.forEach(loc => {
+    empty[loc.id] = [
+      { p1: { name: '', phone: '' }, p2: { name: '', phone: '' }, p3: { name: '', phone: '' }, notes: '' },
+      { p1: { name: '', phone: '' }, p2: { name: '', phone: '' }, p3: { name: '', phone: '' }, notes: '' }
+    ];
+  });
+  return empty;
 }
 
 function getScheduleForDate(dateKey) {
-  const storageKey = `cart_schedule_v2_${dateKey}`;
+  const storageKey = `cart_schedule_v3_${dateKey}`;
   const saved = localStorage.getItem(storageKey);
   if (saved) {
     try {
@@ -99,11 +94,11 @@ function getScheduleForDate(dateKey) {
       return parsed;
     } catch(e) { /* fall through */ }
   }
-  return generateSampleScheduleForDate(dateKey);
+  return generateEmptySchedule();
 }
 
 function saveScheduleForDate(dateKey, data) {
-  localStorage.setItem(`cart_schedule_v2_${dateKey}`, JSON.stringify(data));
+  localStorage.setItem(`cart_schedule_v3_${dateKey}`, JSON.stringify(data));
 }
 
 // -----------------------------------------------------------
@@ -176,9 +171,9 @@ function renderSchedule() {
     SHIFT_TIMES.forEach(shiftDef => {
       const shift = normalizeShiftData(shifts[shiftDef.id]);
       const slots = [
-        { data: shift.p1, role: 'Slot 1 · Lead / Driver', num: 1 },
-        { data: shift.p2, role: 'Slot 2 · Cart Partner', num: 2 },
-        { data: shift.p3, role: 'Slot 3 · Cart Partner', num: 3 }
+        { data: shift.p1, role: 'Slot 1 · Volunteer', num: 1 },
+        { data: shift.p2, role: 'Slot 2 · Volunteer', num: 2 },
+        { data: shift.p3, role: 'Slot 3 · Volunteer', num: 3 }
       ];
 
       let filledCount = 0;
@@ -316,12 +311,17 @@ function logoutKeyman() {
   renderSchedule();
 }
 
-function resetToSampleData() {
+function clearAllShiftsForDate() {
   const dateKey = formatDateKey(currentDate);
-  localStorage.removeItem(`cart_schedule_v2_${dateKey}`);
+  const empty = generateEmptySchedule();
+  saveScheduleForDate(dateKey, empty);
   closeKeymanModal();
-  showToast('🔄 Schedule reset to demo data.');
+  showToast('🧹 All shifts cleared for today.');
   renderSchedule();
+}
+
+function resetToSampleData() {
+  clearAllShiftsForDate();
 }
 
 // -----------------------------------------------------------

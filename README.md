@@ -5,12 +5,12 @@ An accessible, elderly-friendly, high-contrast digital schedule coordinator for 
 ## ✨ Features
 
 - **3 Volunteers Per Cart System**:
-  - Accommodates 3 volunteers per shift (Publisher 1: Lead/Driver, Publisher 2: Partner, Publisher 3: Partner).
+  - Accommodates 3 volunteers per shift (Slot 1: Volunteer, Slot 2: Volunteer, Slot 3: Volunteer).
   - 30 total daily slots across 5 locations and 2 shifts.
   - Granular staffing status badges:
     - `✔️ Fully Staffed (3/3)`
-    - `⚠️ 1 Partner Needed (2/3)`
-    - `⚠️ 2 Partners Needed (1/3)`
+    - `⚠️ 1 Volunteer Needed (2/3)`
+    - `⚠️ 2 Volunteers Needed (1/3)`
     - `⭕ Open Shift (3 Needed)`
 - **📋 Daily Print Summary & Vacancy Report**:
   - **KPI Dashboard**: Date, active carts, confirmed volunteers (X/30), open vacancies.
@@ -25,7 +25,7 @@ An accessible, elderly-friendly, high-contrast digital schedule coordinator for 
 - **Keyman Coordinator Mode**:
   - 4-digit PIN authentication on a big visual keypad (Default PIN: `1234`).
   - Edit all 3 publisher assignments, phone contacts, and cart storage instructions.
-  - Reset to sample demo data or clear shifts to mark as open.
+  - Clear all shifts to mark as open.
 - **Volunteer Self-Sign-Up**:
   - Open shifts feature a 1-tap "I Can Volunteer!" modal that automatically assigns to the next available slot.
 - **Assistive Utilities**:
