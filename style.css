@@ -1507,7 +1507,7 @@ body.dark-mode .vacancy-badge {
   border-top: 1px solid #d1d5db; /* Simple thin gray gridline */
 }
 
-/* Cell 2: Shift (Dark brown text) & Time (Dark blue text) */
+/* Cell 2: Shift (Morning Amber/Brown, Afternoon Blue) & Time (Dark Slate) */
 .srt-time-compound .srt-sub-row {
   align-items: center;
   text-align: center;
@@ -1516,16 +1516,21 @@ body.dark-mode .vacancy-badge {
 .srt-shift-title {
   font-size: 1.18rem;
   font-weight: 900;
-  color: #78350f; /* Dark brown text for shifts */
   text-transform: uppercase;
   letter-spacing: 0.02em;
   margin-bottom: 6px;
   line-height: 1.25;
 }
+.srt-shift-title-morning {
+  color: #92400e !important; /* Morning Warm Amber / Brown */
+}
+.srt-shift-title-afternoon {
+  color: #1e40af !important; /* Afternoon Royal Blue */
+}
 .srt-shift-time {
   font-size: 1.15rem;
   font-weight: 900;
-  color: #1e3a8a; /* Dark blue text for times */
+  color: #0f172a !important; /* Dark Slate for Times */
   white-space: nowrap;
   line-height: 1.25;
   font-variant-numeric: tabular-nums;
@@ -1566,7 +1571,7 @@ body.dark-mode .vacancy-badge {
   line-height: 1.25;
 }
 
-/* Cell 4: Vacancy Status (Red text for vacancies, Green text for staffed) */
+/* Cell 4: Vacancy Status (Colors based on their specific usage) */
 .srt-status-compound .srt-sub-row {
   align-items: center;
   justify-content: center;
@@ -1576,13 +1581,25 @@ body.dark-mode .vacancy-badge {
 .srt-status-staffed {
   font-size: 1.22rem;
   font-weight: 900;
-  color: #15803d; /* Green text for staffed */
+  color: #15803d !important; /* Staffed = Green */
   line-height: 1.25;
 }
-.srt-status-vacant {
+.srt-status-needed-1 {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #b45309 !important; /* 1 Needed = Warning Amber */
+  line-height: 1.25;
+}
+.srt-status-needed-2 {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #c2410c !important; /* 2 Needed = Orange */
+  line-height: 1.25;
+}
+.srt-status-needed-3 {
   font-size: 1.28rem;
   font-weight: 900;
-  color: #dc2626; /* Red text for vacancies */
+  color: #dc2626 !important; /* 3 Needed = Danger Red */
   line-height: 1.25;
 }
 

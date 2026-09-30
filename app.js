@@ -454,12 +454,19 @@ function openSummaryReportModal() {
     totalFilled += mFilled;
     totalVacant += mVacant;
 
-    let mStatusHtml = '';
-    if (mVacant === 0) {
-      mStatusHtml = '<div class="srt-status-staffed">Staffed</div>';
-    } else {
-      mStatusHtml = `<div class="srt-status-vacant">${mVacant} Needed</div>`;
+    function getStatusBadgeHtml(vacantCount) {
+      if (vacantCount === 0) {
+        return '<div class="srt-status-staffed">✅ Staffed</div>';
+      } else if (vacantCount === 1) {
+        return '<div class="srt-status-needed-1">⚠️ 1 Needed</div>';
+      } else if (vacantCount === 2) {
+        return '<div class="srt-status-needed-2">⚠️ 2 Needed</div>';
+      } else {
+        return '<div class="srt-status-needed-3">🚨 3 Needed</div>';
+      }
     }
+
+    const mStatusHtml = getStatusBadgeHtml(mVacant);
 
     // Afternoon shift (idx 1)
     const aDef = SHIFT_TIMES[1];
@@ -472,27 +479,22 @@ function openSummaryReportModal() {
     totalFilled += aFilled;
     totalVacant += aVacant;
 
-    let aStatusHtml = '';
-    if (aVacant === 0) {
-      aStatusHtml = '<div class="srt-status-staffed">Staffed</div>';
-    } else {
-      aStatusHtml = `<div class="srt-status-vacant">${aVacant} Needed</div>`;
-    }
+    const aStatusHtml = getStatusBadgeHtml(aVacant);
 
     tbodyHTML += `
       <tr class="srt-row srt-location-row">
         <td class="srt-loc-cell">
-          <div class="srt-loc-name">${escapeHtml(loc.name)}</div>
+          <div class="srt-loc-name">📍 ${escapeHtml(loc.name)}</div>
           ${loc.landmark && loc.landmark !== loc.name && !loc.name.includes(`(${loc.landmark})`) ? `<div class="srt-loc-landmark">${escapeHtml(loc.landmark)}</div>` : ''}
         </td>
         <td class="srt-compound-cell srt-time-compound">
           <div class="srt-sub-row srt-sub-morning">
-            <div class="srt-shift-title">${escapeHtml(mDef.name.toUpperCase())}</div>
-            <div class="srt-shift-time">${escapeHtml(mDef.timeString.replace(/–/g, '-'))}</div>
+            <div class="srt-shift-title srt-shift-title-morning">🌅 ${escapeHtml(mDef.name.toUpperCase())}</div>
+            <div class="srt-shift-time">⏰ ${escapeHtml(mDef.timeString.replace(/–/g, '-'))}</div>
           </div>
           <div class="srt-sub-row srt-sub-afternoon">
-            <div class="srt-shift-title">${escapeHtml(aDef.name.toUpperCase())}</div>
-            <div class="srt-shift-time">${escapeHtml(aDef.timeString.replace(/–/g, '-'))}</div>
+            <div class="srt-shift-title srt-shift-title-afternoon">🌇 ${escapeHtml(aDef.name.toUpperCase())}</div>
+            <div class="srt-shift-time">⏰ ${escapeHtml(aDef.timeString.replace(/–/g, '-'))}</div>
           </div>
         </td>
         <td class="srt-compound-cell srt-vol-compound">
