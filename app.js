@@ -431,7 +431,7 @@ function submitVolunteerRequest(e) {
 }
 
 // -----------------------------------------------------------
-// 10. SUMMARY & VACANCY REPORT (Clean 4-Column Table + PNG)
+// 10. SUMMARY & VACANCY REPORT (Landscape Table + Mobile-Friendly PNG)
 // -----------------------------------------------------------
 function openSummaryReportModal() {
   const dateTitle = document.getElementById('currentDateTitle').textContent;
@@ -449,11 +449,18 @@ function openSummaryReportModal() {
       if (shift.p3 && shift.p3.name && shift.p3.name.trim()) volunteers.push(shift.p3.name.trim());
       const openSlots = 3 - volunteers.length;
       for (let i = 0; i < openSlots; i++) volunteers.push('<span class="srt-vacant">— Vacant —</span>');
-      tableRows.push({ location: loc.id, volunteers: volunteers.join('<br>'), date: dateTitle, time: shiftDef.timeString });
+      tableRows.push({
+        location: loc.id,
+        volunteers: volunteers.join('<br>'),
+        date: dateTitle,
+        time: shiftDef.timeString,
+        shiftClass: shiftDef.className
+      });
     });
   });
 
   let html = `
+    <div class="srt-scroll-hint">👈 Swipe to view full table 👉</div>
     <div id="reportCaptureZone" class="srt-capture-zone">
       <div class="srt-header">
         <div class="srt-header-icon">🛒</div>
@@ -463,9 +470,9 @@ function openSummaryReportModal() {
         </div>
       </div>
       <table class="summary-report-table">
-        <thead><tr><th>Location</th><th>Volunteers</th><th>Date</th><th>Time</th></tr></thead>
+        <thead><tr><th>Location</th><th>Volunteers (3 per Cart)</th><th>Date</th><th>Shift Time</th></tr></thead>
         <tbody>
-          ${tableRows.map(r => `<tr>
+          ${tableRows.map(r => `<tr class="srt-shift-${r.shiftClass}">
             <td class="srt-loc-cell">${escapeHtml(r.location)}</td>
             <td class="srt-vol-cell">${r.volunteers}</td>
             <td class="srt-date-cell">${escapeHtml(r.date)}</td>
@@ -482,18 +489,82 @@ function openSummaryReportModal() {
 
 function closeSummaryReportModal() {
   document.getElementById('summaryReportModal').classList.remove('active');
+  // Clean up any lingering image preview
+  const existingOverlay = document.querySelector('.image-preview-overlay');
+  if (existingOverlay) existingOverlay.remove();
 }
 
 function downloadReportAsImage() {
   const el = document.getElementById('reportCaptureZone');
   if (!el) { showToast('⚠️ No report to capture.'); return; }
-  showToast('📸 Generating image...');
-  html2canvas(el, { scale: 3, useCORS: true, backgroundColor: '#ffffff', logging: false }).then(canvas => {
-    const link = document.createElement('a');
-    link.download = `Cart-Schedule-${formatDateKey(currentDate)}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-    showToast('✅ Image saved! Check your Downloads.');
+  showToast('📸 Generating image…');
+
+  html2canvas(el, { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 720 }).then(canvas => {
+    canvas.toBlob(blob => {
+      if (!blob) { showToast('❌ Failed to create image.'); return; }
+
+      const blobUrl = URL.createObjectURL(blob);
+      const fileName = `Cart-Schedule-${formatDateKey(currentDate)}.png`;
+
+      // Check if native share is available (mobile)
+      const canShare = navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], fileName, { type: 'image/png' })] });
+
+      // Build fullscreen image preview overlay
+      const overlay = document.createElement('div');
+      overlay.className = 'image-preview-overlay';
+      overlay.innerHTML = `
+        <div class="image-preview-header">
+          <h3>📸 Schedule Image Ready</h3>
+          <p>Long-press the image below to save to your gallery</p>
+        </div>
+        <div class="image-preview-container">
+          <img src="${blobUrl}" alt="Cart Witnessing Schedule" />
+        </div>
+        <div class="image-preview-actions">
+          ${canShare ? `<button class="btn btn-lg btn-success" id="shareImageBtn">📤 Share / Save to Gallery</button>` : ''}
+          <button class="btn btn-lg btn-primary" id="downloadImageBtn">💾 Download Image</button>
+          <button class="btn btn-outline" id="closeImagePreviewBtn">✕ Close</button>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+
+      // Download button — works on all platforms
+      document.getElementById('downloadImageBtn').addEventListener('click', () => {
+        const link = document.createElement('a');
+        link.download = fileName;
+        link.href = blobUrl;
+        link.click();
+        showToast('✅ Image saved! Check your Downloads.');
+      });
+
+      // Share button — mobile native share sheet
+      if (canShare) {
+        document.getElementById('shareImageBtn').addEventListener('click', async () => {
+          try {
+            const file = new File([blob], fileName, { type: 'image/png' });
+            await navigator.share({ files: [file], title: 'Cart Witnessing Schedule', text: `Schedule for ${document.getElementById('currentDateTitle').textContent}` });
+            showToast('✅ Shared successfully!');
+          } catch (err) {
+            if (err.name !== 'AbortError') showToast('❌ Share failed. Try long-press to save.');
+          }
+        });
+      }
+
+      // Close button
+      document.getElementById('closeImagePreviewBtn').addEventListener('click', () => {
+        overlay.remove();
+        URL.revokeObjectURL(blobUrl);
+      });
+
+      // Also close on overlay background tap
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          overlay.remove();
+          URL.revokeObjectURL(blobUrl);
+        }
+      });
+
+    }, 'image/png');
   }).catch(() => showToast('❌ Failed to generate image.'));
 }
 
