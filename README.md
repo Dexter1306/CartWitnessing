@@ -29,5 +29,5 @@ An accessible, elderly-friendly, high-contrast digital schedule coordinator for 
 - **Volunteer Self-Sign-Up**:
   - Open shifts feature a 1-tap "I Can Volunteer!" modal that automatically assigns to the next available slot.
 - **Assistive Utilities**:
-  - 📲 **Copy WhatsApp Text**: Formats and copies a clean, markdown-formatted broadcast message.
+  - 📋 **Copy Text Report**: Formats and copies a clean, text-formatted schedule report to the clipboard.
   - 📋 **Summary & Available Report**: Full schedule and available slots table with 1-tap download and mobile gallery saving.

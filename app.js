@@ -769,7 +769,7 @@ function copyWhatsAppSummary() {
     msg += '\n';
   });
 
-  navigator.clipboard.writeText(msg).then(() => showToast('📲 Schedule copied! Paste in WhatsApp.')).catch(() => showToast('❌ Could not copy to clipboard.'));
+  navigator.clipboard.writeText(msg).then(() => showToast('📋 Text report copied to clipboard!')).catch(() => showToast('❌ Could not copy to clipboard.'));
 }
 
 // -----------------------------------------------------------
