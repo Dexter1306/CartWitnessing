@@ -161,11 +161,12 @@ function renderSchedule() {
     card.id = `card-${loc.id}`;
 
     let cardHTML = `
-      <div class="location-card-header">
-        <div>
-          <div class="location-card-name">${escapeHtml(loc.name)}</div>
-          <div class="location-card-landmark">${escapeHtml(loc.landmark)}</div>
+      <div class="location-header">
+        <div class="location-title-box">
+          <span class="location-tag">${escapeHtml(loc.id)}</span>
+          <span class="location-name">${escapeHtml(loc.name)}</span>
         </div>
+        <div class="location-landmark">📍 ${escapeHtml(loc.landmark)}</div>
       </div>`;
 
     const shifts = data[loc.id] || [normalizeShiftData(null), normalizeShiftData(null)];
@@ -594,24 +595,14 @@ function stopSpeech() {
 }
 
 // -----------------------------------------------------------
-// 13. ACCESSIBILITY (Font Zoom & High Contrast)
+// 13. DARK MODE
 // -----------------------------------------------------------
-function setFontZoom(level) {
-  const scales = { normal: 1, large: 1.2, jumbo: 1.45 };
-  document.documentElement.style.setProperty('--font-scale', scales[level] || 1);
-  ['Normal','Large','Jumbo'].forEach(l => {
-    const btn = document.getElementById(`zoom${l}Btn`);
-    if (btn) btn.classList.toggle('active', l.toLowerCase() === level);
-  });
-  localStorage.setItem('cart_font_zoom', level);
-}
-
-function toggleHighContrast() {
-  document.body.classList.toggle('high-contrast');
-  const isHC = document.body.classList.contains('high-contrast');
-  localStorage.setItem('cart_high_contrast', isHC ? 'true' : 'false');
-  const btn = document.getElementById('contrastToggleBtn');
-  if (btn) btn.classList.toggle('active', isHC);
+function toggleDarkMode() {
+  document.body.classList.toggle('dark-mode');
+  const isDark = document.body.classList.contains('dark-mode');
+  localStorage.setItem('cart_dark_mode', isDark ? 'true' : 'false');
+  const icon = document.getElementById('darkModeIcon');
+  if (icon) icon.textContent = isDark ? '☀️' : '🌙';
 }
 
 // -----------------------------------------------------------
@@ -633,11 +624,13 @@ function hideToast() {
 // 15. INITIALIZATION
 // -----------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
-  // Restore accessibility preferences
-  const savedZoom = localStorage.getItem('cart_font_zoom');
-  if (savedZoom) setFontZoom(savedZoom);
-  const savedHC = localStorage.getItem('cart_high_contrast');
-  if (savedHC === 'true') { document.body.classList.add('high-contrast'); const btn = document.getElementById('contrastToggleBtn'); if (btn) btn.classList.add('active'); }
+  // Restore dark mode preference
+  const savedDark = localStorage.getItem('cart_dark_mode');
+  if (savedDark === 'true') {
+    document.body.classList.add('dark-mode');
+    const icon = document.getElementById('darkModeIcon');
+    if (icon) icon.textContent = '☀️';
+  }
 
   updateDateDisplay();
 });

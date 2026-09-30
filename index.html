@@ -36,6 +36,10 @@
       </div>
 
       <div class="topbar-actions">
+        <!-- Dark Mode Toggle -->
+        <button id="darkModeBtn" class="btn btn-sm btn-outline btn-dark-toggle" onclick="toggleDarkMode()" aria-label="Toggle Dark Mode">
+          <span id="darkModeIcon">🌙</span>
+        </button>
         <!-- Keyman Auth Button -->
         <button id="keymanActionBtn" class="btn btn-sm btn-keyman" onclick="openKeymanAuthModal()" aria-label="Keyman Login for edit mode">
           <span aria-hidden="true">🔑</span>
@@ -43,17 +47,6 @@
         </button>
       </div>
     </header>
-
-    <!-- 2. ELDERLY QUICK COMFORT STRIP -->
-    <section class="accessibility-strip" aria-label="Elderly text and contrast settings">
-      <span class="strip-label">👓 Comfort:</span>
-      <div class="strip-btns">
-        <button id="zoomNormalBtn" class="btn btn-sm btn-outline" style="min-height: 38px; padding: 4px 10px;" onclick="setFontZoom('normal')">Aa</button>
-        <button id="zoomLargeBtn" class="btn btn-sm btn-outline" style="min-height: 38px; padding: 4px 10px;" onclick="setFontZoom('large')">Aa+</button>
-        <button id="zoomJumboBtn" class="btn btn-sm btn-outline" style="min-height: 38px; padding: 4px 10px;" onclick="setFontZoom('jumbo')">Aa++</button>
-        <button id="contrastToggleBtn" class="btn btn-sm btn-contrast-toggle" style="min-height: 38px; padding: 4px 10px;" onclick="toggleHighContrast()">👁️ High-Vis</button>
-      </div>
-    </section>
 
     <!-- 3. STICKY MOBILE DATE NAVIGATOR -->
     <nav class="date-mobile-card" aria-label="Schedule Date Selection">

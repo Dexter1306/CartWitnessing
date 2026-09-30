@@ -47,56 +47,50 @@
   --shadow-btn: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Ultra High-Contrast Mode (Yellow on Black / High-Vis) */
-body.ultra-contrast {
-  --bg-body: #000000;
-  --bg-card: #121212;
-  --bg-card-alt: #1a1a1a;
-  --border-color: #facc15;
-  --border-width: 3px;
-  --text-main: #ffffff;
-  --text-muted: #fef08a;
-  --text-light: #e2e8f0;
+/* Dark Mode */
+body.dark-mode {
+  --bg-body: #0f172a;
+  --bg-card: #1e293b;
+  --bg-card-alt: #293548;
+  --border-color: #475569;
+  --border-width: 2px;
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --text-light: #cbd5e1;
   
-  --primary: #facc15;
-  --primary-hover: #eab308;
-  --primary-contrast: #000000;
+  --primary: #60a5fa;
+  --primary-hover: #3b82f6;
+  --primary-contrast: #0f172a;
   
-  --accent: #38bdf8;
-  --accent-contrast: #000000;
+  --accent: #fbbf24;
+  --accent-contrast: #0f172a;
   
   --success-bg: #064e3b;
   --success-border: #34d399;
-  --success-text: #ffffff;
+  --success-text: #ecfdf5;
   --success-badge: #34d399;
   
   --warning-bg: #78350f;
-  --warning-border: #fcd34d;
-  --warning-text: #ffffff;
+  --warning-border: #fbbf24;
+  --warning-text: #fef3c7;
   --warning-badge: #fbbf24;
   
   --danger-bg: #7f1d1d;
   --danger-border: #f87171;
-  --danger-text: #ffffff;
+  --danger-text: #fef2f2;
   --danger-badge: #f87171;
 
-  --keyman-badge-bg: #facc15;
-  --keyman-badge-text: #000000;
-  --focus-ring: #ffffff;
-  --shadow-card: 0 0 0 2px #facc15;
-  --shadow-btn: 0 0 0 2px #facc15;
+  --keyman-badge-bg: #7c3aed;
+  --keyman-badge-text: #ffffff;
+  --focus-ring: #60a5fa;
+  --shadow-card: 0 3px 12px rgba(0, 0, 0, 0.3);
+  --shadow-btn: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
-/* Font size multipliers for Elderly Friendly Accessibility */
+/* Font base */
 html {
-  font-size: calc(16px * var(--font-scale));
+  font-size: 16px;
   -webkit-text-size-adjust: 100%;
-}
-html.zoom-large {
-  --font-scale: 1.2; /* Base ~19.2px */
-}
-html.zoom-jumbo {
-  --font-scale: 1.4; /* Base ~22.4px */
 }
 
 * {
@@ -190,35 +184,18 @@ a:focus-visible {
   gap: 8px;
 }
 
-/* Elderly Quick Accessibility Strip */
-.accessibility-strip {
-  background-color: var(--bg-card-alt);
-  border: var(--border-width) solid var(--border-color);
+/* Dark mode toggle button */
+.btn-dark-toggle {
+  min-height: 40px;
+  min-width: 40px;
+  padding: 4px 8px;
+  font-size: 1.2rem;
   border-radius: var(--radius-sm);
-  padding: 8px 12px;
-  margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  overflow-x: auto;
-  scrollbar-width: none;
 }
-.accessibility-strip::-webkit-scrollbar {
-  display: none;
-}
-
-.strip-label {
-  font-size: 0.95rem;
-  font-weight: 800;
-  white-space: nowrap;
-  color: var(--text-main);
-}
-
-.strip-btns {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+body.dark-mode .btn-dark-toggle {
+  background-color: #fbbf24;
+  border-color: #fbbf24;
+  color: #0f172a;
 }
 
 /* -------------------------------------------------------------
@@ -284,12 +261,12 @@ a:focus-visible {
   background-color: var(--bg-card-alt);
 }
 
-.btn-contrast-toggle {
+.btn-dark-toggle-DEPRECATED {
   background-color: #000000;
   color: #facc15;
   border: 2px solid #facc15;
 }
-body.ultra-contrast .btn-contrast-toggle {
+body.dark-mode .btn-dark-toggle-DEPRECATED {
   background-color: #ffffff;
   color: #000000;
   border-color: #ffffff;
@@ -343,7 +320,7 @@ body.ultra-contrast .btn-contrast-toggle {
   color: #581c87;
   border-color: #c084fc;
 }
-body.ultra-contrast .keyman-status-badge.logged-in {
+body.dark-mode .keyman-status-badge.logged-in {
   background-color: #581c87;
   color: #facc15;
   border-color: #facc15;
@@ -354,7 +331,7 @@ body.ultra-contrast .keyman-status-badge.logged-in {
   color: #1e3a8a;
   border-color: #93c5fd;
 }
-body.ultra-contrast .keyman-status-badge.viewer {
+body.dark-mode .keyman-status-badge.viewer {
   background-color: #172554;
   color: #ffffff;
   border-color: #93c5fd;
@@ -516,7 +493,7 @@ body.ultra-contrast .keyman-status-badge.viewer {
   color: var(--primary-contrast);
   border-color: var(--primary);
 }
-body.ultra-contrast .quick-action-btn.featured {
+body.dark-mode .quick-action-btn.featured {
   background-color: #facc15;
   color: #000000;
   border-color: #facc15;
@@ -597,7 +574,7 @@ body.ultra-contrast .quick-action-btn.featured {
   color: var(--primary-contrast);
   border-color: var(--primary);
 }
-body.ultra-contrast .location-chip.active {
+body.dark-mode .location-chip.active {
   background-color: #facc15;
   color: #000000;
   border-color: #facc15;
@@ -645,7 +622,7 @@ body.ultra-contrast .location-chip.active {
   letter-spacing: 0.05em;
   flex-shrink: 0;
 }
-body.ultra-contrast .location-tag {
+body.dark-mode .location-tag {
   background-color: #facc15;
   color: #000000;
 }
@@ -712,10 +689,10 @@ body.ultra-contrast .location-tag {
 .shift-block.afternoon {
   border-left: 8px solid #2563eb; /* Afternoon Royal Blue */
 }
-body.ultra-contrast .shift-block.morning {
+body.dark-mode .shift-block.morning {
   border-left: 10px solid #facc15;
 }
-body.ultra-contrast .shift-block.afternoon {
+body.dark-mode .shift-block.afternoon {
   border-left: 10px solid #38bdf8;
 }
 
@@ -772,7 +749,7 @@ body.ultra-contrast .shift-block.afternoon {
   border-color: #ea580c;
   color: #9a3412;
 }
-body.ultra-contrast .status-badge.need-two {
+body.dark-mode .status-badge.need-two {
   background-color: #7c2d12;
   border-color: #fb923c;
   color: #ffffff;
@@ -832,7 +809,7 @@ body.ultra-contrast .status-badge.need-two {
   color: #b91c1c;
   font-style: italic;
 }
-body.ultra-contrast .slot-empty-text {
+body.dark-mode .slot-empty-text {
   color: #f87171;
 }
 
@@ -1019,7 +996,7 @@ body.ultra-contrast .slot-empty-text {
 .pin-dot.filled {
   background-color: var(--primary);
 }
-body.ultra-contrast .pin-dot.filled {
+body.dark-mode .pin-dot.filled {
   background-color: #facc15;
 }
 
@@ -1130,7 +1107,7 @@ body.ultra-contrast .pin-dot.filled {
   border: 1px solid #f87171;
   white-space: nowrap;
 }
-body.ultra-contrast .vacancy-badge {
+body.dark-mode .vacancy-badge {
   background-color: #7f1d1d;
   color: #ffffff;
   border-color: #f87171;
@@ -1369,3 +1346,4 @@ body.ultra-contrast .vacancy-badge {
   border-top: 1px solid #e2e8f0;
   letter-spacing: 0.03em;
 }
+
