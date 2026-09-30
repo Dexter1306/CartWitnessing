@@ -50,9 +50,9 @@ function escapeHtml(str) {
 function normalizeShiftData(raw) {
   if (!raw) return { p1:{name:'',phone:''}, p2:{name:'',phone:''}, p3:{name:'',phone:''}, notes:'' };
   return {
-    p1: raw.p1 || {name:'',phone:''},
-    p2: raw.p2 || {name:'',phone:''},
-    p3: raw.p3 || {name:'',phone:''},
+    p1: { name: (raw.p1 && raw.p1.name) ? raw.p1.name : '', phone: '' },
+    p2: { name: (raw.p2 && raw.p2.name) ? raw.p2.name : '', phone: '' },
+    p3: { name: (raw.p3 && raw.p3.name) ? raw.p3.name : '', phone: '' },
     notes: raw.notes || ''
   };
 }
@@ -63,24 +63,24 @@ function normalizeShiftData(raw) {
 function generateSampleScheduleForDate(dateKey) {
   return {
     'L1': [
-      { p1:{name:'Bro. Samuel David',phone:'555-0143'}, p2:{name:'Bro. Thomas Wayne',phone:'555-0188'}, p3:{name:'Sis. Martha Clark',phone:'555-0219'}, notes:'Take literature box #1.' },
-      { p1:{name:'Sis. Sarah Johnson',phone:'555-0322'}, p2:{name:'Sis. Elizabeth Brown',phone:'555-0355'}, p3:{name:'',phone:''}, notes:'Need 1 afternoon partner.' }
+      { p1:{name:'Bro. Samuel David',phone:''}, p2:{name:'Bro. Thomas Wayne',phone:''}, p3:{name:'Sis. Martha Clark',phone:''}, notes:'Take literature box #1.' },
+      { p1:{name:'Sis. Sarah Johnson',phone:''}, p2:{name:'Sis. Elizabeth Brown',phone:''}, p3:{name:'',phone:''}, notes:'Need 1 afternoon partner.' }
     ],
     'L2': [
-      { p1:{name:'Bro. Robert Miller',phone:'555-0410'}, p2:{name:'Bro. James Wilson',phone:'555-0487'}, p3:{name:'Bro. Daniel Harris',phone:'555-0923'}, notes:'Market busy around 7:15 AM.' },
-      { p1:{name:'Sis. Patricia Davis',phone:'555-0812'}, p2:{name:'',phone:''}, p3:{name:'',phone:''}, notes:'Need 2 afternoon partners.' }
+      { p1:{name:'Bro. Robert Miller',phone:''}, p2:{name:'Bro. James Wilson',phone:''}, p3:{name:'Bro. Daniel Harris',phone:''}, notes:'Market busy around 7:15 AM.' },
+      { p1:{name:'Sis. Patricia Davis',phone:''}, p2:{name:'',phone:''}, p3:{name:'',phone:''}, notes:'Need 2 afternoon partners.' }
     ],
     'L3': [
-      { p1:{name:'Bro. Joseph Taylor',phone:'555-0551'}, p2:{name:'Bro. Michael Moore',phone:'555-0771'}, p3:{name:'Bro. Kevin Martin',phone:'555-0955'}, notes:'Morning exercise route.' },
-      { p1:{name:'Sis. Jennifer Anderson',phone:'555-0604'}, p2:{name:'Sis. Linda Thomas',phone:'555-0629'}, p3:{name:'Sis. Barbara White',phone:'555-0899'}, notes:'Cart at park ranger desk.' }
+      { p1:{name:'Bro. Joseph Taylor',phone:''}, p2:{name:'Bro. Michael Moore',phone:''}, p3:{name:'Bro. Kevin Martin',phone:''}, notes:'Morning exercise route.' },
+      { p1:{name:'Sis. Jennifer Anderson',phone:''}, p2:{name:'Sis. Linda Thomas',phone:''}, p3:{name:'Sis. Barbara White',phone:''}, notes:'Cart at park ranger desk.' }
     ],
     'L4': [
-      { p1:{name:'Bro. Paul Jackson',phone:'555-0782'}, p2:{name:'Bro. David Martinez',phone:'555-0834'}, p3:{name:'',phone:''}, notes:'Peak ferry at 7:30 AM.' },
+      { p1:{name:'Bro. Paul Jackson',phone:''}, p2:{name:'Bro. David Martinez',phone:''}, p3:{name:'',phone:''}, notes:'Peak ferry at 7:30 AM.' },
       { p1:{name:'',phone:''}, p2:{name:'',phone:''}, p3:{name:'',phone:''}, notes:'Full afternoon shift open.' }
     ],
     'L5': [
-      { p1:{name:'Sis. Ruth Evans',phone:'555-0199'}, p2:{name:'Sis. Mary Jenkins',phone:'555-0245'}, p3:{name:'Sis. Deborah Adams',phone:'555-0311'}, notes:'Library opens at 6:30 AM.' },
-      { p1:{name:'Bro. Anthony Scott',phone:'555-0677'}, p2:{name:'Bro. Charles Perez',phone:'555-0712'}, p3:{name:'Bro. George Hall',phone:'555-0844'}, notes:'Plaza evening crowd.' }
+      { p1:{name:'Sis. Ruth Evans',phone:''}, p2:{name:'Sis. Mary Jenkins',phone:''}, p3:{name:'Sis. Deborah Adams',phone:''}, notes:'Library opens at 6:30 AM.' },
+      { p1:{name:'Bro. Anthony Scott',phone:''}, p2:{name:'Bro. Charles Perez',phone:''}, p3:{name:'Bro. George Hall',phone:''}, notes:'Plaza evening crowd.' }
     ]
   };
 }
@@ -93,6 +93,9 @@ function getScheduleForDate(dateKey) {
       const parsed = JSON.parse(saved);
       LOCATIONS.forEach(loc => {
         if (!parsed[loc.id]) parsed[loc.id] = [normalizeShiftData(null), normalizeShiftData(null)];
+        else {
+          parsed[loc.id] = parsed[loc.id].map(shift => normalizeShiftData(shift));
+        }
       });
       return parsed;
     } catch(e) { /* fall through */ }
@@ -193,7 +196,6 @@ function renderSchedule() {
                 <div class="slot-name">${escapeHtml(s.data.name)}</div>
                 <div class="slot-role">${s.role}</div>
               </div>
-              ${s.data.phone ? `<a href="tel:${escapeHtml(s.data.phone)}" class="slot-phone-btn">📞</a>` : ''}
             </div>`;
         } else {
           slotsHTML += `
@@ -340,11 +342,8 @@ function openShiftEditorModal(locId, shiftIdx) {
   document.getElementById('editorShiftHeader').innerHTML = `${escapeHtml(loc.name)} &bull; ${escapeHtml(shiftDef.timeString)}`;
   document.getElementById('editorShiftDate').textContent = formatDateTitle(currentDate);
   document.getElementById('editPub1Name').value = shift.p1.name || '';
-  document.getElementById('editPub1Phone').value = shift.p1.phone || '';
   document.getElementById('editPub2Name').value = shift.p2.name || '';
-  document.getElementById('editPub2Phone').value = shift.p2.phone || '';
   document.getElementById('editPub3Name').value = shift.p3.name || '';
-  document.getElementById('editPub3Phone').value = shift.p3.phone || '';
   document.getElementById('editShiftNotes').value = shift.notes || '';
   document.getElementById('shiftEditorModal').classList.add('active');
 }
@@ -362,9 +361,9 @@ function saveShiftEditor(e) {
   if (!data[locId]) data[locId] = [normalizeShiftData(null), normalizeShiftData(null)];
 
   data[locId][shiftIdx] = {
-    p1: { name: document.getElementById('editPub1Name').value.trim(), phone: document.getElementById('editPub1Phone').value.trim() },
-    p2: { name: document.getElementById('editPub2Name').value.trim(), phone: document.getElementById('editPub2Phone').value.trim() },
-    p3: { name: document.getElementById('editPub3Name').value.trim(), phone: document.getElementById('editPub3Phone').value.trim() },
+    p1: { name: document.getElementById('editPub1Name').value.trim(), phone: '' },
+    p2: { name: document.getElementById('editPub2Name').value.trim(), phone: '' },
+    p3: { name: document.getElementById('editPub3Name').value.trim(), phone: '' },
     notes: document.getElementById('editShiftNotes').value.trim()
   };
 
@@ -376,11 +375,8 @@ function saveShiftEditor(e) {
 
 function clearCurrentShift() {
   document.getElementById('editPub1Name').value = '';
-  document.getElementById('editPub1Phone').value = '';
   document.getElementById('editPub2Name').value = '';
-  document.getElementById('editPub2Phone').value = '';
   document.getElementById('editPub3Name').value = '';
-  document.getElementById('editPub3Phone').value = '';
   document.getElementById('editShiftNotes').value = '';
   showToast('🧹 Shift fields cleared.');
 }
@@ -396,7 +392,6 @@ function openVolunteerModal(locId, shiftIdx) {
   document.getElementById('volShiftInfo').innerHTML = `${escapeHtml(loc.name)} &bull; ${escapeHtml(shiftDef.timeString)}`;
   document.getElementById('volDateInfo').textContent = formatDateTitle(currentDate);
   document.getElementById('volName').value = '';
-  document.getElementById('volPhone').value = '';
   document.getElementById('volunteerModal').classList.add('active');
 }
 
@@ -409,8 +404,7 @@ function submitVolunteerRequest(e) {
   const locId = document.getElementById('volLocId').value;
   const shiftIdx = parseInt(document.getElementById('volShiftIdx').value);
   const name = document.getElementById('volName').value.trim();
-  const phone = document.getElementById('volPhone').value.trim();
-  if (!name || !phone) { showToast('⚠️ Please enter both name and phone.'); return; }
+  if (!name) { showToast('⚠️ Please enter your name.'); return; }
 
   const dateKey = formatDateKey(currentDate);
   const data = getScheduleForDate(dateKey);
@@ -418,9 +412,9 @@ function submitVolunteerRequest(e) {
   const shift = normalizeShiftData(data[locId][shiftIdx]);
 
   // Fill the first empty slot
-  if (!shift.p1.name || !shift.p1.name.trim()) { shift.p1 = {name, phone}; }
-  else if (!shift.p2.name || !shift.p2.name.trim()) { shift.p2 = {name, phone}; }
-  else if (!shift.p3.name || !shift.p3.name.trim()) { shift.p3 = {name, phone}; }
+  if (!shift.p1.name || !shift.p1.name.trim()) { shift.p1 = {name, phone: ''}; }
+  else if (!shift.p2.name || !shift.p2.name.trim()) { shift.p2 = {name, phone: ''}; }
+  else if (!shift.p3.name || !shift.p3.name.trim()) { shift.p3 = {name, phone: ''}; }
   else { showToast('❌ All 3 slots are full for this shift.'); return; }
 
   data[locId][shiftIdx] = shift;
@@ -483,7 +477,6 @@ function openSummaryReportModal() {
       <div class="srt-form-header">
         <div class="srt-form-top">
           <div class="srt-form-branding">
-            <div class="srt-form-icon">🛒</div>
             <div>
               <div class="srt-form-title">CART WITNESSING ROSTER &amp; VACANCY REPORT</div>
               <div class="srt-form-subtitle">Official Congregation Schedule Form &bull; 3 Volunteers / Cart</div>
@@ -738,7 +731,7 @@ function copyWhatsAppSummary() {
   const dateTitle = document.getElementById('currentDateTitle').textContent;
   const dateKey = formatDateKey(currentDate);
   const data = getScheduleForDate(dateKey);
-  let msg = `🛒 *CART WITNESSING SCHEDULE*\n📅 *${dateTitle}*\n\n`;
+  let msg = `📋 *CART WITNESSING SCHEDULE*\n📅 *${dateTitle}*\n\n`;
 
   LOCATIONS.forEach(loc => {
     msg += `📍 *${loc.name}*\n`;
