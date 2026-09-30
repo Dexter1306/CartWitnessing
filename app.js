@@ -7,11 +7,11 @@
 // 1. DATA DEFINITIONS & DEFAULT ROSTER
 // -----------------------------------------------------------
 const LOCATIONS = [
-  { id: 'L1', name: 'Location 1 (L1)', landmark: 'Central Metro Station - North Entrance', cartStorage: 'Cart stored at Bro. Samuel\'s garage' },
-  { id: 'L2', name: 'Location 2 (L2)', landmark: 'City Public Market & Community Square', cartStorage: 'Cart stored in Market Hall Locker #4' },
-  { id: 'L3', name: 'Location 3 (L3)', landmark: 'Central Park West - Lake Walkway', cartStorage: 'Cart with Sister Martha' },
-  { id: 'L4', name: 'Location 4 (L4)', landmark: 'Ferry Terminal & Marina Promenade', cartStorage: 'Cart stored at Terminal Info Booth' },
-  { id: 'L5', name: 'Location 5 (L5)', landmark: 'Civic Center & Public Library Plaza', cartStorage: 'Cart with Bro. Robert' }
+  { id: 'L1', name: 'Location 1 (Balwarte)', landmark: 'Balwarte', cartStorage: 'Cart stored at Balwarte' },
+  { id: 'L2', name: 'Location 2 (Gesen)', landmark: 'Gesen', cartStorage: 'Cart stored at Gesen' },
+  { id: 'L3', name: 'Location 3 (Kanlaon / Villarica Pawnshop)', landmark: 'Kanlaon / Villarica Pawnshop', cartStorage: 'Cart stored at Kanlaon / Villarica Pawnshop' },
+  { id: 'L4', name: 'Location 4 (Multipurpose / Brgy. Outpost sa Tapat ng Metroplaza)', landmark: 'Multipurpose / Brgy. Outpost sa Tapat ng Metroplaza', cartStorage: 'Cart stored at Multipurpose / Brgy. Outpost' },
+  { id: 'L5', name: 'Location 5 (Phase 5 / 7-Eleven)', landmark: 'Phase 5 / 7-Eleven', cartStorage: 'Cart stored at Phase 5 / 7-Eleven' }
 ];
 
 const SHIFT_TIMES = [
@@ -526,7 +526,7 @@ function openSummaryReportModal() {
             <tr class="${rowClass}">
               <td class="srt-loc-cell">
                 <div class="srt-loc-name">📍 ${escapeHtml(r.locName)}</div>
-                <div class="srt-loc-landmark">${escapeHtml(r.locLandmark)}</div>
+                ${r.locLandmark && r.locLandmark !== r.locName && !r.locName.includes(`(${r.locLandmark})`) ? `<div class="srt-loc-landmark">${escapeHtml(r.locLandmark)}</div>` : ''}
               </td>
               <td class="srt-time-cell">
                 <div class="srt-shift-badge srt-shift-${r.shiftClass}">${r.shiftIcon} ${escapeHtml(r.shiftName)}</div>
