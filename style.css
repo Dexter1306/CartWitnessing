@@ -1463,23 +1463,31 @@ body.dark-mode .vacancy-badge {
   text-transform: uppercase;
   padding: 10px 8px;
   border-bottom: 2px solid #000000;
+  border-right: 1.5px solid rgba(255, 255, 255, 0.3);
   vertical-align: middle;
+}
+.summary-report-table thead th:last-child {
+  border-right: none;
 }
 
 /* Table Cells */
 .summary-report-table tbody td {
-  padding: 7px 10px;
-  border-bottom: 1px solid #e2e8f0;
+  padding: 8px 10px;
+  border-bottom: 1px solid #cbd5e1;
+  border-right: 1.5px solid #cbd5e1;
   vertical-align: middle;
   color: #0f172a;
   font-weight: 600;
   line-height: 1.4;
   word-break: break-word;
 }
+.summary-report-table tbody td:last-child {
+  border-right: none;
+}
 
 /* Group separator between 5 locations */
 .summary-report-table tbody tr.srt-row-location-end td {
-  border-bottom: 2.5px solid #94a3b8;
+  border-bottom: 2.5px solid #64748b;
 }
 
 /* Location zebra stripes */
