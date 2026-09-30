@@ -456,13 +456,9 @@ function openSummaryReportModal() {
 
     let mStatusHtml = '';
     if (mVacant === 0) {
-      mStatusHtml = '<span class="srt-status-pill srt-status-filled">✅ Staffed</span>';
-    } else if (mVacant === 1) {
-      mStatusHtml = '<span class="srt-status-pill srt-status-vacant-1">⚠️ 1 Needed</span>';
-    } else if (mVacant === 2) {
-      mStatusHtml = '<span class="srt-status-pill srt-status-vacant-2">⚠️ 2 Needed</span>';
+      mStatusHtml = '<div class="srt-status-staffed">Staffed</div>';
     } else {
-      mStatusHtml = '<span class="srt-status-pill srt-status-vacant-3">🚨 3 Needed</span>';
+      mStatusHtml = `<div class="srt-status-vacant">${mVacant} Needed</div>`;
     }
 
     // Afternoon shift (idx 1)
@@ -478,61 +474,57 @@ function openSummaryReportModal() {
 
     let aStatusHtml = '';
     if (aVacant === 0) {
-      aStatusHtml = '<span class="srt-status-pill srt-status-filled">✅ Staffed</span>';
-    } else if (aVacant === 1) {
-      aStatusHtml = '<span class="srt-status-pill srt-status-vacant-1">⚠️ 1 Needed</span>';
-    } else if (aVacant === 2) {
-      aStatusHtml = '<span class="srt-status-pill srt-status-vacant-2">⚠️ 2 Needed</span>';
+      aStatusHtml = '<div class="srt-status-staffed">Staffed</div>';
     } else {
-      aStatusHtml = '<span class="srt-status-pill srt-status-vacant-3">🚨 3 Needed</span>';
+      aStatusHtml = `<div class="srt-status-vacant">${aVacant} Needed</div>`;
     }
 
     tbodyHTML += `
-      <tr class="srt-row srt-location-row ${bgClass}">
+      <tr class="srt-row srt-location-row">
         <td class="srt-loc-cell">
-          <div class="srt-loc-name">📍 ${escapeHtml(loc.name)}</div>
+          <div class="srt-loc-name">${escapeHtml(loc.name)}</div>
           ${loc.landmark && loc.landmark !== loc.name && !loc.name.includes(`(${loc.landmark})`) ? `<div class="srt-loc-landmark">${escapeHtml(loc.landmark)}</div>` : ''}
         </td>
         <td class="srt-compound-cell srt-time-compound">
           <div class="srt-sub-row srt-sub-morning">
-            <div class="srt-shift-badge srt-shift-morning">${mDef.icon} ${escapeHtml(mDef.name)}</div>
-            <div class="srt-shift-hours"><span class="srt-time-icon">⏰</span><span class="srt-time-text">${escapeHtml(mDef.timeString.replace(/–/g, '-'))}</span></div>
+            <div class="srt-shift-title">${escapeHtml(mDef.name.toUpperCase())}</div>
+            <div class="srt-shift-time">${escapeHtml(mDef.timeString.replace(/–/g, '-'))}</div>
           </div>
           <div class="srt-sub-row srt-sub-afternoon">
-            <div class="srt-shift-badge srt-shift-afternoon">${aDef.icon} ${escapeHtml(aDef.name)}</div>
-            <div class="srt-shift-hours"><span class="srt-time-icon">⏰</span><span class="srt-time-text">${escapeHtml(aDef.timeString.replace(/–/g, '-'))}</span></div>
+            <div class="srt-shift-title">${escapeHtml(aDef.name.toUpperCase())}</div>
+            <div class="srt-shift-time">${escapeHtml(aDef.timeString.replace(/–/g, '-'))}</div>
           </div>
         </td>
         <td class="srt-compound-cell srt-vol-compound">
           <div class="srt-sub-row srt-sub-morning">
             <div class="srt-vol-list">
               <div class="srt-slot-row ${mp1 ? 'is-filled' : 'is-vacant'}">
-                <span class="srt-slot-num">1</span>
-                <span class="srt-slot-name">${mp1 ? escapeHtml(mp1) : '<em>— Vacant Slot —</em>'}</span>
+                <span class="srt-slot-num">1.</span>
+                <span class="srt-slot-name">${mp1 ? escapeHtml(mp1) : '— Vacant Slot —'}</span>
               </div>
               <div class="srt-slot-row ${mp2 ? 'is-filled' : 'is-vacant'}">
-                <span class="srt-slot-num">2</span>
-                <span class="srt-slot-name">${mp2 ? escapeHtml(mp2) : '<em>— Vacant Slot —</em>'}</span>
+                <span class="srt-slot-num">2.</span>
+                <span class="srt-slot-name">${mp2 ? escapeHtml(mp2) : '— Vacant Slot —'}</span>
               </div>
               <div class="srt-slot-row ${mp3 ? 'is-filled' : 'is-vacant'}">
-                <span class="srt-slot-num">3</span>
-                <span class="srt-slot-name">${mp3 ? escapeHtml(mp3) : '<em>— Vacant Slot —</em>'}</span>
+                <span class="srt-slot-num">3.</span>
+                <span class="srt-slot-name">${mp3 ? escapeHtml(mp3) : '— Vacant Slot —'}</span>
               </div>
             </div>
           </div>
           <div class="srt-sub-row srt-sub-afternoon">
             <div class="srt-vol-list">
               <div class="srt-slot-row ${ap1 ? 'is-filled' : 'is-vacant'}">
-                <span class="srt-slot-num">1</span>
-                <span class="srt-slot-name">${ap1 ? escapeHtml(ap1) : '<em>— Vacant Slot —</em>'}</span>
+                <span class="srt-slot-num">1.</span>
+                <span class="srt-slot-name">${ap1 ? escapeHtml(ap1) : '— Vacant Slot —'}</span>
               </div>
               <div class="srt-slot-row ${ap2 ? 'is-filled' : 'is-vacant'}">
-                <span class="srt-slot-num">2</span>
-                <span class="srt-slot-name">${ap2 ? escapeHtml(ap2) : '<em>— Vacant Slot —</em>'}</span>
+                <span class="srt-slot-num">2.</span>
+                <span class="srt-slot-name">${ap2 ? escapeHtml(ap2) : '— Vacant Slot —'}</span>
               </div>
               <div class="srt-slot-row ${ap3 ? 'is-filled' : 'is-vacant'}">
-                <span class="srt-slot-num">3</span>
-                <span class="srt-slot-name">${ap3 ? escapeHtml(ap3) : '<em>— Vacant Slot —</em>'}</span>
+                <span class="srt-slot-num">3.</span>
+                <span class="srt-slot-name">${ap3 ? escapeHtml(ap3) : '— Vacant Slot —'}</span>
               </div>
             </div>
           </div>
@@ -551,24 +543,23 @@ function openSummaryReportModal() {
   let html = `
     <div class="srt-scroll-hint">👈 Swipe left/right to view full table form 👉</div>
     <div id="reportCaptureZone" class="srt-capture-zone">
-      <!-- 1. Form Header -->
+      <!-- 1. Clean Print Header -->
       <div class="srt-form-header">
         <div class="srt-form-top">
           <div class="srt-form-branding">
-            <div>
-              <div class="srt-form-title">CART WITNESSING ROSTER &amp; VACANCY REPORT</div>
-              <div class="srt-form-subtitle">Official Congregation Schedule Form &bull; 3 Volunteers / Cart</div>
-            </div>
+            <h1 class="srt-form-title">CART WITNESSING ROSTER &amp; VACANCY REPORT</h1>
+            <div class="srt-form-subtitle">Official Congregation Schedule Form &bull; 3 Volunteers / Cart &bull; 5 Locations</div>
           </div>
-          <div class="srt-form-badge">5 LOCATIONS</div>
         </div>
         <div class="srt-form-meta-bar">
-          <div class="srt-meta-date">📅 <strong>${escapeHtml(fullDateHeader)}</strong></div>
-          <div class="srt-meta-chips">
-            <span class="srt-chip srt-chip-total">Slots: 30</span>
-            <span class="srt-chip srt-chip-filled">Filled: ${totalFilled}</span>
-            <span class="srt-chip ${totalVacant > 0 ? 'srt-chip-vacant' : 'srt-chip-all-good'}">
-              ${totalVacant > 0 ? `⚠️ ${totalVacant} Vacanc${totalVacant > 1 ? 'ies' : 'y'}` : '✅ 100% Staffed'}
+          <div class="srt-meta-date">${escapeHtml(fullDateHeader)}</div>
+          <div class="srt-meta-stats">
+            <span>Slots: <strong>30</strong></span>
+            <span class="srt-meta-sep">&bull;</span>
+            <span>Filled: <strong>${totalFilled}</strong></span>
+            <span class="srt-meta-sep">&bull;</span>
+            <span class="${totalVacant > 0 ? 'srt-meta-vacant' : 'srt-meta-staffed'}">
+              ${totalVacant > 0 ? `<strong>${totalVacant} Vacanc${totalVacant > 1 ? 'ies' : 'y'}</strong>` : '<strong>100% Staffed</strong>'}
             </span>
           </div>
         </div>
@@ -591,7 +582,7 @@ function openSummaryReportModal() {
 
       <!-- 3. Form Footer -->
       <div class="srt-form-footer">
-        <div>📋 Cart Witnessing Management System &bull; Official Dispatch Form</div>
+        <div>Cart Witnessing Management System &bull; Official Dispatch Form</div>
         <div>Generated: ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} &bull; Report adjustments to Keyman</div>
       </div>
     </div>`;

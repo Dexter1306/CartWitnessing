@@ -1337,18 +1337,19 @@ body.dark-mode .vacancy-badge {
   min-width: 880px;
   margin: 0 auto;
   background: #ffffff;
-  border-radius: 12px;
+  border-radius: 0;
   overflow: hidden;
-  border: 2px solid #cbd5e1;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.1);
-  color: #0f172a;
+  border: 2px solid #000000;
+  box-shadow: none;
+  color: #000000;
 }
 
-/* 1. Form Header Banner */
+/* 1. Clean High-Contrast Print Header Banner */
 .srt-form-header {
-  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 60%, #2563eb 100%);
-  color: #ffffff;
-  padding: 18px 22px;
+  background: #ffffff;
+  color: #000000;
+  padding: 22px 24px 16px;
+  border-bottom: 2px solid #000000;
 }
 .srt-form-top {
   display: flex;
@@ -1356,35 +1357,22 @@ body.dark-mode .vacancy-badge {
   justify-content: space-between;
 }
 .srt-form-branding {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-.srt-form-icon {
-  font-size: 2.4rem;
-  flex-shrink: 0;
+  width: 100%;
 }
 .srt-form-title {
-  font-size: 1.55rem;
+  font-size: 1.75rem;
   font-weight: 900;
-  letter-spacing: 0.03em;
-  line-height: 1.25;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  color: #000000;
+  text-transform: uppercase;
+  margin: 0;
 }
 .srt-form-subtitle {
   font-size: 1.05rem;
-  font-weight: 600;
-  opacity: 0.95;
-  margin-top: 4px;
-}
-.srt-form-badge {
-  background: rgba(255, 255, 255, 0.25);
-  border: 1.5px solid rgba(255, 255, 255, 0.45);
-  border-radius: 8px;
-  padding: 8px 16px;
-  font-size: 0.95rem;
-  font-weight: 900;
-  letter-spacing: 0.05em;
-  white-space: nowrap;
+  font-weight: 700;
+  color: #4b5563;
+  margin-top: 5px;
 }
 
 .srt-form-meta-bar {
@@ -1392,48 +1380,39 @@ body.dark-mode .vacancy-badge {
   align-items: center;
   justify-content: space-between;
   margin-top: 14px;
-  padding-top: 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  padding-top: 12px;
+  border-top: 1px solid #d1d5db;
   flex-wrap: wrap;
   gap: 12px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #111827;
 }
 .srt-meta-date {
-  font-size: 1.2rem;
+  font-size: 1.18rem;
   font-weight: 900;
+  color: #111827;
 }
-.srt-meta-chips {
+.srt-meta-stats {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  font-size: 1.1rem;
 }
-.srt-chip {
-  font-size: 0.98rem;
-  font-weight: 800;
-  padding: 6px 14px;
-  border-radius: 16px;
-  white-space: nowrap;
+.srt-meta-sep {
+  color: #9ca3af;
+  font-weight: 900;
 }
-.srt-chip-total {
-  background: rgba(255, 255, 255, 0.25);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.4);
+.srt-meta-vacant {
+  color: #dc2626;
+  font-weight: 900;
 }
-.srt-chip-filled {
-  background: #ffffff;
-  color: #1e40af;
-}
-.srt-chip-vacant {
-  background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #f87171;
-}
-.srt-chip-all-good {
-  background: #dcfce7;
-  color: #166534;
-  border: 1px solid #86efac;
+.srt-meta-staffed {
+  color: #15803d;
+  font-weight: 900;
 }
 
-/* 2. Table Form Base */
+/* 2. Table Form Base: Flat White with Thin Gray Gridlines */
 .summary-report-table {
   width: 880px;
   min-width: 880px;
@@ -1442,29 +1421,30 @@ body.dark-mode .vacancy-badge {
   font-size: 1rem;
   table-layout: fixed;
   background: #ffffff;
+  border: 1px solid #d1d5db;
 }
 
 /* Fixed Column Widths for 4-Column Form (Sum = 880px) */
 .summary-report-table thead th:nth-child(1),
-.summary-report-table tbody td:nth-child(1) { width: 255px; text-align: left; }
+.summary-report-table tbody td:nth-child(1) { width: 250px; text-align: left; }
 .summary-report-table thead th:nth-child(2),
 .summary-report-table tbody td:nth-child(2) { width: 200px; text-align: center; }
 .summary-report-table thead th:nth-child(3),
-.summary-report-table tbody td:nth-child(3) { width: 285px; text-align: left; }
+.summary-report-table tbody td:nth-child(3) { width: 290px; text-align: left; }
 .summary-report-table thead th:nth-child(4),
 .summary-report-table tbody td:nth-child(4) { width: 140px; text-align: center; }
 
 /* Table Header */
 .summary-report-table thead th {
-  background-color: #0f2440;
-  color: #ffffff;
+  background-color: #ffffff;
+  color: #000000;
   font-weight: 900;
-  font-size: 0.98rem;
-  letter-spacing: 0.05em;
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   padding: 16px 12px;
-  border-bottom: 2.5px solid #000000;
-  border-right: 1.5px solid rgba(255, 255, 255, 0.3);
+  border-bottom: 2px solid #000000;
+  border-right: 1px solid #d1d5db;
   vertical-align: middle;
 }
 .summary-report-table thead th:last-child {
@@ -1473,48 +1453,38 @@ body.dark-mode .vacancy-badge {
 
 /* Table Cells */
 .summary-report-table tbody td {
-  padding: 10px 14px;
-  border-bottom: 2.5px solid #64748b;
-  border-right: 1.5px solid #cbd5e1;
+  padding: 0;
+  border-bottom: 2px solid #94a3b8;
+  border-right: 1px solid #d1d5db;
   vertical-align: middle;
-  color: #0f172a;
-  font-weight: 600;
-  line-height: 1.4;
-  word-break: break-word;
+  background: #ffffff !important;
 }
 .summary-report-table tbody td:last-child {
   border-right: none;
 }
 
-/* Location zebra stripes */
-.summary-report-table tbody tr.srt-loc-bg-light td {
-  background-color: #ffffff;
-}
-.summary-report-table tbody tr.srt-loc-bg-alt td {
-  background-color: #f8fafc;
-}
-
-/* Cell 1: Location & Landmark (Unified Cell spanning full location height) */
+/* Cell 1: Location & Landmark (Blue text for locations) */
 .srt-loc-cell {
   vertical-align: middle !important;
   text-align: left !important;
   padding: 18px 20px !important;
-  border-right: 1.5px solid #cbd5e1 !important;
+  background: #ffffff !important;
+  border-right: 1px solid #d1d5db !important;
 }
 .srt-loc-name {
   font-weight: 900 !important;
-  font-size: 1.25rem !important;
-  color: #1d4ed8;
+  font-size: 1.35rem !important;
+  color: #1d4ed8 !important; /* Blue text for locations */
   margin-bottom: 6px;
   line-height: 1.32;
   word-break: normal;
   overflow-wrap: break-word;
 }
 .srt-loc-landmark {
-  font-size: 0.95rem;
+  font-size: 1.0rem;
   font-weight: 700;
-  color: #475569;
-  line-height: 1.35;
+  color: #4b5563;
+  line-height: 1.32;
   word-break: normal;
   overflow-wrap: break-word;
 }
@@ -1525,85 +1495,51 @@ body.dark-mode .vacancy-badge {
   vertical-align: top !important;
 }
 .srt-sub-row {
-  height: 118px;
+  height: 122px;
   box-sizing: border-box;
-  padding: 10px 12px;
+  padding: 10px 14px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  background: #ffffff !important;
 }
 .srt-sub-row.srt-sub-afternoon {
-  border-top: 1.5px solid #cbd5e1;
+  border-top: 1px solid #d1d5db; /* Simple thin gray gridline */
 }
 
-/* Sub-row column alignments */
+/* Cell 2: Shift (Dark brown text) & Time (Dark blue text) */
 .srt-time-compound .srt-sub-row {
   align-items: center;
   text-align: center;
-  padding: 10px 8px;
+  padding: 10px 10px;
 }
-.srt-status-compound .srt-sub-row {
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 10px 6px;
-}
-.srt-vol-compound .srt-sub-row {
-  padding: 8px 14px;
-  justify-content: center;
-}
-.srt-shift-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 5px 12px;
-  border-radius: 7px;
-  font-size: 0.95rem;
+.srt-shift-title {
+  font-size: 1.18rem;
   font-weight: 900;
+  color: #78350f; /* Dark brown text for shifts */
   text-transform: uppercase;
-  margin-bottom: 7px;
+  letter-spacing: 0.02em;
+  margin-bottom: 6px;
+  line-height: 1.25;
+}
+.srt-shift-time {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #1e3a8a; /* Dark blue text for times */
   white-space: nowrap;
-}
-.srt-shift-morning {
-  background: #fef3c7;
-  color: #92400e;
-  border: 1px solid #fcd34d;
-}
-.srt-shift-afternoon {
-  background: #dbeafe;
-  color: #1e40af;
-  border: 1px solid #93c5fd;
-}
-.srt-shift-hours {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  font-size: 1.02rem;
-  font-weight: 800;
-  color: #0f172a;
-  white-space: nowrap;
-  line-height: 1.2;
-}
-.srt-time-icon {
-  font-size: 1.1rem;
-  line-height: 1;
-  flex-shrink: 0;
-}
-.srt-time-text {
-  white-space: nowrap;
+  line-height: 1.25;
   font-variant-numeric: tabular-nums;
 }
 
-/* Cell 3: Volunteers */
-.srt-vol-cell {
-  font-size: 1.12rem !important;
+/* Cell 3: Volunteers (Black text for filled names, Red text for vacancies) */
+.srt-vol-compound .srt-sub-row {
+  padding: 10px 14px;
+  justify-content: center;
 }
 .srt-vol-list {
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: 10px;
 }
 .srt-slot-row {
   display: flex;
@@ -1611,80 +1547,54 @@ body.dark-mode .vacancy-badge {
   gap: 10px;
 }
 .srt-slot-num {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  font-size: 0.88rem;
+  font-size: 1.15rem;
   font-weight: 900;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  color: #4b5563;
+  width: 24px;
   flex-shrink: 0;
 }
-.is-filled .srt-slot-num {
-  background: #e2e8f0;
-  color: #1e293b;
-}
-.is-vacant .srt-slot-num {
-  background: #fee2e2;
-  color: #b91c1c;
-}
 .is-filled .srt-slot-name {
-  font-size: 1.12rem;
-  font-weight: 800;
-  color: #0f172a;
+  font-size: 1.25rem !important;
+  font-weight: 900 !important;
+  color: #000000 !important; /* Solid black text for filled volunteer names */
   line-height: 1.25;
 }
 .is-vacant .srt-slot-name {
-  font-size: 1.08rem;
-  font-weight: 800;
-  color: #dc2626;
-  font-style: italic;
+  font-size: 1.22rem !important;
+  font-weight: 900 !important;
+  color: #dc2626 !important; /* Red text for vacancies */
   line-height: 1.25;
 }
 
-/* Cell 4: Status / Vacancy */
-.srt-status-cell {
-  text-align: center !important;
+/* Cell 4: Vacancy Status (Red text for vacancies, Green text for staffed) */
+.srt-status-compound .srt-sub-row {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 10px 8px;
 }
-.srt-status-pill {
-  display: inline-block;
-  padding: 8px 14px;
-  border-radius: 10px;
-  font-size: 1.02rem;
+.srt-status-staffed {
+  font-size: 1.22rem;
   font-weight: 900;
-  white-space: nowrap;
+  color: #15803d; /* Green text for staffed */
+  line-height: 1.25;
 }
-.srt-status-filled {
-  background: #dcfce7;
-  color: #15803d;
-  border: 1px solid #86efac;
-}
-.srt-status-vacant-1 {
-  background: #fef3c7;
-  color: #b45309;
-  border: 1px solid #fde68a;
-}
-.srt-status-vacant-2 {
-  background: #ffedd5;
-  color: #c2410c;
-  border: 1px solid #fed7aa;
-}
-.srt-status-vacant-3 {
-  background: #fee2e2;
-  color: #b91c1c;
-  border: 1px solid #fca5a5;
+.srt-status-vacant {
+  font-size: 1.28rem;
+  font-weight: 900;
+  color: #dc2626; /* Red text for vacancies */
+  line-height: 1.25;
 }
 
 /* 3. Form Footer */
 .srt-form-footer {
-  padding: 14px 22px;
+  padding: 14px 24px;
   text-align: left;
   font-size: 0.92rem;
   font-weight: 700;
-  color: #475569;
-  background: #f8fafc;
-  border-top: 1.5px solid #cbd5e1;
+  color: #4b5563;
+  background: #ffffff;
+  border-top: 1px solid #d1d5db;
   display: flex;
   justify-content: space-between;
   align-items: center;
