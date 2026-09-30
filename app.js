@@ -443,69 +443,109 @@ function openSummaryReportModal() {
     const shifts = scheduleData[loc.id] || [normalizeShiftData(null), normalizeShiftData(null)];
     const bgClass = locIdx % 2 === 0 ? 'srt-loc-bg-light' : 'srt-loc-bg-alt';
 
-    SHIFT_TIMES.forEach((shiftDef, shiftIdx) => {
-      const shift = normalizeShiftData(shifts[shiftDef.id]);
-      const p1 = (shift.p1 && shift.p1.name) ? shift.p1.name.trim() : '';
-      const p2 = (shift.p2 && shift.p2.name) ? shift.p2.name.trim() : '';
-      const p3 = (shift.p3 && shift.p3.name) ? shift.p3.name.trim() : '';
+    // Morning shift (idx 0)
+    const mDef = SHIFT_TIMES[0];
+    const mShift = normalizeShiftData(shifts[mDef.id]);
+    const mp1 = (mShift.p1 && mShift.p1.name) ? mShift.p1.name.trim() : '';
+    const mp2 = (mShift.p2 && mShift.p2.name) ? mShift.p2.name.trim() : '';
+    const mp3 = (mShift.p3 && mShift.p3.name) ? mShift.p3.name.trim() : '';
+    const mFilled = (mp1 ? 1 : 0) + (mp2 ? 1 : 0) + (mp3 ? 1 : 0);
+    const mVacant = 3 - mFilled;
+    totalFilled += mFilled;
+    totalVacant += mVacant;
 
-      const filledCount = (p1 ? 1 : 0) + (p2 ? 1 : 0) + (p3 ? 1 : 0);
-      const vacantCount = 3 - filledCount;
-      totalFilled += filledCount;
-      totalVacant += vacantCount;
+    let mStatusHtml = '';
+    if (mVacant === 0) {
+      mStatusHtml = '<span class="srt-status-pill srt-status-filled">✅ Staffed</span>';
+    } else if (mVacant === 1) {
+      mStatusHtml = '<span class="srt-status-pill srt-status-vacant-1">⚠️ 1 Needed</span>';
+    } else if (mVacant === 2) {
+      mStatusHtml = '<span class="srt-status-pill srt-status-vacant-2">⚠️ 2 Needed</span>';
+    } else {
+      mStatusHtml = '<span class="srt-status-pill srt-status-vacant-3">🚨 3 Needed</span>';
+    }
 
-      let statusHtml = '';
-      if (vacantCount === 0) {
-        statusHtml = '<span class="srt-status-pill srt-status-filled">✅ Staffed</span>';
-      } else if (vacantCount === 1) {
-        statusHtml = '<span class="srt-status-pill srt-status-vacant-1">⚠️ 1 Needed</span>';
-      } else if (vacantCount === 2) {
-        statusHtml = '<span class="srt-status-pill srt-status-vacant-2">⚠️ 2 Needed</span>';
-      } else {
-        statusHtml = '<span class="srt-status-pill srt-status-vacant-3">🚨 3 Needed</span>';
-      }
+    // Afternoon shift (idx 1)
+    const aDef = SHIFT_TIMES[1];
+    const aShift = normalizeShiftData(shifts[aDef.id]);
+    const ap1 = (aShift.p1 && aShift.p1.name) ? aShift.p1.name.trim() : '';
+    const ap2 = (aShift.p2 && aShift.p2.name) ? aShift.p2.name.trim() : '';
+    const ap3 = (aShift.p3 && aShift.p3.name) ? aShift.p3.name.trim() : '';
+    const aFilled = (ap1 ? 1 : 0) + (ap2 ? 1 : 0) + (ap3 ? 1 : 0);
+    const aVacant = 3 - aFilled;
+    totalFilled += aFilled;
+    totalVacant += aVacant;
 
-      const isMorning = shiftIdx === 0;
-      const isAfternoon = shiftIdx === 1;
-      const rowClass = `srt-row srt-shift-${shiftDef.className} ${bgClass} ${isAfternoon ? 'srt-row-location-end' : ''}`;
+    let aStatusHtml = '';
+    if (aVacant === 0) {
+      aStatusHtml = '<span class="srt-status-pill srt-status-filled">✅ Staffed</span>';
+    } else if (aVacant === 1) {
+      aStatusHtml = '<span class="srt-status-pill srt-status-vacant-1">⚠️ 1 Needed</span>';
+    } else if (aVacant === 2) {
+      aStatusHtml = '<span class="srt-status-pill srt-status-vacant-2">⚠️ 2 Needed</span>';
+    } else {
+      aStatusHtml = '<span class="srt-status-pill srt-status-vacant-3">🚨 3 Needed</span>';
+    }
 
-      let locationCellHTML = '';
-      if (isMorning) {
-        locationCellHTML = `
-          <td class="srt-loc-cell" rowspan="2">
-            <div class="srt-loc-name">📍 ${escapeHtml(loc.name)}</div>
-            ${loc.landmark && loc.landmark !== loc.name && !loc.name.includes(`(${loc.landmark})`) ? `<div class="srt-loc-landmark">${escapeHtml(loc.landmark)}</div>` : ''}
-          </td>`;
-      }
-
-      tbodyHTML += `
-        <tr class="${rowClass}">
-          ${locationCellHTML}
-          <td class="srt-time-cell">
-            <div class="srt-shift-badge srt-shift-${shiftDef.className}">${shiftDef.icon} ${escapeHtml(shiftDef.name)}</div>
-            <div class="srt-shift-hours"><span class="srt-time-icon">⏰</span><span class="srt-time-text">${escapeHtml(shiftDef.timeString.replace(/–/g, '-'))}</span></div>
-          </td>
-          <td class="srt-vol-cell">
+    tbodyHTML += `
+      <tr class="srt-row srt-location-row ${bgClass}">
+        <td class="srt-loc-cell">
+          <div class="srt-loc-name">📍 ${escapeHtml(loc.name)}</div>
+          ${loc.landmark && loc.landmark !== loc.name && !loc.name.includes(`(${loc.landmark})`) ? `<div class="srt-loc-landmark">${escapeHtml(loc.landmark)}</div>` : ''}
+        </td>
+        <td class="srt-compound-cell srt-time-compound">
+          <div class="srt-sub-row srt-sub-morning">
+            <div class="srt-shift-badge srt-shift-morning">${mDef.icon} ${escapeHtml(mDef.name)}</div>
+            <div class="srt-shift-hours"><span class="srt-time-icon">⏰</span><span class="srt-time-text">${escapeHtml(mDef.timeString.replace(/–/g, '-'))}</span></div>
+          </div>
+          <div class="srt-sub-row srt-sub-afternoon">
+            <div class="srt-shift-badge srt-shift-afternoon">${aDef.icon} ${escapeHtml(aDef.name)}</div>
+            <div class="srt-shift-hours"><span class="srt-time-icon">⏰</span><span class="srt-time-text">${escapeHtml(aDef.timeString.replace(/–/g, '-'))}</span></div>
+          </div>
+        </td>
+        <td class="srt-compound-cell srt-vol-compound">
+          <div class="srt-sub-row srt-sub-morning">
             <div class="srt-vol-list">
-              <div class="srt-slot-row ${p1 ? 'is-filled' : 'is-vacant'}">
+              <div class="srt-slot-row ${mp1 ? 'is-filled' : 'is-vacant'}">
                 <span class="srt-slot-num">1</span>
-                <span class="srt-slot-name">${p1 ? escapeHtml(p1) : '<em>— Vacant Slot —</em>'}</span>
+                <span class="srt-slot-name">${mp1 ? escapeHtml(mp1) : '<em>— Vacant Slot —</em>'}</span>
               </div>
-              <div class="srt-slot-row ${p2 ? 'is-filled' : 'is-vacant'}">
+              <div class="srt-slot-row ${mp2 ? 'is-filled' : 'is-vacant'}">
                 <span class="srt-slot-num">2</span>
-                <span class="srt-slot-name">${p2 ? escapeHtml(p2) : '<em>— Vacant Slot —</em>'}</span>
+                <span class="srt-slot-name">${mp2 ? escapeHtml(mp2) : '<em>— Vacant Slot —</em>'}</span>
               </div>
-              <div class="srt-slot-row ${p3 ? 'is-filled' : 'is-vacant'}">
+              <div class="srt-slot-row ${mp3 ? 'is-filled' : 'is-vacant'}">
                 <span class="srt-slot-num">3</span>
-                <span class="srt-slot-name">${p3 ? escapeHtml(p3) : '<em>— Vacant Slot —</em>'}</span>
+                <span class="srt-slot-name">${mp3 ? escapeHtml(mp3) : '<em>— Vacant Slot —</em>'}</span>
               </div>
             </div>
-          </td>
-          <td class="srt-status-cell">
-            ${statusHtml}
-          </td>
-        </tr>`;
-    });
+          </div>
+          <div class="srt-sub-row srt-sub-afternoon">
+            <div class="srt-vol-list">
+              <div class="srt-slot-row ${ap1 ? 'is-filled' : 'is-vacant'}">
+                <span class="srt-slot-num">1</span>
+                <span class="srt-slot-name">${ap1 ? escapeHtml(ap1) : '<em>— Vacant Slot —</em>'}</span>
+              </div>
+              <div class="srt-slot-row ${ap2 ? 'is-filled' : 'is-vacant'}">
+                <span class="srt-slot-num">2</span>
+                <span class="srt-slot-name">${ap2 ? escapeHtml(ap2) : '<em>— Vacant Slot —</em>'}</span>
+              </div>
+              <div class="srt-slot-row ${ap3 ? 'is-filled' : 'is-vacant'}">
+                <span class="srt-slot-num">3</span>
+                <span class="srt-slot-name">${ap3 ? escapeHtml(ap3) : '<em>— Vacant Slot —</em>'}</span>
+              </div>
+            </div>
+          </div>
+        </td>
+        <td class="srt-compound-cell srt-status-compound">
+          <div class="srt-sub-row srt-sub-morning">
+            ${mStatusHtml}
+          </div>
+          <div class="srt-sub-row srt-sub-afternoon">
+            ${aStatusHtml}
+          </div>
+        </td>
+      </tr>`;
   });
 
   let html = `

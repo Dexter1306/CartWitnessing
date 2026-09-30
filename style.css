@@ -1333,8 +1333,8 @@ body.dark-mode .vacancy-badge {
 
 /* Capture container: landscape-oriented Cart Witnessing Table Form */
 .srt-capture-zone {
-  width: 760px;
-  min-width: 760px;
+  width: 780px;
+  min-width: 780px;
   margin: 0 auto;
   background: #ffffff;
   border-radius: 12px;
@@ -1435,7 +1435,8 @@ body.dark-mode .vacancy-badge {
 
 /* 2. Table Form Base */
 .summary-report-table {
-  width: 100%;
+  width: 780px;
+  min-width: 780px;
   border-collapse: collapse;
   font-family: var(--font-family);
   font-size: 0.8rem;
@@ -1443,11 +1444,11 @@ body.dark-mode .vacancy-badge {
   background: #ffffff;
 }
 
-/* Fixed Column Widths for 4-Column Form (Sum = 760px) */
+/* Fixed Column Widths for 4-Column Form (Sum = 780px) */
 .summary-report-table thead th:nth-child(1),
-.summary-report-table tbody td:nth-child(1) { width: 210px; text-align: left; }
+.summary-report-table tbody td:nth-child(1) { width: 235px; text-align: left; }
 .summary-report-table thead th:nth-child(2),
-.summary-report-table tbody td:nth-child(2) { width: 170px; text-align: center; }
+.summary-report-table tbody td:nth-child(2) { width: 165px; text-align: center; }
 .summary-report-table thead th:nth-child(3),
 .summary-report-table tbody td:nth-child(3) { width: 260px; text-align: left; }
 .summary-report-table thead th:nth-child(4),
@@ -1473,7 +1474,7 @@ body.dark-mode .vacancy-badge {
 /* Table Cells */
 .summary-report-table tbody td {
   padding: 10px 14px;
-  border-bottom: 1px solid #cbd5e1;
+  border-bottom: 2.5px solid #64748b;
   border-right: 1.5px solid #cbd5e1;
   vertical-align: middle;
   color: #0f172a;
@@ -1485,48 +1486,71 @@ body.dark-mode .vacancy-badge {
   border-right: none;
 }
 
-/* Group separator between 5 locations */
-.summary-report-table tbody tr.srt-row-location-end td {
-  border-bottom: 2.5px solid #64748b;
-}
-
 /* Location zebra stripes */
-.summary-report-table tbody tr.srt-loc-bg-light td,
-.summary-report-table tbody tr:nth-child(4n+1),
-.summary-report-table tbody tr:nth-child(4n+2) {
+.summary-report-table tbody tr.srt-loc-bg-light td {
   background-color: #ffffff;
 }
-.summary-report-table tbody tr.srt-loc-bg-alt td,
-.summary-report-table tbody tr:nth-child(4n+3),
-.summary-report-table tbody tr:nth-child(4n) {
+.summary-report-table tbody tr.srt-loc-bg-alt td {
   background-color: #f8fafc;
 }
 
-/* Cell 1: Location & Landmark (Merged Rowspan = 2) */
+/* Cell 1: Location & Landmark (Unified Cell spanning full location height) */
 .srt-loc-cell {
   vertical-align: middle !important;
-  text-align: left;
-  border-bottom: 2.5px solid #64748b !important;
-  padding: 12px 14px !important;
+  text-align: left !important;
+  padding: 14px 16px !important;
+  border-right: 1.5px solid #cbd5e1 !important;
 }
 .srt-loc-name {
   font-weight: 800;
   font-size: 0.88rem;
   color: #1e40af;
   margin-bottom: 4px;
-  line-height: 1.25;
+  line-height: 1.35;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 .srt-loc-landmark {
   font-size: 0.74rem;
   font-weight: 600;
   color: #475569;
   line-height: 1.35;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
-/* Cell 2: Shift & Time */
-.srt-time-cell {
-  text-align: center !important;
-  padding: 10px 6px !important;
+/* Compound Cells for Columns 2, 3, 4 (Contains Morning & Afternoon Sub-Rows) */
+.srt-compound-cell {
+  padding: 0 !important;
+  vertical-align: top !important;
+}
+.srt-sub-row {
+  height: 86px;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.srt-sub-row.srt-sub-afternoon {
+  border-top: 1px solid #cbd5e1;
+}
+
+/* Sub-row column alignments */
+.srt-time-compound .srt-sub-row {
+  align-items: center;
+  text-align: center;
+  padding: 8px 6px;
+}
+.srt-status-compound .srt-sub-row {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8px 6px;
+}
+.srt-vol-compound .srt-sub-row {
+  padding: 8px 14px;
+  justify-content: center;
 }
 .srt-shift-badge {
   display: inline-flex;
