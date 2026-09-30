@@ -537,7 +537,7 @@ function openSummaryReportModal() {
               </td>
               <td class="srt-time-cell">
                 <div class="srt-shift-badge srt-shift-${r.shiftClass}">${r.shiftIcon} ${escapeHtml(r.shiftName)}</div>
-                <div class="srt-shift-hours">⏰ ${escapeHtml(r.shiftTime)}</div>
+                <div class="srt-shift-hours"><span class="srt-time-icon">⏰</span><span class="srt-time-text">${escapeHtml(r.shiftTime)}</span></div>
               </td>
               <td class="srt-vol-cell">
                 <div class="srt-vol-list">
