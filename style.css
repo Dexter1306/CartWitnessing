@@ -1445,11 +1445,11 @@ body.dark-mode .vacancy-badge {
 
 /* Fixed Column Widths for 4-Column Form (Sum = 760px) */
 .summary-report-table thead th:nth-child(1),
-.summary-report-table tbody td:nth-child(1) { width: 210px; text-align: left; }
+.summary-report-table tbody td:nth-child(1) { width: 220px; text-align: left; }
 .summary-report-table thead th:nth-child(2),
-.summary-report-table tbody td:nth-child(2) { width: 140px; text-align: center; }
+.summary-report-table tbody td:nth-child(2) { width: 135px; text-align: center; }
 .summary-report-table thead th:nth-child(3),
-.summary-report-table tbody td:nth-child(3) { width: 280px; text-align: left; }
+.summary-report-table tbody td:nth-child(3) { width: 275px; text-align: left; }
 .summary-report-table thead th:nth-child(4),
 .summary-report-table tbody td:nth-child(4) { width: 130px; text-align: center; }
 
@@ -1458,10 +1458,10 @@ body.dark-mode .vacancy-badge {
   background-color: #0f2440;
   color: #ffffff;
   font-weight: 800;
-  font-size: 0.73rem;
-  letter-spacing: 0.04em;
+  font-size: 0.74rem;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  padding: 10px 8px;
+  padding: 12px 14px;
   border-bottom: 2px solid #000000;
   border-right: 1.5px solid rgba(255, 255, 255, 0.3);
   vertical-align: middle;
@@ -1472,7 +1472,7 @@ body.dark-mode .vacancy-badge {
 
 /* Table Cells */
 .summary-report-table tbody td {
-  padding: 8px 10px;
+  padding: 10px 14px;
   border-bottom: 1px solid #cbd5e1;
   border-right: 1.5px solid #cbd5e1;
   vertical-align: middle;
@@ -1506,15 +1506,16 @@ body.dark-mode .vacancy-badge {
 }
 .srt-loc-name {
   font-weight: 800;
-  font-size: 0.86rem;
+  font-size: 0.88rem;
   color: #1e40af;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
+  line-height: 1.25;
 }
 .srt-loc-landmark {
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   font-weight: 600;
   color: #475569;
-  line-height: 1.3;
+  line-height: 1.35;
 }
 
 /* Cell 2: Shift & Time */
@@ -1524,13 +1525,13 @@ body.dark-mode .vacancy-badge {
 .srt-shift-badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 2px 7px;
-  border-radius: 4px;
-  font-size: 0.72rem;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.73rem;
   font-weight: 800;
   text-transform: uppercase;
-  margin-bottom: 3px;
+  margin-bottom: 5px;
 }
 .srt-shift-morning {
   background: #fef3c7;
@@ -1543,27 +1544,32 @@ body.dark-mode .vacancy-badge {
   border: 1px solid #93c5fd;
 }
 .srt-shift-hours {
-  font-size: 0.73rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #1e293b;
   white-space: nowrap;
+  line-height: 1.3;
 }
 
-/* Cell 4: Volunteers */
+/* Cell 3: Volunteers */
 .srt-vol-cell {
-  font-size: 0.78rem !important;
+  font-size: 0.8rem !important;
+}
+.srt-vol-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 .srt-slot-row {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 2px 0;
+  gap: 8px;
 }
 .srt-slot-num {
-  width: 17px;
-  height: 17px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   font-weight: 900;
   display: inline-flex;
   align-items: center;
@@ -1579,26 +1585,28 @@ body.dark-mode .vacancy-badge {
   color: #b91c1c;
 }
 .is-filled .srt-slot-name {
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   font-weight: 700;
   color: #0f172a;
+  line-height: 1.25;
 }
 .is-vacant .srt-slot-name {
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: #dc2626;
   font-style: italic;
+  line-height: 1.25;
 }
 
-/* Cell 5: Status / Vacancy */
+/* Cell 4: Status / Vacancy */
 .srt-status-cell {
   text-align: center !important;
 }
 .srt-status-pill {
   display: inline-block;
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 0.72rem;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 0.74rem;
   font-weight: 800;
   white-space: nowrap;
 }

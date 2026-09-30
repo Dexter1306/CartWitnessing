@@ -540,17 +540,19 @@ function openSummaryReportModal() {
                 <div class="srt-shift-hours">⏰ ${escapeHtml(r.shiftTime)}</div>
               </td>
               <td class="srt-vol-cell">
-                <div class="srt-slot-row ${r.p1 ? 'is-filled' : 'is-vacant'}">
-                  <span class="srt-slot-num">1</span>
-                  <span class="srt-slot-name">${r.p1 ? escapeHtml(r.p1) : '<em>— Vacant Slot —</em>'}</span>
-                </div>
-                <div class="srt-slot-row ${r.p2 ? 'is-filled' : 'is-vacant'}">
-                  <span class="srt-slot-num">2</span>
-                  <span class="srt-slot-name">${r.p2 ? escapeHtml(r.p2) : '<em>— Vacant Slot —</em>'}</span>
-                </div>
-                <div class="srt-slot-row ${r.p3 ? 'is-filled' : 'is-vacant'}">
-                  <span class="srt-slot-num">3</span>
-                  <span class="srt-slot-name">${r.p3 ? escapeHtml(r.p3) : '<em>— Vacant Slot —</em>'}</span>
+                <div class="srt-vol-list">
+                  <div class="srt-slot-row ${r.p1 ? 'is-filled' : 'is-vacant'}">
+                    <span class="srt-slot-num">1</span>
+                    <span class="srt-slot-name">${r.p1 ? escapeHtml(r.p1) : '<em>— Vacant Slot —</em>'}</span>
+                  </div>
+                  <div class="srt-slot-row ${r.p2 ? 'is-filled' : 'is-vacant'}">
+                    <span class="srt-slot-num">2</span>
+                    <span class="srt-slot-name">${r.p2 ? escapeHtml(r.p2) : '<em>— Vacant Slot —</em>'}</span>
+                  </div>
+                  <div class="srt-slot-row ${r.p3 ? 'is-filled' : 'is-vacant'}">
+                    <span class="srt-slot-num">3</span>
+                    <span class="srt-slot-name">${r.p3 ? escapeHtml(r.p3) : '<em>— Vacant Slot —</em>'}</span>
+                  </div>
                 </div>
               </td>
               <td class="srt-status-cell">
