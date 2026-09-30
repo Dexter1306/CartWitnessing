@@ -1,72 +1,643 @@
 // =========================================================================
-// CART WITNESSING APP - SUMMARY & VACANCY REPORT (4-COLUMN LAYOUT WITH PNG EXPORT)
+// CART WITNESSING APP — COMPLETE SCHEDULE SYSTEM
+// 5 Locations · 2 Shifts · 3 Volunteers per Cart
 // =========================================================================
 
-// 1. DATA DEFINITIONS & DEFAULT ROSTER (3 VOLUNTEERS PER CART)
+// -----------------------------------------------------------
+// 1. DATA DEFINITIONS & DEFAULT ROSTER
+// -----------------------------------------------------------
 const LOCATIONS = [
-  { id: 'L1', name: 'Location 1 (L1)', landmark: 'Central Metro Station - North Entrance' },
-  { id: 'L2', name: 'Location 2 (L2)', landmark: 'City Public Market & Community Square' },
-  { id: 'L3', name: 'Location 3 (L3)', landmark: 'Central Park West - Lake Walkway' },
-  { id: 'L4', name: 'Location 4 (L4)', landmark: 'Ferry Terminal & Marina Promenade' },
-  { id: 'L5', name: 'Location 5 (L5)', landmark: 'Civic Center & Public Library Plaza' }
+  { id: 'L1', name: 'Location 1 (L1)', landmark: 'Central Metro Station - North Entrance', cartStorage: 'Cart stored at Bro. Samuel\'s garage' },
+  { id: 'L2', name: 'Location 2 (L2)', landmark: 'City Public Market & Community Square', cartStorage: 'Cart stored in Market Hall Locker #4' },
+  { id: 'L3', name: 'Location 3 (L3)', landmark: 'Central Park West - Lake Walkway', cartStorage: 'Cart with Sister Martha' },
+  { id: 'L4', name: 'Location 4 (L4)', landmark: 'Ferry Terminal & Marina Promenade', cartStorage: 'Cart stored at Terminal Info Booth' },
+  { id: 'L5', name: 'Location 5 (L5)', landmark: 'Civic Center & Public Library Plaza', cartStorage: 'Cart with Bro. Robert' }
 ];
 
 const SHIFT_TIMES = [
-  { id: 0, name: 'Shift 1: Morning', timeString: '06:30 AM - 08:00 AM', className: 'morning' },
-  { id: 1, name: 'Shift 2: Afternoon', timeString: '04:30 PM - 06:00 PM', className: 'afternoon' }
+  { id: 0, name: 'Shift 1: Morning', timeString: '06:30 AM – 08:30 AM', icon: '🌅', className: 'morning' },
+  { id: 1, name: 'Shift 2: Afternoon', timeString: '04:30 PM – 06:00 PM', icon: '🌇', className: 'afternoon' }
 ];
 
-// 2. EXPORT TO IMAGE FUNCTION (Requires html2canvas library)
-function exportReportToPNG() {
-  const reportElement = document.getElementById('summary-report-container');
-  if (!reportElement) {
-    alert("Error: Summary report element not found.");
-    return;
-  }
-  
-  // Use html2canvas to capture the clean table element
-  html2canvas(reportElement, { scale: 2, useCORS: true }).then(canvas => {
-    const link = document.createElement('a');
-    link.download = 'Cart_Witnessing_Summary_Report.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  }).catch(err => {
-    console.error("PNG Export Failed:", err);
-    alert("Could not export image. Ensure html2canvas script is included in index.html");
-  });
+const DEFAULT_KEYMAN_PIN = '1234';
+
+// State
+let currentDate = new Date();
+currentDate.setHours(0, 0, 0, 0);
+let isKeymanLoggedIn = false;
+let currentFilter = 'ALL';
+let enteredPin = '';
+let speechSynthUtterance = null;
+
+// -----------------------------------------------------------
+// 2. HELPER UTILITIES
+// -----------------------------------------------------------
+function formatDateKey(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
-// 3. RENDER CLEAN 4-COLUMN SUMMARY TABLE
-function renderSummaryTable(reportData) {
-  const tableBody = document.querySelector('#summary-table tbody');
-  if (!tableBody) return;
-  tableBody.innerHTML = '';
+function formatDateTitle(d) {
+  return d.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function normalizeShiftData(raw) {
+  if (!raw) return { p1:{name:'',phone:''}, p2:{name:'',phone:''}, p3:{name:'',phone:''}, notes:'' };
+  return {
+    p1: raw.p1 || {name:'',phone:''},
+    p2: raw.p2 || {name:'',phone:''},
+    p3: raw.p3 || {name:'',phone:''},
+    notes: raw.notes || ''
+  };
+}
+
+// -----------------------------------------------------------
+// 3. SCHEDULE STORAGE (localStorage)
+// -----------------------------------------------------------
+function generateSampleScheduleForDate(dateKey) {
+  return {
+    'L1': [
+      { p1:{name:'Bro. Samuel David',phone:'555-0143'}, p2:{name:'Bro. Thomas Wayne',phone:'555-0188'}, p3:{name:'Sis. Martha Clark',phone:'555-0219'}, notes:'Take literature box #1.' },
+      { p1:{name:'Sis. Sarah Johnson',phone:'555-0322'}, p2:{name:'Sis. Elizabeth Brown',phone:'555-0355'}, p3:{name:'',phone:''}, notes:'Need 1 afternoon partner.' }
+    ],
+    'L2': [
+      { p1:{name:'Bro. Robert Miller',phone:'555-0410'}, p2:{name:'Bro. James Wilson',phone:'555-0487'}, p3:{name:'Bro. Daniel Harris',phone:'555-0923'}, notes:'Market busy around 7:15 AM.' },
+      { p1:{name:'Sis. Patricia Davis',phone:'555-0812'}, p2:{name:'',phone:''}, p3:{name:'',phone:''}, notes:'Need 2 afternoon partners.' }
+    ],
+    'L3': [
+      { p1:{name:'Bro. Joseph Taylor',phone:'555-0551'}, p2:{name:'Bro. Michael Moore',phone:'555-0771'}, p3:{name:'Bro. Kevin Martin',phone:'555-0955'}, notes:'Morning exercise route.' },
+      { p1:{name:'Sis. Jennifer Anderson',phone:'555-0604'}, p2:{name:'Sis. Linda Thomas',phone:'555-0629'}, p3:{name:'Sis. Barbara White',phone:'555-0899'}, notes:'Cart at park ranger desk.' }
+    ],
+    'L4': [
+      { p1:{name:'Bro. Paul Jackson',phone:'555-0782'}, p2:{name:'Bro. David Martinez',phone:'555-0834'}, p3:{name:'',phone:''}, notes:'Peak ferry at 7:30 AM.' },
+      { p1:{name:'',phone:''}, p2:{name:'',phone:''}, p3:{name:'',phone:''}, notes:'Full afternoon shift open.' }
+    ],
+    'L5': [
+      { p1:{name:'Sis. Ruth Evans',phone:'555-0199'}, p2:{name:'Sis. Mary Jenkins',phone:'555-0245'}, p3:{name:'Sis. Deborah Adams',phone:'555-0311'}, notes:'Library opens at 6:30 AM.' },
+      { p1:{name:'Bro. Anthony Scott',phone:'555-0677'}, p2:{name:'Bro. Charles Perez',phone:'555-0712'}, p3:{name:'Bro. George Hall',phone:'555-0844'}, notes:'Plaza evening crowd.' }
+    ]
+  };
+}
+
+function getScheduleForDate(dateKey) {
+  const storageKey = `cart_schedule_v2_${dateKey}`;
+  const saved = localStorage.getItem(storageKey);
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      LOCATIONS.forEach(loc => {
+        if (!parsed[loc.id]) parsed[loc.id] = [normalizeShiftData(null), normalizeShiftData(null)];
+      });
+      return parsed;
+    } catch(e) { /* fall through */ }
+  }
+  return generateSampleScheduleForDate(dateKey);
+}
+
+function saveScheduleForDate(dateKey, data) {
+  localStorage.setItem(`cart_schedule_v2_${dateKey}`, JSON.stringify(data));
+}
+
+// -----------------------------------------------------------
+// 4. DATE NAVIGATION
+// -----------------------------------------------------------
+function updateDateDisplay() {
+  const title = formatDateTitle(currentDate);
+  document.getElementById('currentDateTitle').textContent = title;
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  const diff = Math.round((currentDate - today) / 86400000);
+  let subtitle = "Today's Schedule";
+  if (diff === 1) subtitle = "Tomorrow's Schedule";
+  else if (diff === -1) subtitle = "Yesterday's Schedule";
+  else if (diff > 1) subtitle = `${diff} days from now`;
+  else if (diff < -1) subtitle = `${Math.abs(diff)} days ago`;
+  document.getElementById('currentDateSubtitle').textContent = subtitle;
+
+  document.getElementById('directDatePicker').value = formatDateKey(currentDate);
+  renderSchedule();
+}
+
+function changeDateOffset(offset) {
+  currentDate.setDate(currentDate.getDate() + offset);
+  updateDateDisplay();
+}
+
+function goToToday() {
+  currentDate = new Date(); currentDate.setHours(0,0,0,0);
+  updateDateDisplay();
+}
+
+function onDirectDateSelected(val) {
+  if (!val) return;
+  const parts = val.split('-');
+  currentDate = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
+  currentDate.setHours(0,0,0,0);
+  updateDateDisplay();
+}
+
+// -----------------------------------------------------------
+// 5. MAIN SCHEDULE RENDERER
+// -----------------------------------------------------------
+function renderSchedule() {
+  const dateKey = formatDateKey(currentDate);
+  const data = getScheduleForDate(dateKey);
+  const grid = document.getElementById('scheduleGrid');
+  grid.innerHTML = '';
+
+  let totalAssigned = 0, totalSlots = 30;
 
   LOCATIONS.forEach(loc => {
-    SHIFT_TIMES.forEach(shift => {
-      const key = `${loc.id}-${shift.id}`;
-      const volunteers = reportData[key] || [];
-      
-      // Calculate missing spots out of 3 maximum slots
-      const vacancyCount = Math.max(0, 3 - volunteers.length);
-      const vacancyText = vacancyCount === 0 ? "Fully Staffed" : `${vacancyCount} Vacant Slot(s)`;
+    if (currentFilter !== 'ALL' && currentFilter !== loc.id) return;
 
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td><strong>${loc.name}</strong><br><small>${loc.landmark}</small></td>
-        <td><span class="badge ${shift.className}">${shift.name}</span><br><small>${shift.timeString}</small></td>
-        <td>${volunteers.length > 0 ? volunteers.join(', ') : '<em>No volunteers assigned</em>'}</td>
-        <td class="${vacancyCount > 0 ? 'vacancy-alert' : 'staffed-status'}">${vacancyText}</td>
-      `;
-      tableBody.appendChild(row);
+    const card = document.createElement('div');
+    card.className = 'location-card';
+    card.id = `card-${loc.id}`;
+
+    let cardHTML = `
+      <div class="location-card-header">
+        <div>
+          <div class="location-card-name">${escapeHtml(loc.name)}</div>
+          <div class="location-card-landmark">${escapeHtml(loc.landmark)}</div>
+        </div>
+      </div>`;
+
+    const shifts = data[loc.id] || [normalizeShiftData(null), normalizeShiftData(null)];
+
+    SHIFT_TIMES.forEach(shiftDef => {
+      const shift = normalizeShiftData(shifts[shiftDef.id]);
+      const slots = [
+        { data: shift.p1, role: 'Slot 1 · Lead / Driver', num: 1 },
+        { data: shift.p2, role: 'Slot 2 · Cart Partner', num: 2 },
+        { data: shift.p3, role: 'Slot 3 · Cart Partner', num: 3 }
+      ];
+
+      let filledCount = 0;
+      let slotsHTML = '';
+
+      slots.forEach(s => {
+        const filled = s.data && s.data.name && s.data.name.trim().length > 0;
+        if (filled) {
+          filledCount++;
+          totalAssigned++;
+          slotsHTML += `
+            <div class="slot-row slot-filled">
+              <div class="slot-info">
+                <div class="slot-name">${escapeHtml(s.data.name)}</div>
+                <div class="slot-role">${s.role}</div>
+              </div>
+              ${s.data.phone ? `<a href="tel:${escapeHtml(s.data.phone)}" class="slot-phone-btn">📞</a>` : ''}
+            </div>`;
+        } else {
+          slotsHTML += `
+            <div class="slot-row slot-empty" onclick="${isKeymanLoggedIn ? `openShiftEditorModal('${loc.id}', ${shiftDef.id})` : `openVolunteerModal('${loc.id}', ${shiftDef.id})`}">
+              <div class="slot-info">
+                <div class="slot-name empty-slot-text">⚠️ Open — Tap to ${isKeymanLoggedIn ? 'assign' : 'volunteer'}</div>
+                <div class="slot-role">${s.role}</div>
+              </div>
+            </div>`;
+        }
+      });
+
+      const needed = 3 - filledCount;
+      const statusClass = needed === 0 ? 'shift-status-full' : needed >= 2 ? 'shift-status-critical' : 'shift-status-partial';
+      const statusText = needed === 0 ? '✅ Fully Staffed' : `⚠️ ${needed} Open`;
+
+      cardHTML += `
+        <div class="shift-block ${shiftDef.className}">
+          <div class="shift-block-header">
+            <div>
+              <span class="shift-icon">${shiftDef.icon}</span>
+              <span class="shift-label">${escapeHtml(shiftDef.name)}</span>
+            </div>
+            <div>
+              <span class="shift-time-badge">${escapeHtml(shiftDef.timeString)}</span>
+              <span class="shift-status-badge ${statusClass}">${statusText}</span>
+            </div>
+          </div>
+          <div class="shift-slots">${slotsHTML}</div>
+          ${shift.notes ? `<div class="shift-notes">📝 ${escapeHtml(shift.notes)}</div>` : ''}
+          ${isKeymanLoggedIn ? `<button class="btn btn-sm btn-primary shift-edit-btn" onclick="openShiftEditorModal('${loc.id}', ${shiftDef.id})">✏️ Edit Shift</button>` : ''}
+        </div>`;
     });
+
+    card.innerHTML = cardHTML;
+    grid.appendChild(card);
   });
+
+  // Update stats
+  document.getElementById('statConfirmedSlots').textContent = `${totalAssigned} / ${totalSlots}`;
+  document.getElementById('statNeededSlots').textContent = totalSlots - totalAssigned;
 }
 
-// Initialize event listeners when DOM content loads
-document.addEventListener('DOMContentLoaded', () => {
-  const exportBtn = document.getElementById('btn-export-png');
-  if (exportBtn) {
-    exportBtn.addEventListener('click', exportReportToPNG);
+// -----------------------------------------------------------
+// 6. LOCATION FILTER
+// -----------------------------------------------------------
+function filterLocation(locId) {
+  currentFilter = locId;
+  document.querySelectorAll('.location-chip').forEach(btn => btn.classList.remove('active'));
+  const activeBtn = document.getElementById(`filterBtn${locId}`);
+  if (activeBtn) activeBtn.classList.add('active');
+  renderSchedule();
+}
+
+// -----------------------------------------------------------
+// 7. KEYMAN AUTHENTICATION
+// -----------------------------------------------------------
+function openKeymanAuthModal() {
+  if (isKeymanLoggedIn) {
+    document.getElementById('loginView').style.display = 'none';
+    document.getElementById('loggedInView').style.display = 'block';
+  } else {
+    document.getElementById('loginView').style.display = 'block';
+    document.getElementById('loggedInView').style.display = 'none';
+    clearPin();
   }
+  document.getElementById('keymanModal').classList.add('active');
+}
+
+function closeKeymanModal() {
+  document.getElementById('keymanModal').classList.remove('active');
+  clearPin();
+}
+
+function pressPinDigit(digit) {
+  if (enteredPin.length >= 4) return;
+  enteredPin += digit;
+  updatePinDots();
+  if (enteredPin.length === 4) setTimeout(() => submitPinLogin(), 200);
+}
+
+function backspacePin() {
+  enteredPin = enteredPin.slice(0, -1);
+  updatePinDots();
+}
+
+function clearPin() {
+  enteredPin = '';
+  updatePinDots();
+}
+
+function updatePinDots() {
+  for (let i = 1; i <= 4; i++) {
+    const dot = document.getElementById(`pDot${i}`);
+    if (dot) dot.classList.toggle('filled', i <= enteredPin.length);
+  }
+}
+
+function submitPinLogin() {
+  if (enteredPin === DEFAULT_KEYMAN_PIN) {
+    isKeymanLoggedIn = true;
+    document.getElementById('keymanBtnText').textContent = 'Keyman ⭐';
+    document.getElementById('keymanActionBtn').classList.add('active');
+    closeKeymanModal();
+    showToast('🔓 Keyman mode activated! You can now edit all shifts.');
+    renderSchedule();
+  } else {
+    showToast('❌ Incorrect PIN. Try again.');
+    clearPin();
+  }
+}
+
+function logoutKeyman() {
+  isKeymanLoggedIn = false;
+  document.getElementById('keymanBtnText').textContent = 'Keyman';
+  document.getElementById('keymanActionBtn').classList.remove('active');
+  closeKeymanModal();
+  showToast('🚪 Logged out. Viewer mode active.');
+  renderSchedule();
+}
+
+function resetToSampleData() {
+  const dateKey = formatDateKey(currentDate);
+  localStorage.removeItem(`cart_schedule_v2_${dateKey}`);
+  closeKeymanModal();
+  showToast('🔄 Schedule reset to demo data.');
+  renderSchedule();
+}
+
+// -----------------------------------------------------------
+// 8. SHIFT EDITOR MODAL (Keyman Only)
+// -----------------------------------------------------------
+function openShiftEditorModal(locId, shiftIdx) {
+  if (!isKeymanLoggedIn) return;
+  const dateKey = formatDateKey(currentDate);
+  const data = getScheduleForDate(dateKey);
+  const shifts = data[locId] || [normalizeShiftData(null), normalizeShiftData(null)];
+  const shift = normalizeShiftData(shifts[shiftIdx]);
+  const loc = LOCATIONS.find(l => l.id === locId);
+  const shiftDef = SHIFT_TIMES[shiftIdx];
+
+  document.getElementById('editLocationId').value = locId;
+  document.getElementById('editShiftIndex').value = shiftIdx;
+  document.getElementById('editorShiftHeader').innerHTML = `${escapeHtml(loc.name)} &bull; ${escapeHtml(shiftDef.timeString)}`;
+  document.getElementById('editorShiftDate').textContent = formatDateTitle(currentDate);
+  document.getElementById('editPub1Name').value = shift.p1.name || '';
+  document.getElementById('editPub1Phone').value = shift.p1.phone || '';
+  document.getElementById('editPub2Name').value = shift.p2.name || '';
+  document.getElementById('editPub2Phone').value = shift.p2.phone || '';
+  document.getElementById('editPub3Name').value = shift.p3.name || '';
+  document.getElementById('editPub3Phone').value = shift.p3.phone || '';
+  document.getElementById('editShiftNotes').value = shift.notes || '';
+  document.getElementById('shiftEditorModal').classList.add('active');
+}
+
+function closeShiftEditorModal() {
+  document.getElementById('shiftEditorModal').classList.remove('active');
+}
+
+function saveShiftEditor(e) {
+  e.preventDefault();
+  const locId = document.getElementById('editLocationId').value;
+  const shiftIdx = parseInt(document.getElementById('editShiftIndex').value);
+  const dateKey = formatDateKey(currentDate);
+  const data = getScheduleForDate(dateKey);
+  if (!data[locId]) data[locId] = [normalizeShiftData(null), normalizeShiftData(null)];
+
+  data[locId][shiftIdx] = {
+    p1: { name: document.getElementById('editPub1Name').value.trim(), phone: document.getElementById('editPub1Phone').value.trim() },
+    p2: { name: document.getElementById('editPub2Name').value.trim(), phone: document.getElementById('editPub2Phone').value.trim() },
+    p3: { name: document.getElementById('editPub3Name').value.trim(), phone: document.getElementById('editPub3Phone').value.trim() },
+    notes: document.getElementById('editShiftNotes').value.trim()
+  };
+
+  saveScheduleForDate(dateKey, data);
+  closeShiftEditorModal();
+  showToast('💾 Shift saved successfully!');
+  renderSchedule();
+}
+
+function clearCurrentShift() {
+  document.getElementById('editPub1Name').value = '';
+  document.getElementById('editPub1Phone').value = '';
+  document.getElementById('editPub2Name').value = '';
+  document.getElementById('editPub2Phone').value = '';
+  document.getElementById('editPub3Name').value = '';
+  document.getElementById('editPub3Phone').value = '';
+  document.getElementById('editShiftNotes').value = '';
+  showToast('🧹 Shift fields cleared.');
+}
+
+// -----------------------------------------------------------
+// 9. VOLUNTEER SIGN-UP MODAL
+// -----------------------------------------------------------
+function openVolunteerModal(locId, shiftIdx) {
+  const loc = LOCATIONS.find(l => l.id === locId);
+  const shiftDef = SHIFT_TIMES[shiftIdx];
+  document.getElementById('volLocId').value = locId;
+  document.getElementById('volShiftIdx').value = shiftIdx;
+  document.getElementById('volShiftInfo').innerHTML = `${escapeHtml(loc.name)} &bull; ${escapeHtml(shiftDef.timeString)}`;
+  document.getElementById('volDateInfo').textContent = formatDateTitle(currentDate);
+  document.getElementById('volName').value = '';
+  document.getElementById('volPhone').value = '';
+  document.getElementById('volunteerModal').classList.add('active');
+}
+
+function closeVolunteerModal() {
+  document.getElementById('volunteerModal').classList.remove('active');
+}
+
+function submitVolunteerRequest(e) {
+  e.preventDefault();
+  const locId = document.getElementById('volLocId').value;
+  const shiftIdx = parseInt(document.getElementById('volShiftIdx').value);
+  const name = document.getElementById('volName').value.trim();
+  const phone = document.getElementById('volPhone').value.trim();
+  if (!name || !phone) { showToast('⚠️ Please enter both name and phone.'); return; }
+
+  const dateKey = formatDateKey(currentDate);
+  const data = getScheduleForDate(dateKey);
+  if (!data[locId]) data[locId] = [normalizeShiftData(null), normalizeShiftData(null)];
+  const shift = normalizeShiftData(data[locId][shiftIdx]);
+
+  // Fill the first empty slot
+  if (!shift.p1.name || !shift.p1.name.trim()) { shift.p1 = {name, phone}; }
+  else if (!shift.p2.name || !shift.p2.name.trim()) { shift.p2 = {name, phone}; }
+  else if (!shift.p3.name || !shift.p3.name.trim()) { shift.p3 = {name, phone}; }
+  else { showToast('❌ All 3 slots are full for this shift.'); return; }
+
+  data[locId][shiftIdx] = shift;
+  saveScheduleForDate(dateKey, data);
+  closeVolunteerModal();
+  showToast(`✅ Thank you, ${name}! You're signed up.`);
+  renderSchedule();
+}
+
+// -----------------------------------------------------------
+// 10. SUMMARY & VACANCY REPORT (Clean 4-Column Table + PNG)
+// -----------------------------------------------------------
+function openSummaryReportModal() {
+  const dateTitle = document.getElementById('currentDateTitle').textContent;
+  const dateKey = formatDateKey(currentDate);
+  const scheduleData = getScheduleForDate(dateKey);
+  const tableRows = [];
+
+  LOCATIONS.forEach(loc => {
+    const shifts = scheduleData[loc.id] || [normalizeShiftData(null), normalizeShiftData(null)];
+    SHIFT_TIMES.forEach(shiftDef => {
+      const shift = normalizeShiftData(shifts[shiftDef.id]);
+      const volunteers = [];
+      if (shift.p1 && shift.p1.name && shift.p1.name.trim()) volunteers.push(shift.p1.name.trim());
+      if (shift.p2 && shift.p2.name && shift.p2.name.trim()) volunteers.push(shift.p2.name.trim());
+      if (shift.p3 && shift.p3.name && shift.p3.name.trim()) volunteers.push(shift.p3.name.trim());
+      const openSlots = 3 - volunteers.length;
+      for (let i = 0; i < openSlots; i++) volunteers.push('<span class="srt-vacant">— Vacant —</span>');
+      tableRows.push({ location: loc.id, volunteers: volunteers.join('<br>'), date: dateTitle, time: shiftDef.timeString });
+    });
+  });
+
+  let html = `
+    <div id="reportCaptureZone" class="srt-capture-zone">
+      <div class="srt-header">
+        <div class="srt-header-icon">🛒</div>
+        <div>
+          <div class="srt-header-title">Cart Witnessing Schedule</div>
+          <div class="srt-header-date">📅 ${escapeHtml(dateTitle)}</div>
+        </div>
+      </div>
+      <table class="summary-report-table">
+        <thead><tr><th>Location</th><th>Volunteers</th><th>Date</th><th>Time</th></tr></thead>
+        <tbody>
+          ${tableRows.map(r => `<tr>
+            <td class="srt-loc-cell">${escapeHtml(r.location)}</td>
+            <td class="srt-vol-cell">${r.volunteers}</td>
+            <td class="srt-date-cell">${escapeHtml(r.date)}</td>
+            <td class="srt-time-cell">${escapeHtml(r.time)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+      <div class="srt-footer">Generated by Cart Witnessing App</div>
+    </div>`;
+
+  document.getElementById('summaryReportContent').innerHTML = html;
+  document.getElementById('summaryReportModal').classList.add('active');
+}
+
+function closeSummaryReportModal() {
+  document.getElementById('summaryReportModal').classList.remove('active');
+}
+
+function downloadReportAsImage() {
+  const el = document.getElementById('reportCaptureZone');
+  if (!el) { showToast('⚠️ No report to capture.'); return; }
+  showToast('📸 Generating image...');
+  html2canvas(el, { scale: 3, useCORS: true, backgroundColor: '#ffffff', logging: false }).then(canvas => {
+    const link = document.createElement('a');
+    link.download = `Cart-Schedule-${formatDateKey(currentDate)}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    showToast('✅ Image saved! Check your Downloads.');
+  }).catch(() => showToast('❌ Failed to generate image.'));
+}
+
+// -----------------------------------------------------------
+// 11. WHATSAPP COPY FUNCTIONS
+// -----------------------------------------------------------
+function copyVacancyListWhatsApp() {
+  const dateTitle = document.getElementById('currentDateTitle').textContent;
+  const dateKey = formatDateKey(currentDate);
+  const data = getScheduleForDate(dateKey);
+  let msg = `📢 *CART WITNESSING VACANCIES*\n📅 *${dateTitle}*\n\n`;
+  let totalNeeded = 0;
+
+  LOCATIONS.forEach(loc => {
+    const shifts = data[loc.id] || [normalizeShiftData(null), normalizeShiftData(null)];
+    SHIFT_TIMES.forEach(shiftDef => {
+      const shift = normalizeShiftData(shifts[shiftDef.id]);
+      let filled = 0;
+      if (shift.p1 && shift.p1.name && shift.p1.name.trim()) filled++;
+      if (shift.p2 && shift.p2.name && shift.p2.name.trim()) filled++;
+      if (shift.p3 && shift.p3.name && shift.p3.name.trim()) filled++;
+      const needed = 3 - filled;
+      if (needed > 0) {
+        totalNeeded += needed;
+        msg += `📍 *${loc.name}*\n⏰ ${shiftDef.timeString}\n⚠️ ${needed} volunteer(s) needed\n\n`;
+      }
+    });
+  });
+
+  if (totalNeeded === 0) msg += '🎉 All positions are fully staffed!\n';
+  else msg += `---\n*Total needed: ${totalNeeded} volunteers*\n`;
+  msg += '\n_Please reply if you can help! 🙏_';
+
+  navigator.clipboard.writeText(msg).then(() => showToast('📲 Vacancy list copied! Paste in WhatsApp.')).catch(() => showToast('❌ Could not copy to clipboard.'));
+}
+
+function copyWhatsAppSummary() {
+  const dateTitle = document.getElementById('currentDateTitle').textContent;
+  const dateKey = formatDateKey(currentDate);
+  const data = getScheduleForDate(dateKey);
+  let msg = `🛒 *CART WITNESSING SCHEDULE*\n📅 *${dateTitle}*\n\n`;
+
+  LOCATIONS.forEach(loc => {
+    msg += `📍 *${loc.name}*\n`;
+    const shifts = data[loc.id] || [normalizeShiftData(null), normalizeShiftData(null)];
+    SHIFT_TIMES.forEach(shiftDef => {
+      const shift = normalizeShiftData(shifts[shiftDef.id]);
+      msg += `  ${shiftDef.icon} ${shiftDef.timeString}\n`;
+      const names = [];
+      if (shift.p1 && shift.p1.name && shift.p1.name.trim()) names.push(shift.p1.name.trim());
+      if (shift.p2 && shift.p2.name && shift.p2.name.trim()) names.push(shift.p2.name.trim());
+      if (shift.p3 && shift.p3.name && shift.p3.name.trim()) names.push(shift.p3.name.trim());
+      const openSlots = 3 - names.length;
+      if (names.length > 0) msg += `    ${names.join(', ')}\n`;
+      if (openSlots > 0) msg += `    ⚠️ ${openSlots} slot(s) open\n`;
+    });
+    msg += '\n';
+  });
+
+  navigator.clipboard.writeText(msg).then(() => showToast('📲 Schedule copied! Paste in WhatsApp.')).catch(() => showToast('❌ Could not copy to clipboard.'));
+}
+
+// -----------------------------------------------------------
+// 12. TEXT-TO-SPEECH
+// -----------------------------------------------------------
+function speakSchedule() {
+  if (!('speechSynthesis' in window)) { showToast('🔇 Speech not supported on this device.'); return; }
+  window.speechSynthesis.cancel();
+  const dateTitle = document.getElementById('currentDateTitle').textContent;
+  const dateKey = formatDateKey(currentDate);
+  const data = getScheduleForDate(dateKey);
+  let text = `Cart witnessing schedule for ${dateTitle}. `;
+
+  LOCATIONS.forEach(loc => {
+    text += `${loc.name}. `;
+    const shifts = data[loc.id] || [normalizeShiftData(null), normalizeShiftData(null)];
+    SHIFT_TIMES.forEach(shiftDef => {
+      const shift = normalizeShiftData(shifts[shiftDef.id]);
+      text += `${shiftDef.name}. `;
+      const names = [];
+      if (shift.p1 && shift.p1.name && shift.p1.name.trim()) names.push(shift.p1.name);
+      if (shift.p2 && shift.p2.name && shift.p2.name.trim()) names.push(shift.p2.name);
+      if (shift.p3 && shift.p3.name && shift.p3.name.trim()) names.push(shift.p3.name);
+      if (names.length > 0) text += names.join(', ') + '. ';
+      else text += 'No volunteers assigned. ';
+    });
+  });
+
+  speechSynthUtterance = new SpeechSynthesisUtterance(text);
+  speechSynthUtterance.rate = 0.9;
+  document.getElementById('ttsNotice').classList.add('active');
+  speechSynthUtterance.onend = () => document.getElementById('ttsNotice').classList.remove('active');
+  window.speechSynthesis.speak(speechSynthUtterance);
+}
+
+function stopSpeech() {
+  window.speechSynthesis.cancel();
+  document.getElementById('ttsNotice').classList.remove('active');
+}
+
+// -----------------------------------------------------------
+// 13. ACCESSIBILITY (Font Zoom & High Contrast)
+// -----------------------------------------------------------
+function setFontZoom(level) {
+  const scales = { normal: 1, large: 1.2, jumbo: 1.45 };
+  document.documentElement.style.setProperty('--font-scale', scales[level] || 1);
+  ['Normal','Large','Jumbo'].forEach(l => {
+    const btn = document.getElementById(`zoom${l}Btn`);
+    if (btn) btn.classList.toggle('active', l.toLowerCase() === level);
+  });
+  localStorage.setItem('cart_font_zoom', level);
+}
+
+function toggleHighContrast() {
+  document.body.classList.toggle('high-contrast');
+  const isHC = document.body.classList.contains('high-contrast');
+  localStorage.setItem('cart_high_contrast', isHC ? 'true' : 'false');
+  const btn = document.getElementById('contrastToggleBtn');
+  if (btn) btn.classList.toggle('active', isHC);
+}
+
+// -----------------------------------------------------------
+// 14. TOAST NOTIFICATION
+// -----------------------------------------------------------
+function showToast(message) {
+  const toast = document.getElementById('toastNotification');
+  document.getElementById('toastMessage').textContent = message;
+  toast.classList.add('active');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => hideToast(), 4000);
+}
+
+function hideToast() {
+  document.getElementById('toastNotification').classList.remove('active');
+}
+
+// -----------------------------------------------------------
+// 15. INITIALIZATION
+// -----------------------------------------------------------
+document.addEventListener('DOMContentLoaded', () => {
+  // Restore accessibility preferences
+  const savedZoom = localStorage.getItem('cart_font_zoom');
+  if (savedZoom) setFontZoom(savedZoom);
+  const savedHC = localStorage.getItem('cart_high_contrast');
+  if (savedHC === 'true') { document.body.classList.add('high-contrast'); const btn = document.getElementById('contrastToggleBtn'); if (btn) btn.classList.add('active'); }
+
+  updateDateDisplay();
 });
