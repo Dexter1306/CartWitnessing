@@ -1333,8 +1333,8 @@ body.dark-mode .vacancy-badge {
 
 /* Capture container: landscape-oriented Cart Witnessing Table Form */
 .srt-capture-zone {
-  width: 780px;
-  min-width: 780px;
+  width: 840px;
+  min-width: 840px;
   margin: 0 auto;
   background: #ffffff;
   border-radius: 12px;
@@ -1348,7 +1348,7 @@ body.dark-mode .vacancy-badge {
 .srt-form-header {
   background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 60%, #2563eb 100%);
   color: #ffffff;
-  padding: 14px 18px;
+  padding: 16px 20px;
 }
 .srt-form-top {
   display: flex;
@@ -1361,28 +1361,28 @@ body.dark-mode .vacancy-badge {
   gap: 12px;
 }
 .srt-form-icon {
-  font-size: 2rem;
+  font-size: 2.2rem;
   flex-shrink: 0;
 }
 .srt-form-title {
-  font-size: 1.15rem;
+  font-size: 1.35rem;
   font-weight: 900;
-  letter-spacing: 0.02em;
-  line-height: 1.2;
+  letter-spacing: 0.03em;
+  line-height: 1.25;
 }
 .srt-form-subtitle {
-  font-size: 0.78rem;
+  font-size: 0.92rem;
   font-weight: 600;
-  opacity: 0.9;
-  margin-top: 2px;
+  opacity: 0.95;
+  margin-top: 3px;
 }
 .srt-form-badge {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 6px;
-  padding: 4px 10px;
-  font-size: 0.75rem;
-  font-weight: 800;
+  background: rgba(255, 255, 255, 0.25);
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 0.88rem;
+  font-weight: 900;
   letter-spacing: 0.05em;
   white-space: nowrap;
 }
@@ -1391,32 +1391,32 @@ body.dark-mode .vacancy-badge {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 10px;
-  padding-top: 10px;
+  margin-top: 12px;
+  padding-top: 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.25);
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 }
 .srt-meta-date {
-  font-size: 0.88rem;
-  font-weight: 700;
+  font-size: 1.05rem;
+  font-weight: 800;
 }
 .srt-meta-chips {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 .srt-chip {
-  font-size: 0.72rem;
+  font-size: 0.86rem;
   font-weight: 800;
-  padding: 3px 8px;
-  border-radius: 12px;
+  padding: 5px 12px;
+  border-radius: 14px;
   white-space: nowrap;
 }
 .srt-chip-total {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.25);
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.4);
 }
 .srt-chip-filled {
   background: #ffffff;
@@ -1435,35 +1435,35 @@ body.dark-mode .vacancy-badge {
 
 /* 2. Table Form Base */
 .summary-report-table {
-  width: 780px;
-  min-width: 780px;
+  width: 840px;
+  min-width: 840px;
   border-collapse: collapse;
   font-family: var(--font-family);
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   table-layout: fixed;
   background: #ffffff;
 }
 
-/* Fixed Column Widths for 4-Column Form (Sum = 780px) */
+/* Fixed Column Widths for 4-Column Form (Sum = 840px) */
 .summary-report-table thead th:nth-child(1),
-.summary-report-table tbody td:nth-child(1) { width: 235px; text-align: left; }
+.summary-report-table tbody td:nth-child(1) { width: 250px; text-align: left; }
 .summary-report-table thead th:nth-child(2),
-.summary-report-table tbody td:nth-child(2) { width: 165px; text-align: center; }
+.summary-report-table tbody td:nth-child(2) { width: 185px; text-align: center; }
 .summary-report-table thead th:nth-child(3),
-.summary-report-table tbody td:nth-child(3) { width: 260px; text-align: left; }
+.summary-report-table tbody td:nth-child(3) { width: 275px; text-align: left; }
 .summary-report-table thead th:nth-child(4),
-.summary-report-table tbody td:nth-child(4) { width: 120px; text-align: center; }
+.summary-report-table tbody td:nth-child(4) { width: 130px; text-align: center; }
 
 /* Table Header */
 .summary-report-table thead th {
   background-color: #0f2440;
   color: #ffffff;
-  font-weight: 800;
-  font-size: 0.74rem;
+  font-weight: 900;
+  font-size: 0.88rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  padding: 12px 14px;
-  border-bottom: 2px solid #000000;
+  padding: 14px 12px;
+  border-bottom: 2.5px solid #000000;
   border-right: 1.5px solid rgba(255, 255, 255, 0.3);
   vertical-align: middle;
 }
@@ -1498,21 +1498,21 @@ body.dark-mode .vacancy-badge {
 .srt-loc-cell {
   vertical-align: middle !important;
   text-align: left !important;
-  padding: 14px 16px !important;
+  padding: 16px 18px !important;
   border-right: 1.5px solid #cbd5e1 !important;
 }
 .srt-loc-name {
-  font-weight: 800;
-  font-size: 0.88rem;
+  font-weight: 900;
+  font-size: 1.06rem;
   color: #1e40af;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
   line-height: 1.35;
   word-break: normal;
   overflow-wrap: break-word;
 }
 .srt-loc-landmark {
-  font-size: 0.74rem;
-  font-weight: 600;
+  font-size: 0.88rem;
+  font-weight: 700;
   color: #475569;
   line-height: 1.35;
   word-break: normal;
@@ -1525,28 +1525,28 @@ body.dark-mode .vacancy-badge {
   vertical-align: top !important;
 }
 .srt-sub-row {
-  height: 86px;
+  height: 104px;
   box-sizing: border-box;
-  padding: 8px 12px;
+  padding: 10px 10px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 .srt-sub-row.srt-sub-afternoon {
-  border-top: 1px solid #cbd5e1;
+  border-top: 1.5px solid #cbd5e1;
 }
 
 /* Sub-row column alignments */
 .srt-time-compound .srt-sub-row {
   align-items: center;
   text-align: center;
-  padding: 8px 6px;
+  padding: 10px 8px;
 }
 .srt-status-compound .srt-sub-row {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 8px 6px;
+  padding: 10px 6px;
 }
 .srt-vol-compound .srt-sub-row {
   padding: 8px 14px;
@@ -1556,13 +1556,13 @@ body.dark-mode .vacancy-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 2px 7px;
-  border-radius: 5px;
-  font-size: 0.72rem;
-  font-weight: 800;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.84rem;
+  font-weight: 900;
   text-transform: uppercase;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
   white-space: nowrap;
 }
 .srt-shift-morning {
@@ -1579,16 +1579,15 @@ body.dark-mode .vacancy-badge {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  font-size: 0.71rem;
-  font-weight: 700;
-  color: #1e293b;
+  gap: 5px;
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: #0f172a;
   white-space: nowrap;
   line-height: 1.2;
-  letter-spacing: -0.01em;
 }
 .srt-time-icon {
-  font-size: 0.72rem;
+  font-size: 0.95rem;
   line-height: 1;
   flex-shrink: 0;
 }
@@ -1599,23 +1598,23 @@ body.dark-mode .vacancy-badge {
 
 /* Cell 3: Volunteers */
 .srt-vol-cell {
-  font-size: 0.8rem !important;
+  font-size: 0.95rem !important;
 }
 .srt-vol-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 7px;
 }
 .srt-slot-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
 }
 .srt-slot-num {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  font-size: 0.68rem;
+  font-size: 0.78rem;
   font-weight: 900;
   display: inline-flex;
   align-items: center;
@@ -1631,14 +1630,14 @@ body.dark-mode .vacancy-badge {
   color: #b91c1c;
 }
 .is-filled .srt-slot-name {
-  font-size: 0.82rem;
-  font-weight: 700;
+  font-size: 0.98rem;
+  font-weight: 800;
   color: #0f172a;
   line-height: 1.25;
 }
 .is-vacant .srt-slot-name {
-  font-size: 0.78rem;
-  font-weight: 700;
+  font-size: 0.94rem;
+  font-weight: 800;
   color: #dc2626;
   font-style: italic;
   line-height: 1.25;
@@ -1650,10 +1649,10 @@ body.dark-mode .vacancy-badge {
 }
 .srt-status-pill {
   display: inline-block;
-  padding: 5px 10px;
-  border-radius: 8px;
-  font-size: 0.74rem;
-  font-weight: 800;
+  padding: 7px 13px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 900;
   white-space: nowrap;
 }
 .srt-status-filled {
@@ -1679,13 +1678,13 @@ body.dark-mode .vacancy-badge {
 
 /* 3. Form Footer */
 .srt-form-footer {
-  padding: 10px 18px;
+  padding: 12px 20px;
   text-align: left;
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: #64748b;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #475569;
   background: #f8fafc;
-  border-top: 1px solid #cbd5e1;
+  border-top: 1.5px solid #cbd5e1;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1706,7 +1705,7 @@ body.dark-mode .vacancy-badge {
   0%, 100% { opacity: 0.5; }
   50% { opacity: 1; }
 }
-@media (max-width: 780px) {
+@media (max-width: 840px) {
   .srt-scroll-hint {
     display: block;
   }

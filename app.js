@@ -620,15 +620,15 @@ function downloadReportAsImage() {
   container.style.position = 'fixed';
   container.style.left = '-9999px';
   container.style.top = '0';
-  container.style.width = '780px';
+  container.style.width = '840px';
   container.style.backgroundColor = '#ffffff';
   container.style.zIndex = '-9999';
   container.style.padding = '0';
   container.style.margin = '0';
 
-  clone.style.width = '780px';
-  clone.style.minWidth = '780px';
-  clone.style.maxWidth = '780px';
+  clone.style.width = '840px';
+  clone.style.minWidth = '840px';
+  clone.style.maxWidth = '840px';
   clone.style.margin = '0';
   clone.style.boxShadow = 'none';
   clone.style.borderRadius = '0';
@@ -641,8 +641,8 @@ function downloadReportAsImage() {
     useCORS: true,
     backgroundColor: '#ffffff',
     logging: false,
-    width: 780,
-    windowWidth: 780,
+    width: 840,
+    windowWidth: 840,
     scrollX: 0,
     scrollY: 0,
     x: 0,
