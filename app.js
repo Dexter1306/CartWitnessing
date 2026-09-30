@@ -431,56 +431,146 @@ function submitVolunteerRequest(e) {
 }
 
 // -----------------------------------------------------------
-// 10. SUMMARY & VACANCY REPORT (Landscape Table + Mobile-Friendly PNG)
+// 10. SUMMARY & VACANCY REPORT (Cart Witnessing Table Form + Mobile-Friendly PNG)
 // -----------------------------------------------------------
 function openSummaryReportModal() {
-  const dateTitle = document.getElementById('currentDateTitle').textContent;
   const dateKey = formatDateKey(currentDate);
   const scheduleData = getScheduleForDate(dateKey);
+
+  const dayName = currentDate.toLocaleDateString('en-US', { weekday: 'short' });
+  const dateFormatted = currentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const fullDateHeader = currentDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+
+  let totalFilled = 0;
+  let totalVacant = 0;
   const tableRows = [];
 
   LOCATIONS.forEach(loc => {
     const shifts = scheduleData[loc.id] || [normalizeShiftData(null), normalizeShiftData(null)];
     SHIFT_TIMES.forEach(shiftDef => {
       const shift = normalizeShiftData(shifts[shiftDef.id]);
-      const volunteers = [];
-      if (shift.p1 && shift.p1.name && shift.p1.name.trim()) volunteers.push(shift.p1.name.trim());
-      if (shift.p2 && shift.p2.name && shift.p2.name.trim()) volunteers.push(shift.p2.name.trim());
-      if (shift.p3 && shift.p3.name && shift.p3.name.trim()) volunteers.push(shift.p3.name.trim());
-      const openSlots = 3 - volunteers.length;
-      for (let i = 0; i < openSlots; i++) volunteers.push('<span class="srt-vacant">— Vacant —</span>');
+      const p1 = (shift.p1 && shift.p1.name) ? shift.p1.name.trim() : '';
+      const p2 = (shift.p2 && shift.p2.name) ? shift.p2.name.trim() : '';
+      const p3 = (shift.p3 && shift.p3.name) ? shift.p3.name.trim() : '';
+
+      const filledCount = (p1 ? 1 : 0) + (p2 ? 1 : 0) + (p3 ? 1 : 0);
+      const vacantCount = 3 - filledCount;
+      totalFilled += filledCount;
+      totalVacant += vacantCount;
+
       tableRows.push({
-        location: loc.id,
-        volunteers: volunteers.join('<br>'),
-        date: dateTitle,
-        time: shiftDef.timeString,
-        shiftClass: shiftDef.className
+        locId: loc.id,
+        locName: loc.name,
+        locLandmark: loc.landmark,
+        dayName: dayName,
+        dateFormatted: dateFormatted,
+        shiftName: shiftDef.name,
+        shiftIcon: shiftDef.icon,
+        shiftTime: shiftDef.timeString.replace(/–/g, '-'),
+        shiftClass: shiftDef.className,
+        p1: p1,
+        p2: p2,
+        p3: p3,
+        vacantCount: vacantCount
       });
     });
   });
 
   let html = `
-    <div class="srt-scroll-hint">👈 Swipe to view full table 👉</div>
+    <div class="srt-scroll-hint">👈 Swipe left/right to view full table form 👉</div>
     <div id="reportCaptureZone" class="srt-capture-zone">
-      <div class="srt-header">
-        <div class="srt-header-icon">🛒</div>
-        <div>
-          <div class="srt-header-title">Cart Witnessing Schedule</div>
-          <div class="srt-header-date">📅 ${escapeHtml(dateTitle)}</div>
+      <!-- 1. Form Header -->
+      <div class="srt-form-header">
+        <div class="srt-form-top">
+          <div class="srt-form-branding">
+            <div class="srt-form-icon">🛒</div>
+            <div>
+              <div class="srt-form-title">CART WITNESSING ROSTER &amp; VACANCY REPORT</div>
+              <div class="srt-form-subtitle">Official Congregation Schedule Form &bull; 3 Volunteers / Cart</div>
+            </div>
+          </div>
+          <div class="srt-form-badge">5 LOCATIONS</div>
+        </div>
+        <div class="srt-form-meta-bar">
+          <div class="srt-meta-date">📅 <strong>${escapeHtml(fullDateHeader)}</strong></div>
+          <div class="srt-meta-chips">
+            <span class="srt-chip srt-chip-total">Slots: 30</span>
+            <span class="srt-chip srt-chip-filled">Filled: ${totalFilled}</span>
+            <span class="srt-chip ${totalVacant > 0 ? 'srt-chip-vacant' : 'srt-chip-all-good'}">
+              ${totalVacant > 0 ? `⚠️ ${totalVacant} Vacanc${totalVacant > 1 ? 'ies' : 'y'}` : '✅ 100% Staffed'}
+            </span>
+          </div>
         </div>
       </div>
+
+      <!-- 2. Form Table -->
       <table class="summary-report-table">
-        <thead><tr><th>Location</th><th>Volunteers (3 per Cart)</th><th>Date</th><th>Shift Time</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Location &amp; Landmark</th>
+            <th>Date</th>
+            <th>Shift &amp; Time</th>
+            <th>Volunteers (3 per Cart)</th>
+            <th>Vacancy Status</th>
+          </tr>
+        </thead>
         <tbody>
-          ${tableRows.map(r => `<tr class="srt-shift-${r.shiftClass}">
-            <td class="srt-loc-cell">${escapeHtml(r.location)}</td>
-            <td class="srt-vol-cell">${r.volunteers}</td>
-            <td class="srt-date-cell">${escapeHtml(r.date)}</td>
-            <td class="srt-time-cell">${escapeHtml(r.time)}</td>
-          </tr>`).join('')}
+          ${tableRows.map((r) => {
+            let statusHtml = '';
+            if (r.vacantCount === 0) {
+              statusHtml = '<span class="srt-status-pill srt-status-filled">✅ Staffed</span>';
+            } else if (r.vacantCount === 1) {
+              statusHtml = '<span class="srt-status-pill srt-status-vacant-1">⚠️ 1 Needed</span>';
+            } else if (r.vacantCount === 2) {
+              statusHtml = '<span class="srt-status-pill srt-status-vacant-2">⚠️ 2 Needed</span>';
+            } else {
+              statusHtml = '<span class="srt-status-pill srt-status-vacant-3">🚨 3 Needed</span>';
+            }
+
+            const isShift2 = r.shiftClass === 'afternoon';
+            const rowClass = `srt-row srt-shift-${r.shiftClass} ${isShift2 ? 'srt-row-location-end' : ''}`;
+
+            return `
+            <tr class="${rowClass}">
+              <td class="srt-loc-cell">
+                <div class="srt-loc-name">📍 ${escapeHtml(r.locName)}</div>
+                <div class="srt-loc-landmark">${escapeHtml(r.locLandmark)}</div>
+              </td>
+              <td class="srt-date-cell">
+                <div class="srt-date-day">${escapeHtml(r.dayName)}</div>
+                <div class="srt-date-num">${escapeHtml(r.dateFormatted)}</div>
+              </td>
+              <td class="srt-time-cell">
+                <div class="srt-shift-badge srt-shift-${r.shiftClass}">${r.shiftIcon} ${escapeHtml(r.shiftName)}</div>
+                <div class="srt-shift-hours">⏰ ${escapeHtml(r.shiftTime)}</div>
+              </td>
+              <td class="srt-vol-cell">
+                <div class="srt-slot-row ${r.p1 ? 'is-filled' : 'is-vacant'}">
+                  <span class="srt-slot-num">1</span>
+                  <span class="srt-slot-name">${r.p1 ? escapeHtml(r.p1) : '<em>— Vacant Slot —</em>'}</span>
+                </div>
+                <div class="srt-slot-row ${r.p2 ? 'is-filled' : 'is-vacant'}">
+                  <span class="srt-slot-num">2</span>
+                  <span class="srt-slot-name">${r.p2 ? escapeHtml(r.p2) : '<em>— Vacant Slot —</em>'}</span>
+                </div>
+                <div class="srt-slot-row ${r.p3 ? 'is-filled' : 'is-vacant'}">
+                  <span class="srt-slot-num">3</span>
+                  <span class="srt-slot-name">${r.p3 ? escapeHtml(r.p3) : '<em>— Vacant Slot —</em>'}</span>
+                </div>
+              </td>
+              <td class="srt-status-cell">
+                ${statusHtml}
+              </td>
+            </tr>`;
+          }).join('')}
         </tbody>
       </table>
-      <div class="srt-footer">Generated by Cart Witnessing App</div>
+
+      <!-- 3. Form Footer -->
+      <div class="srt-form-footer">
+        <div>📋 Cart Witnessing Management System &bull; Official Dispatch Form</div>
+        <div>Generated: ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} &bull; Report adjustments to Keyman</div>
+      </div>
     </div>`;
 
   document.getElementById('summaryReportContent').innerHTML = html;
@@ -499,7 +589,44 @@ function downloadReportAsImage() {
   if (!el) { showToast('⚠️ No report to capture.'); return; }
   showToast('📸 Generating image…');
 
-  html2canvas(el, { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 720 }).then(canvas => {
+  // Clone capture zone to an unconstrained offscreen container
+  // This guarantees that mobile screen width, horizontal scroll position,
+  // or viewport scaling NEVER clips Date or Shift Time columns!
+  const clone = el.cloneNode(true);
+  const container = document.createElement('div');
+  container.style.position = 'fixed';
+  container.style.left = '-9999px';
+  container.style.top = '0';
+  container.style.width = '780px';
+  container.style.backgroundColor = '#ffffff';
+  container.style.zIndex = '-9999';
+  container.style.padding = '0';
+  container.style.margin = '0';
+
+  clone.style.width = '780px';
+  clone.style.minWidth = '780px';
+  clone.style.maxWidth = '780px';
+  clone.style.margin = '0';
+  clone.style.boxShadow = 'none';
+  clone.style.borderRadius = '0';
+
+  container.appendChild(clone);
+  document.body.appendChild(container);
+
+  html2canvas(clone, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: '#ffffff',
+    logging: false,
+    width: 780,
+    windowWidth: 780,
+    scrollX: 0,
+    scrollY: 0,
+    x: 0,
+    y: 0
+  }).then(canvas => {
+    container.remove();
+
     canvas.toBlob(blob => {
       if (!blob) { showToast('❌ Failed to create image.'); return; }
 
@@ -542,7 +669,11 @@ function downloadReportAsImage() {
         document.getElementById('shareImageBtn').addEventListener('click', async () => {
           try {
             const file = new File([blob], fileName, { type: 'image/png' });
-            await navigator.share({ files: [file], title: 'Cart Witnessing Schedule', text: `Schedule for ${document.getElementById('currentDateTitle').textContent}` });
+            await navigator.share({
+              files: [file],
+              title: 'Cart Witnessing Schedule',
+              text: `Schedule for ${document.getElementById('currentDateTitle').textContent}`
+            });
             showToast('✅ Shared successfully!');
           } catch (err) {
             if (err.name !== 'AbortError') showToast('❌ Share failed. Try long-press to save.');
@@ -565,8 +696,13 @@ function downloadReportAsImage() {
       });
 
     }, 'image/png');
-  }).catch(() => showToast('❌ Failed to generate image.'));
+  }).catch(err => {
+    container.remove();
+    console.error(err);
+    showToast('❌ Failed to generate image.');
+  });
 }
+
 
 // -----------------------------------------------------------
 // 11. WHATSAPP COPY FUNCTIONS
