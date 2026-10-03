@@ -66,8 +66,10 @@ try {
 } catch(e) {}
 
 // -----------------------------------------------------------
-// 3. SCHEDULE STORAGE (localStorage)
+// 3. SCHEDULE STORAGE (MySQL API + localStorage fallback)
 // -----------------------------------------------------------
+const API_ENDPOINT = 'api/schedule.php';
+
 function generateEmptySchedule() {
   const empty = {};
   LOCATIONS.forEach(loc => {
@@ -79,7 +81,7 @@ function generateEmptySchedule() {
   return empty;
 }
 
-function getScheduleForDate(dateKey) {
+function getScheduleFromLocal(dateKey) {
   const storageKey = `cart_schedule_v3_${dateKey}`;
   const saved = localStorage.getItem(storageKey);
   if (saved) {
@@ -94,12 +96,65 @@ function getScheduleForDate(dateKey) {
       return parsed;
     } catch(e) { /* fall through */ }
   }
-  return generateEmptySchedule();
+  return null;
+}
+
+function getScheduleForDate(dateKey) {
+  return getScheduleFromLocal(dateKey) || generateEmptySchedule();
+}
+
+// Fetch schedule from MySQL API and update localStorage + UI
+async function fetchScheduleFromAPI(dateKey) {
+  try {
+    const resp = await fetch(`${API_ENDPOINT}?date=${encodeURIComponent(dateKey)}&t=${Date.now()}`);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const result = await resp.json();
+    if (result && result.status === 'success' && result.data) {
+      // Normalize and cache locally
+      const data = result.data;
+      LOCATIONS.forEach(loc => {
+        if (!data[loc.id]) data[loc.id] = [normalizeShiftData(null), normalizeShiftData(null)];
+        else {
+          data[loc.id] = data[loc.id].map(shift => normalizeShiftData(shift));
+        }
+      });
+      localStorage.setItem(`cart_schedule_v3_${dateKey}`, JSON.stringify(data));
+      // Re-render if still viewing this date
+      if (formatDateKey(currentDate) === dateKey) {
+        renderSchedule(false);
+      }
+      return data;
+    }
+  } catch (e) {
+    console.warn('API fetch failed, using localStorage fallback:', e.message);
+  }
+  return null;
 }
 
 function saveScheduleForDate(dateKey, data) {
+  // Always save to localStorage immediately (instant UI)
   localStorage.setItem(`cart_schedule_v3_${dateKey}`, JSON.stringify(data));
+  // Save to MySQL API in background
+  saveScheduleToAPI(dateKey, data);
+  // Also sync to Google Sheets if configured
   syncSaveToGoogleSheets(dateKey, data, false);
+}
+
+async function saveScheduleToAPI(dateKey, data) {
+  try {
+    const resp = await fetch(API_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ dateKey, data })
+    });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const result = await resp.json();
+    if (result && result.status === 'success') {
+      console.log('✅ Schedule saved to MySQL:', dateKey);
+    }
+  } catch (e) {
+    console.warn('API save failed (data saved locally):', e.message);
+  }
 }
 
 // -----------------------------------------------------------
@@ -234,6 +289,8 @@ function renderSchedule(triggerSync = true) {
   document.getElementById('statNeededSlots').textContent = totalSlots - totalAssigned;
 
   if (triggerSync) {
+    // Fetch latest from MySQL API (updates UI if newer data found)
+    fetchScheduleFromAPI(dateKey);
     syncLoadFromGoogleSheets(dateKey, false);
   }
 }
@@ -1047,6 +1104,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   updateDateDisplay();
+  // Fetch latest data from MySQL API on startup
+  fetchScheduleFromAPI(formatDateKey(currentDate));
   updateSyncUIStatus();
   syncWithGoogleSheets(false);
 });

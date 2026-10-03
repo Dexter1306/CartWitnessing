@@ -1,0 +1,6 @@
+# Production database credentials (InfinityFree)
+api/db_config.php
+
+# OS files
+.DS_Store
+Thumbs.db
